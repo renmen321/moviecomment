@@ -52,7 +52,7 @@
     }
 
     function reset() {
-      router.push({ name: 'Reset', query: { from: '/Login' } });
+      router.push( '/Reset' );
     }
 
     function register() {

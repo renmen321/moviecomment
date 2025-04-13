@@ -327,11 +327,11 @@ const getSentimentType = (sentiment: string) => {
 
 // 导航配置：定义侧边栏的菜单项
 const menus = [
-  { path: '/ss', icon: '📊', text: '今日评论' },
-  { path: '/fankui', icon: '📩', text: '反馈管理' },
+  { path: '/TodayComment', icon: '📊', text: '今日评论' },
+  { path: '/FeedBackAdmin', icon: '📩', text: '反馈管理' },
   { path: '/MovieManage', icon: '🎬', text: '电影管理' },
-  { path: '/pinglun', icon: '💬', text: '评论管理' },
-  { path: '/user', icon: '👤', text: '用户管理' },
+  { path: '/CommentManage', icon: '💬', text: '评论管理' },
+  { path: '/Admin', icon: '👤', text: '账号管理' },
 ]
 // 计算属性：获取当前激活的菜单路径
 const activeMenu = computed(() => route.path)

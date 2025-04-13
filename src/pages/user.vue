@@ -5,10 +5,10 @@
     <div class="nav-links">
       <button @click="toComment()" class="nav-item">评价</button>
       <button @click="toMovie()" class="nav-item">影视剧</button>
-      <button @click="tofeedback()" class="nav-item">反馈</button>
+      <button @click="toFeedBack()" class="nav-item">反馈</button>
     </div>
     <div class="nav-links-right">
-      <button @click="tozhanghao()" class="nav-item">账号</button>
+      <button @click="toUser()"  class="nav-item">账号</button>
     </div>
   </nav>
   <!-- 内容区域 -->
@@ -132,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, UploadRequestOptions } from 'element-plus'
 import logo from "@/assets/images/logo.jpg";
@@ -148,12 +148,11 @@ function toComment() {
   router.push('/Comment');
 }
 
-function tofeedback() {
-  router.push('/feedback');
+function toFeedBack() {
+  router.push('/FeedBack');
 }
-
-function tozhanghao() {
-  router.push('/zhanghao');
+function toUser() {
+  router.push('/User');
 }
 
 // 响应式状态管理
@@ -292,7 +291,7 @@ nav {
 
 .nav-links {
   display: flex;
-  gap: 2vw;
+  gap: 30px;
 }
 
 .nav-item {
@@ -305,12 +304,11 @@ nav {
   font-size: 1.2rem;
   margin: 0 5px;
   transition: all 0.3s;
+  user-select: none; /* 禁止选中 */
 }
-
 .nav-links-right {
-  margin-left: auto; /* 将按钮推到最右侧 */
+  margin-left: 64vw; /* 将按钮推到最右侧 */
 }
-
 .nav-item:hover {
   color: #3498db;
   background: rgba(255, 255, 255, 0.1);

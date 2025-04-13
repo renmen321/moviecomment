@@ -61,7 +61,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     name:'MovieManage',
     component: () => import("@/pages/MovieManage.vue"),
   },{
-    path:'/FeedBackAdmin.vue',//反馈管理
+    path:'/FeedBackAdmin',//反馈管理
     name:'FeedBackAdmin',
     component: () => import("@/pages/FeedBackAdmin.vue"),
   }, {

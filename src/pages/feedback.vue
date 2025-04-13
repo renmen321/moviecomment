@@ -5,10 +5,10 @@
     <div class="nav-links">
       <button @click="toComment()" class="nav-item">评价</button>
       <button @click="toMovie()" class="nav-item">影视剧</button>
-      <button @click="tofeedback()" class="nav-item">反馈</button>
+      <button @click="toFeedBack()" class="nav-item">反馈</button>
     </div>
     <div class="nav-links-right">
-      <button @click="tozhanghao()"  class="nav-item">账号</button>
+      <button @click="toUser()"  class="nav-item">账号</button>
     </div>
   </nav>
   <!-- 反馈表单容器 -->
@@ -57,10 +57,10 @@ function toMovie() {
 function toComment() {
   router.push('/Comment');
 }
-function tofeedback() {
+function toFeedBack() {
   router.push('/FeedBack');
 }
-function tozhanghao() {
+function toUser() {
   router.push('/User');
 }
 </script>

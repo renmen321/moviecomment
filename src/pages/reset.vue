@@ -2,25 +2,22 @@
     <div class="body">
     <div class="auth-card">
         <h2>密码重置</h2>
-        <form onsubmit="return validateRegister()">
-            <div class="form-group1">
-                <input type="idid" id="idid" placeholder="用户名"  >
-            </div>
-            <div class="form-group1">
-                <input type="email" id="email" placeholder="电子邮箱" >
-            </div>
-            <div class="form-group2">
-                <input type="text" id="check" placeholder="验证码" ></input>
-                <button type="button" onclick="sendVerificationCode()">发送验证码</button>
-            </div>
-            <div class="form-group1">
-                <input type="password" id="password" placeholder="密码（至少6位）" minlength="6" >
-            </div>
-            <div class="form-group1">
-                <input type="password" id="confirmPassword" placeholder="确认密码" >
-
-            </div>
-            <button type="submit">立即注册</button>
+        <form @submit.prevent="validateRegister">
+          <div class="form-group1">
+            <input v-model="email" type="email" id="email" placeholder="电子邮箱" required />
+          </div>
+          <div class="form-group2">
+            <input v-model="check" type="text" id="check" placeholder="验证码" required />
+            <button type="button" @click="sendVerificationCode">发送验证码</button>
+          </div>
+          <div class="form-group1">
+            <input v-model="password" type="password" id="password" placeholder="密码（至少6位）" minlength="6" required />
+          </div>
+          <div class="form-group1">
+            <input v-model="confirmPassword" type="password" id="confirmPassword" placeholder="确认密码" required />
+            <p class="password-check" :style="{ display: passwordError ? 'block' : 'none' }">两次密码输入不一致</p>
+          </div>
+            <button type="submit" @click="goBack">更改</button>
         </form>
         <div class="toggle-link">
             <a @click="goBack">返回登陆</a>
@@ -30,12 +27,31 @@
 </template>
 
 <script setup lang="ts">
-      import { useRouter} from 'vue-router';
+import { ref } from 'vue';
+import { useRouter} from 'vue-router';
+const email = ref('');
+const check = ref('');
+const password = ref('');
+const confirmPassword = ref('');
+const passwordError = ref(false);
 
-      const router = useRouter();
-      function goBack() {
-        router.push('/Login');
-      }
+const router = useRouter();
+function validateRegister() {
+  if (password.value !== confirmPassword.value) {
+    passwordError.value = true;
+    return false;
+  }
+  passwordError.value = false;
+  goBack();
+}
+
+// 发送验证码
+function sendVerificationCode() {
+  alert('验证码已发送，请查收邮箱！');
+}
+function goBack() {
+  router.push('/Login');
+}
 </script>
 <style scoped >
 *{

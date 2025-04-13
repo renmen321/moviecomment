@@ -20,7 +20,7 @@
           <input v-model="confirmPassword" type="password" id="confirmPassword" placeholder="确认密码" required />
           <p class="password-check" :style="{ display: passwordError ? 'block' : 'none' }">两次密码输入不一致</p>
         </div>
-        <button type="submit" @click="Comment">立即注册</button>
+        <button type="submit">立即注册</button>
       </form>
       <div class="toggle-link">
         <a @click="login">已有账号？立即登录</a>
@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { router } from '../router/index.js';
+import { router } from '@/router/index.js';
 
 const id = ref('');
 const email = ref('');
@@ -48,7 +48,7 @@ function validateRegister() {
   }
   passwordError.value = false;
   alert('注册成功！');
-  return true;
+  Comment();
 }
 
 // 发送验证码
