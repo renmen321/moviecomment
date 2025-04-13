@@ -20,6 +20,7 @@
           <input v-model="confirmPassword" type="password" id="confirmPassword" placeholder="确认密码" required />
           <p class="password-check" :style="{ display: passwordError ? 'block' : 'none' }">两次密码输入不一致</p>
         </div>
+        <p class="verification-check" :style="{ display: verificationError ? 'block' : 'none' }">验证码错误</p>
         <button type="submit">立即注册</button>
       </form>
       <div class="toggle-link">
@@ -39,21 +40,28 @@ const check = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const passwordError = ref(false);
-
+const verificationError = ref(false);
+let   verificationCode = '123456'; // 假设这是生成的验证码
 // 表单提交验证
 function validateRegister() {
   if (password.value !== confirmPassword.value) {
     passwordError.value = true;
+    verificationError.value = false;
+    return false;
+  }
+  if (check.value !== verificationCode) {
+    verificationError.value = true;
+    passwordError.value = false;
     return false;
   }
   passwordError.value = false;
-  alert('注册成功！');
+  verificationError.value = false;
   Comment();
 }
 
 // 发送验证码
 function sendVerificationCode() {
-  alert('验证码已发送，请查收邮箱！');
+  alert('验证码已发送，请查收邮箱');
 }
 
 // 返回登录界面
