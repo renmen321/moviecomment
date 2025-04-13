@@ -1,4 +1,4 @@
-<!-- feedbackAdmin.vue -->
+<!-- feedBackAdmin.vue -->
 <template>
   <div class="admin-wrapper">
     <!-- 动态侧边栏 -->
@@ -156,7 +156,7 @@ const feedbackList = reactive<FeedbackItem[]>([
 // 导航菜单配置
 const menus = [
   { path: '/ss', icon: '📊', text: '今日评论' },
-  { path: '/feedbackAdmin', icon: '📩', text: '反馈管理' },
+  { path: '/fankui', icon: '📩', text: '反馈管理' },
   { path: '/MovieManage', icon: '🎬', text: '电影管理' },
   { path: '/pinglun', icon: '💬', text: '评论管理' },
   { path: '/user', icon: '👤', text: '用户管理' },

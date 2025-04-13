@@ -20,7 +20,7 @@
           <input v-model="confirmPassword" type="password" id="confirmPassword" placeholder="确认密码" required />
           <p class="password-check" :style="{ display: passwordError ? 'block' : 'none' }">两次密码输入不一致</p>
         </div>
-        <button type="submit">立即注册</button>
+        <button type="submit" @click="Comment">立即注册</button>
       </form>
       <div class="toggle-link">
         <a @click="login">已有账号？立即登录</a>
@@ -58,7 +58,10 @@ function sendVerificationCode() {
 
 // 返回登录界面
 function login() {
-  router.push('/login');
+  router.push('/Login');
+}
+function Comment() {
+  router.push('/Comment');
 }
 </script>
 

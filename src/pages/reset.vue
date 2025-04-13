@@ -34,7 +34,7 @@
 
       const router = useRouter();
       function goBack() {
-        router.push('/login');
+        router.push('/Login');
       }
 </script>
 <style scoped >

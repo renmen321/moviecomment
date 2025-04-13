@@ -58,10 +58,10 @@ function toComment() {
   router.push('/Comment');
 }
 function tofeedback() {
-  router.push('/feedback');
+  router.push('/FeedBack');
 }
 function tozhanghao() {
-  router.push('/zhanghao');
+  router.push('/User');
 }
 </script>
 

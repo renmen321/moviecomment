@@ -1,155 +1,160 @@
-<!-- user.vue -->
 <template>
-  <div class="admin-wrapper">
-    <!-- 动态侧边栏 -->
-    <nav class="sidebar">
-      <div class="nav-title">
-        <span class="logo">⚙️</span>
-        Admin Pro
-      </div>
-      <div class="nav-items">
-        <a
-            v-for="item in menus"
-            :key="item.path"
-            @click="router.push(item.path)"
-            class="nav-item"
-            :class="{ 'active': activeMenu === item.path }"
+  <!-- 引入导航栏 -->
+  <nav>
+    <img :src="logo" class="logo" alt="">
+    <div class="nav-links">
+      <button @click="toComment()" class="nav-item">评价</button>
+      <button @click="toMovie()" class="nav-item">影视剧</button>
+      <button @click="tofeedback()" class="nav-item">反馈</button>
+    </div>
+    <div class="nav-links-right">
+      <button @click="tozhanghao()" class="nav-item">账号</button>
+    </div>
+  </nav>
+  <!-- 内容区域 -->
+  <main class="content-area">
+    <el-scrollbar class="content-scroll">
+      <el-card class="profile-card">
+        <!-- 头像上传组件 -->
+        <el-upload
+            class="avatar-uploader"
+            action="#"
+            :show-file-list="false"
+            :before-upload="beforeAvatarUpload"
+            :http-request="handleAvatarUpload"
         >
-          <span class="icon">{{ item.icon }}</span>
-          <span class="text">{{ item.text }}</span>
-          <div class="hover-indicator"></div>
-        </a>
-      </div>
-    </nav>
+          <el-image
+              v-if="avatarUrl"
+              :src="avatarUrl"
+              class="avatar"
+              fit="cover"
+          />
+          <el-icon v-else class="avatar-icon">
+            <el-icon-user />
+          </el-icon>
+          <div class="upload-hint">
+            <span>点击上传头像</span>
+          </div>
+        </el-upload>
 
-    <!-- 内容区域 -->
-    <main class="content-area">
-      <el-scrollbar class="content-scroll">
-        <el-card class="profile-card">
-          <!-- 头像上传组件 -->
-          <el-upload
-              class="avatar-uploader"
-              action="#"
-              :show-file-list="false"
-              :before-upload="beforeAvatarUpload"
-              :http-request="handleAvatarUpload"
-          >
-            <el-image
-                v-if="avatarUrl"
-                :src="avatarUrl"
-                class="avatar"
-                fit="cover"
+        <!-- 表单区域 -->
+        <el-form :model="formData" label-width="80px">
+          <!-- 用户名 -->
+          <el-form-item label="用户">
+            <el-input
+                v-model="formData.username"
+                @click="handleNameEdit"
+                class="input-with-button"
+            >
+              <template #append>
+                <el-button @click="handleNameEdit">
+                  {{ nameEditable ? '保存' : '修改' }}
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+
+          <!-- 邮箱 -->
+          <el-form-item label="邮箱">
+            <el-input
+                v-model="formData.email"
+                :disabled="!emailEditable"
+            >
+              <template #append>
+                <el-button @click="toggleEmailEdit">
+                  {{ emailEditable ? '取消' : '修改' }}
+                </el-button>
+              </template>
+            </el-input>
+            <transition name="el-zoom-in-top">
+              <div v-if="emailEditable" class="edit-group">
+                <el-input
+                    v-model="emailForm.original"
+                    placeholder="原邮箱"
+                    class="mb-2"
+                />
+                <el-input
+                    v-model="emailForm.new"
+                    placeholder="新邮箱"
+                    class="mb-2"
+                />
+                <el-button type="primary" class="custom-save-button" @click="saveEmail">确认修改</el-button>
+              </div>
+            </transition>
+          </el-form-item>
+
+          <!-- 密码 -->
+          <el-form-item label="密码">
+            <el-input
+                v-model="formData.password"
+                show-password
+                :disabled="!passwordEditable"
+            >
+              <template #append>
+                <el-button @click="togglePasswordEdit">
+                  {{ passwordEditable ? '取消' : '修改' }}
+                </el-button>
+              </template>
+            </el-input>
+            <transition name="el-zoom-in-top">
+              <div v-if="passwordEditable" class="edit-group">
+                <el-input
+                    v-model="passwordForm.current"
+                    placeholder="当前密码"
+                    show-password
+                    class="mb-2"
+                />
+                <el-input
+                    v-model="passwordForm.new"
+                    placeholder="新密码"
+                    show-password
+                    class="mb-2"
+                />
+                <el-button type="primary" class="custom-save-button" @click="savePassword">确认修改</el-button>
+              </div>
+            </transition>
+          </el-form-item>
+
+          <!-- 生日 -->
+          <el-form-item label="生日">
+            <el-date-picker
+                v-model="formData.birthday"
+                type="date"
+                placeholder="选择日期"
+                value-format="YYYY-MM-DD"
+                @change="handleBirthdayChange"
             />
-            <el-icon v-else class="avatar-icon">
-              <el-icon-user />
-            </el-icon>
-            <div class="upload-hint">
-              <span>点击上传头像</span>
-            </div>
-          </el-upload>
-
-          <!-- 表单区域 -->
-          <el-form :model="formData" label-width="80px">
-            <!-- 用户名 -->
-            <el-form-item label="用户">
-              <el-input
-                  v-model="formData.username"
-                  @click="handleNameEdit"
-                  class="input-with-button"
-              >
-                <template #append>
-                  <el-button @click="handleNameEdit">
-                    {{ nameEditable ? '保存' : '修改' }}
-                  </el-button>
-                </template>
-              </el-input>
-            </el-form-item>
-
-            <!-- 邮箱 -->
-            <el-form-item label="邮箱">
-              <el-input
-                  v-model="formData.email"
-                  :disabled="!emailEditable"
-              >
-                <template #append>
-                  <el-button @click="toggleEmailEdit">
-                    {{ emailEditable ? '取消' : '修改' }}
-                  </el-button>
-                </template>
-              </el-input>
-              <transition name="el-zoom-in-top">
-                <div v-if="emailEditable" class="edit-group">
-                  <el-input
-                      v-model="emailForm.original"
-                      placeholder="原邮箱"
-                      class="mb-2"
-                  />
-                  <el-input
-                      v-model="emailForm.new"
-                      placeholder="新邮箱"
-                      class="mb-2"
-                  />
-                  <el-button type="primary" class="custom-save-button" @click="saveEmail">确认修改</el-button>
-                </div>
-              </transition>
-            </el-form-item>
-
-            <!-- 密码 -->
-            <el-form-item label="密码">
-              <el-input
-                  v-model="formData.password"
-                  show-password
-                  :disabled="!passwordEditable"
-              >
-                <template #append>
-                  <el-button @click="togglePasswordEdit">
-                    {{ passwordEditable ? '取消' : '修改' }}
-                  </el-button>
-                </template>
-              </el-input>
-              <transition name="el-zoom-in-top">
-                <div v-if="passwordEditable" class="edit-group">
-                  <el-input
-                      v-model="passwordForm.current"
-                      placeholder="当前密码"
-                      show-password
-                      class="mb-2"
-                  />
-                  <el-input
-                      v-model="passwordForm.new"
-                      placeholder="新密码"
-                      show-password
-                      class="mb-2"
-                  />
-                  <el-button type="primary" class="custom-save-button" @click="savePassword">确认修改</el-button>
-                </div>
-              </transition>
-            </el-form-item>
-
-            <!-- 生日 -->
-            <el-form-item label="生日">
-              <el-date-picker
-                  v-model="formData.birthday"
-                  type="date"
-                  placeholder="选择日期"
-                  value-format="YYYY-MM-DD"
-                  @change="handleBirthdayChange"
-              />
-            </el-form-item>
-          </el-form>
-        </el-card>
-      </el-scrollbar>
-    </main>
-  </div>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </el-scrollbar>
+  </main>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, UploadRequestOptions } from 'element-plus'
+import logo from "@/assets/images/logo.jpg";
 
 const router = useRouter()
 const route = useRoute()
+
+function toMovie() {
+  router.push('/Movie');
+}
+
+function toComment() {
+  router.push('/Comment');
+}
+
+function tofeedback() {
+  router.push('/feedback');
+}
+
+function tozhanghao() {
+  router.push('/zhanghao');
+}
 
 // 响应式状态管理
 const formData = reactive({
@@ -158,17 +163,6 @@ const formData = reactive({
   password: '',
   birthday: ''
 })
-
-// 导航菜单配置
-const menus = [
-  { path: '/ss', icon: '📊', text: '今日评论' },
-  { path: '/fankui', icon: '📩', text: '反馈管理' },
-  { path: '/MovieManage', icon: '🎬', text: '电影管理' },
-  { path: '/pinglun', icon: '💬', text: '评论管理' },
-  { path: '/user', icon: '👤', text: '用户管理' },
-]
-// 计算属性
-const activeMenu = computed(() => route.path)
 
 // 头像上传逻辑
 const avatarUrl = ref('')
@@ -259,87 +253,88 @@ const handleBirthdayChange = (value: string) => {
   console.log('选择的生日:', value)
   // 在这里添加你想要执行的逻辑
 }
+
+// 返回按钮逻辑
+
 </script>
 
 <style scoped>
-/* 全局布局优化 */
-.admin-wrapper {
-  display: grid;
-  grid-template-columns: 19vw 81vw;
-  min-height: 100vh;
-  background: white;
+* {
+  padding: 0;
+  margin: 0;
 }
 
-/* 侧边栏动态特效 */
-.sidebar {
-  background: linear-gradient(195deg, #1a1a1a, #2d2d2d);
-  color: white;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  box-shadow: 4px 0 12px rgba(0,0,0,0.1);
-}
-
-.nav-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 5vh;
-  margin-top: 2vh;
+/* 公共样式 */
+nav {
   display: flex;
   align-items: center;
-  gap: 2vh;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.05);
+  padding: 15px 5rem 15px 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  background: rgba(44, 62, 80, 0.2);
+  /* 使用带透明度的背景色 */
+  backdrop-filter: blur(10px);
+  /* 标准语法 */
+  -webkit-backdrop-filter: blur(10px);
+  /* Safari 兼容 */
+  position: fixed;
+  width: 100vw;
+  z-index: 10;
+}
+
+.logo {
+  width: 100px;
+  /* 根据需要调整图片宽度 */
+  height: auto;
+  /* 保持图片比例 */
+  margin-right: 50px;
+  user-select: none; /* 禁止选中 */
+}
+
+.nav-links {
+  display: flex;
+  gap: 2vw;
 }
 
 .nav-item {
-  position: relative;
-  color: rgba(255,255,255,0.8);
-  padding: 2vh 1vw;
-  margin: 2vh 0;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  gap: 2vh;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &:hover {
-    background: rgba(255,255,255,0.05);
-    transform: translateX(8px);
-
-    .hover-indicator {
-      opacity: 1;
-      width: 3px;
-    }
-  }
-
-  &.active {
-    color: white;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-  }
+  background: none;
+  color: white;
+  border: none;
+  border-bottom: 1px solid skyblue;
+  text-decoration: none;
+  padding: 4px 4px;
+  font-size: 1.2rem;
+  margin: 0 5px;
+  transition: all 0.3s;
 }
 
-.hover-indicator {
-  position: absolute;
-  height: 60%;
-  width: 0;
-  border-radius: 2px;
-  opacity: 0;
-  transition: all 0.3s;
+.nav-links-right {
+  margin-left: auto; /* 将按钮推到最右侧 */
+}
+
+.nav-item:hover {
+  color: #3498db;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* 内容区域美化 */
 .content-area {
-  padding: 2vw;
   background: #f8f7f7;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  background: url("@/assets/images/background.jpg") no-repeat center center fixed;
+  background-size: cover;
+  align-items: center;
 }
 
 .profile-card {
-  max-width: 600px;
-  margin: 20px auto;
+  margin-top: 15vh;
+  width: 40vw;
   padding: 30px;
-  background: #eebaba;
+  background: rgba(255, 255, 255, 0.2); /* 半透明背景 */
+  backdrop-filter: blur(10px); /* 背景虚化效果 */
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* 头像上传样式修复 */
@@ -352,41 +347,40 @@ const handleBirthdayChange = (value: string) => {
   transition: border-color 0.3s;
   position: relative;
   margin: 0 auto 20px;
+}
 
-  &:hover {
-    border-color: var(--el-color-primary);
+.avatar-uploader:hover {
+  border-color: var(--el-color-primary);
+}
 
-    .upload-hint {
-      opacity: 1;
-    }
-  }
+.avatar-uploader .avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
 
-  .avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-  }
+.avatar-uploader .upload-hint {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border-radius: 50%;
+}
 
-  .upload-hint {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 14px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    border-radius: 50%;
-  }
+.avatar-uploader:hover .upload-hint {
+  opacity: 1;
 }
 
 /* 输入框间距调整 */
 :deep(.el-form-item) {
   margin-bottom: 5vh;
-
 }
 
 /* 按钮间距调整 */
@@ -414,10 +408,10 @@ const handleBirthdayChange = (value: string) => {
   border-radius: 20px; /* 设置圆角 */
   padding: 10px 20px; /* 设置内边距 */
   transition: background-color 0.3s; /* 设置过渡效果 */
+}
 
-  &:hover {
-    background-color: #66b1ff; /* 设置悬停时的背景颜色 */
-  }
+.custom-save-button:hover {
+  background-color: #66b1ff; /* 设置悬停时的背景颜色 */
 }
 
 /* 日期选择器宽度适配 */

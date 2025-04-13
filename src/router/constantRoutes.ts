@@ -21,53 +21,53 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import("@/pages/Moviedata.vue")
   },
   {
-    path: '/login',
-    name: 'login',
-    component: () => import("@/pages/login.vue"),
+    path: '/Login',
+    name: 'Login',
+    component: () => import("@/pages/Login.vue"),
   },
   {
-    path: '/reset',
-    name: 'reset',
-    component: () => import("@/pages/reset.vue"),
+    path: '/Reset',
+    name: 'Reset',
+    component: () => import("@/pages/Reset.vue"),
   },
   {
-    path: '/register',
-    name: 'register',
-    component: () => import("@/pages/register.vue"),
+    path: '/Register',
+    name: 'Register',
+    component: () => import("@/pages/Register.vue"),
   },
   {
-    path: '/shouye',
-    name: 'shouye',
-    component: () => import("@/pages/shouye.vue"),
+    path: '/Home',
+    name: 'Home',
+    component: () => import("@/pages/Home.vue"),
   },
   {
-  path: '/feedback',
-  name: 'feedback',
-  component: () => import("@/pages/feedback.vue"),
+  path: '/FeedBack',
+  name: 'FeedBack',
+  component: () => import("@/pages/FeedBack.vue"),
   },{
-    path: '/ss',//今日评论
-    name: 'ss',
-    component: () => import("@/pages/ss.vue"),
+    path: '/TodayComment',//今日评论
+    name: 'TodayComment',
+    component: () => import("@/pages/TodayComment.vue"),
   },{
-    path: '/user',//用户管理
-    name: 'user',
-    component: () => import("@/pages/user.vue"),
+    path: '/Admin',//用户管理
+    name: 'Admin',
+    component: () => import("@/pages/Admin.vue"),
   },{
-  path:'/pinglun',//评论管理
-  name:'pinglun',
-  component: () => import("@/pages/pinglun.vue"),
+  path:'/CommentManage',//评论管理
+  name:'CommentManage',
+  component: () => import("@/pages/CommentManage.vue"),
   },{
     path:'/MovieManage',//电影管理
     name:'MovieManage',
     component: () => import("@/pages/MovieManage.vue"),
   },{
-    path:'/feedbackAdmin',//反馈管理
-    name:'feedbackAdmin',
-    component: () => import("@/pages/feedbackAdmin.vue"),
+    path:'/FeedBackAdmin.vue',//反馈管理
+    name:'FeedBackAdmin',
+    component: () => import("@/pages/FeedBackAdmin.vue"),
   }, {
-    path: '/zhanghao',
-    name: 'zhanghao',
-    component: () => import("@/pages/zhanghao.vue"),
+    path: '/User',
+    name: 'User',
+    component: () => import("@/pages/User.vue"),
   },{
   path:'/Model',
   name:'Model',

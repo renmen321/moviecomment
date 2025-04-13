@@ -47,16 +47,16 @@
       }
       // 登录成功后可跳转页面或其他逻辑
      if(id.value === 'test' && password.value === 'test'){
-        router.push('/ss');
+        router.push('/TodayComment');
      }
     }
 
     function reset() {
-      router.push({ name: 'reset', query: { from: '/login' } });
+      router.push({ name: 'Reset', query: { from: '/Login' } });
     }
 
     function register() {
-      router.push('/register');
+      router.push('/Register');
     }
 
     function tourist() {
