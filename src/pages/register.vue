@@ -4,14 +4,29 @@
       <h2>注册</h2>
       <form @submit.prevent="validateRegister">
         <div class="form-group1">
+          <el-upload
+              class="avatar-uploader"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </div>
+        <div class="form-group1">
           <input v-model="id" type="text" id="id" placeholder="用户名" required />
         </div>
         <div class="form-group1">
           <input v-model="email" type="email" id="email" placeholder="电子邮箱" required />
+          <p class="email-check" :style="{ display: emailError ? 'block' : 'none' }">邮箱格式不正确</p>
         </div>
         <div class="form-group2">
           <input v-model="check" type="text" id="check" placeholder="验证码" required />
-          <button type="button" @click="sendVerificationCode">发送验证码</button>
+          <button type="button" @click="sendVerificationCode" :disabled="isSending">
+            {{ isSending ? `${countdown} 秒后重试` : '发送验证码' }}
+          </button>
         </div>
         <div class="form-group1">
           <input v-model="password" type="password" id="password" placeholder="密码（至少6位）" minlength="6" required />
@@ -32,7 +47,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { ElMessage, ElUpload } from 'element-plus';
 import { router } from '@/router/index.js';
+
 const id = ref('');
 const email = ref('');
 const check = ref('');
@@ -40,7 +57,12 @@ const password = ref('');
 const confirmPassword = ref('');
 const passwordError = ref(false);
 const verificationError = ref(false);
-let   verificationCode = '123456'; // 假设这是生成的验证码
+const isSending = ref(false);
+const emailError = ref(false);
+const countdown = ref(60);
+const imageUrl = ref('');
+let verificationCode = '123456'; // 假设这是生成的验证码
+
 // 表单提交验证
 function validateRegister() {
   if (password.value !== confirmPassword.value) {
@@ -60,13 +82,53 @@ function validateRegister() {
 
 // 发送验证码
 function sendVerificationCode() {
-  alert('验证码已发送，请查收邮箱');
+  // 邮箱格式验证
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailPattern.test(email.value)) {
+    emailError.value = true;
+    return;
+  }
+  emailError.value = false;
+  if (isSending.value) return;
+
+  isSending.value = true;
+  verificationCode = Math.floor(100000 + Math.random() * 900000).toString(); // 生成新的验证码
+
+  const interval = setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--;
+    } else {
+      clearInterval(interval);
+      isSending.value = false;
+      countdown.value = 60;
+    }
+  }, 1000);
+}
+
+// 处理头像上传成功
+function handleAvatarSuccess(res: any, file: any) {
+  imageUrl.value = URL.createObjectURL(file.raw);
+}
+
+// 上传前检查文件
+function beforeAvatarUpload(file: any) {
+  const isJPGorPNG = file.type === 'image/jpeg' || file.type === 'image/png';
+  const isLt2M = file.size / 1024 / 1024 < 2;
+
+  if (!isJPGorPNG) {
+    ElMessage.error('上传头像图片只能是 JPG 或 PNG 格式!');
+  }
+  if (!isLt2M) {
+    ElMessage.error('上传头像图片大小不能超过 2MB!');
+  }
+  return isJPGorPNG && isLt2M;
 }
 
 // 返回登录界面
 function login() {
   router.push('/Login');
 }
+
 function Comment() {
   router.push('/Comment');
 }
@@ -134,6 +196,10 @@ button {
 button:hover {
   background: #6f7777;
 }
+button:disabled {
+  background: #6f7777;
+  cursor: not-allowed;
+}
 .toggle-link {
   text-align: center;
   margin-top: 5vh;
@@ -148,5 +214,46 @@ a {
   color: #e74c3c;
   font-size: 12px;
   display: none;
+}
+.email-check {
+  color: #e74c3c;
+  font-size: 12px;
+  display: none;
+}
+.verification-check {
+  color: #e74c3c;
+  font-size: 12px;
+  display: none;
+}
+::v-deep .avatar-uploader {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  .el-upload {
+    border: 2px dashed #ffffff !important;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.2);
+    transition: border-color 0.3s;
+
+    &:hover {
+      border-color: #409EFF;
+    }
+
+    .avatar-uploader-icon {
+      color: #504343;
+      font-size: 24px;
+      transition: all 0.3s;
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 }
 </style>

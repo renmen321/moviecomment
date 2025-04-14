@@ -10,15 +10,20 @@
         {{ isEditing ? '取消编辑' : '编辑信息' }}
       </el-button>
     </div>
-
     <!-- 用户名 -->
     <div class="info-item">
       <div class="label">用户名：</div>
+      <div v-if="!isEditing" class="value">{{ formData.id || '未设置' }}</div>
+      <div v-else class="value">{{ formData.id || '未设置' }}</div>
+    </div>
+    <!-- 姓名 -->
+    <div class="info-item">
+      <div class="label">姓名：</div>
       <div v-if="!isEditing" class="value">{{ formData.name || '未设置' }}</div>
       <el-input
           v-else
           v-model="localData.name"
-          placeholder="请输入用户名"
+          placeholder="请输入姓名"
           class="edit-field"
       />
     </div>
@@ -91,6 +96,7 @@ import { ElMessage } from 'element-plus'
 
 const props = defineProps<{
   formData: {
+    id: string
     name: string
     movieTypes: string[]
     favoriteMovie: string
@@ -105,6 +111,7 @@ const isEditing = ref(false)
 
 // 正确初始化响应式对象
 const localData = reactive({
+  id: '',
   name: '',
   movieTypes: [] as string[],
   favoriteMovie: '',
@@ -114,6 +121,7 @@ const localData = reactive({
 // 初始化数据
 const initData = () => {
   Object.assign(localData, {
+    username: props.formData.id || '',
     name: props.formData.name || '',
     movieTypes: [...props.formData.movieTypes],
     favoriteMovie: props.formData.favoriteMovie || '',
@@ -138,6 +146,7 @@ const toggleEditMode = () => {
 // 保存修改
 const saveChanges = () => {
   const submitData = {
+    username: props.formData.id || '', // 不允许修改用户名
     name: (localData.name || '').trim(),
     movieTypes: [...localData.movieTypes], // 创建新数组
     favoriteMovie: (localData.favoriteMovie || '').trim(),
@@ -145,7 +154,7 @@ const saveChanges = () => {
   }
 
   if (!submitData.name) {
-    ElMessage.error('用户名不能为空')
+    ElMessage.error('姓名不能为空')
     return
   }
 

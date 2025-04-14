@@ -5,10 +5,13 @@
       <form @submit.prevent="validateRegister">
         <div class="form-group1">
           <input v-model="email" type="email" id="email" placeholder="电子邮箱" required />
+          <p class="email-check" :style="{ display: emailError ? 'block' : 'none' }">邮箱格式不正确</p>
         </div>
         <div class="form-group2">
           <input v-model="check" type="text" id="check" placeholder="验证码" required />
-          <button type="button" @click="sendVerificationCode">发送验证码</button>
+          <button type="button" @click="sendVerificationCode" :disabled="isSending">
+            {{ isSending ? `${countdown} 秒后重试` : '发送验证码' }}
+          </button>
         </div>
         <div class="form-group1">
           <input v-model="password" type="password" id="password" placeholder="密码（至少6位）" minlength="6" required />
@@ -21,7 +24,7 @@
         <button type="submit">更改</button>
       </form>
       <div class="toggle-link">
-        <a @click="goBack">返回登陆</a>
+        <a @click="goBack">返回登录</a>
       </div>
     </div>
   </div>
@@ -37,9 +40,12 @@ const password = ref('');
 const confirmPassword = ref('');
 const passwordError = ref(false);
 const verificationError = ref(false);
+const emailError = ref(false);
 let verificationCode = 'ttt'; // 假设这是正确的验证码
 
 const router = useRouter();
+const isSending = ref(false);
+const countdown = ref(60);
 
 function validateRegister() {
   if (password.value !== confirmPassword.value) {
@@ -60,7 +66,27 @@ function validateRegister() {
 
 // 发送验证码
 function sendVerificationCode() {
-  alert('验证码已发送，请查收邮箱！');
+  // 邮箱格式验证
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailPattern.test(email.value)) {
+    emailError.value = true;
+    return;
+  }
+  emailError.value = false;
+  if (isSending.value) return;
+
+  isSending.value = true;
+  verificationCode = Math.floor(100000 + Math.random() * 900000).toString(); // 生成新的验证码
+
+  const interval = setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--;
+    } else {
+      clearInterval(interval);
+      isSending.value = false;
+      countdown.value = 60;
+    }
+  }, 1000);
 }
 
 function goBack() {
@@ -139,6 +165,11 @@ button:hover {
   background: #6f7777;
 }
 
+button:disabled {
+  background: #6f7777;
+  cursor: not-allowed;
+}
+
 .toggle-link {
   text-align: center;
   margin-top: 5vh;
@@ -158,6 +189,12 @@ a {
 }
 
 .verification-check {
+  color: #e74c3c;
+  font-size: 12px;
+  display: none;
+}
+
+.email-check {
   color: #e74c3c;
   font-size: 12px;
   display: none;

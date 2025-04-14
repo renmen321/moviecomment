@@ -75,6 +75,7 @@ import {ElMessage, UploadRequestOptions} from "element-plus";
 const activeNav = ref('personalInfo')
 const avatarUrl = ref('') // 头像地址
 const formData = ref({
+  id: 'wer',
   name: '',
   movieTypes: [],
   favoriteMovie: '',
