@@ -31,24 +31,34 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     import { useRouter } from 'vue-router';
-
+    import { login } from '@/api/test';
     const router = useRouter();
     const id = ref('');
     const password = ref('');
 
-    function validateLogin() {
-      if (id.value === '' || password.value === '') {
-        alert('用户名或密码不能为空');
-        return false;
+   async function validateLogin() {
+      const response= await login({
+        username: id.value,
+        password: password.value,
+      });
+      if(response.ok){
+        const userData = {
+          name: response.name,
+          email: response.email,
+          profilePicture: response.profilePicture,
+          token: response.token,
+        };
+        // 将用户信息存储在 localStorage 中
+        localStorage.setItem('userData', JSON.stringify(userData));
+        if(response.admin){
+          router.push('/TodayComment');
+        }else{
+          router.push('/Comment');
+        }
+      }else{
+        alert(response.message);
       }
-      if (id.value !== 'test' || password.value !== 'test') {
-        alert('用户名或密码错误');
-        return false;
-      }
-      // 登录成功后可跳转页面或其他逻辑
-     if(id.value === 'test' && password.value === 'test'){
-        router.push('/TodayComment');
-     }
+
     }
 
     function reset() {

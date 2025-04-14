@@ -20,7 +20,7 @@
           <input v-model="confirmPassword" type="password" id="confirmPassword" placeholder="确认密码" required />
           <p class="password-check" :style="{ display: passwordError ? 'block' : 'none' }">两次密码输入不一致</p>
         </div>
-        <p class="verification-check" :style="{ display: verificationError ? 'block' : 'none' }">验证码错误</p>
+        <p class="verification-check" :style="{ display: verificationError ? 'block' : 'none' }">验证码错误或已过期</p>
         <button type="submit">立即注册</button>
       </form>
       <div class="toggle-link">
@@ -33,6 +33,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { router } from '@/router/index.js';
+import {sendCode,register} from "@/api/test.ts";
 
 const id = ref('');
 const email = ref('');
@@ -41,27 +42,45 @@ const password = ref('');
 const confirmPassword = ref('');
 const passwordError = ref(false);
 const verificationError = ref(false);
-let   verificationCode = '123456'; // 假设这是生成的验证码
+
 // 表单提交验证
-function validateRegister() {
+async function validateRegister() {
+
   if (password.value !== confirmPassword.value) {
     passwordError.value = true;
     verificationError.value = false;
     return false;
   }
-  if (check.value !== verificationCode) {
-    verificationError.value = true;
+  const respose=await register(
+      {
+        username: id.value,
+        password: password.value,
+        email: email.value,
+        code : check.value
+      }
+  );
+  if (respose.ok) {
     passwordError.value = false;
-    return false;
+    verificationError.value = false;
+    Comment();
+  }else if(respose.message=="验证码错误或已过期"){
+    verificationError.value = true;
+  }else {
+    alert('注册失败，请稍后再试');
   }
   passwordError.value = false;
-  verificationError.value = false;
-  Comment();
 }
 
 // 发送验证码
-function sendVerificationCode() {
-  alert('验证码已发送，请查收邮箱');
+async function sendVerificationCode() {
+  const respose=await sendCode(
+    email.value
+  );
+  if(respose.ok){
+    alert('验证码已发送，请查收邮箱！');
+  }else{
+    alert('发送验证码失败，请稍后再试');
+  }
 }
 
 // 返回登录界面

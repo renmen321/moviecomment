@@ -82,4 +82,39 @@ export  const login = (data: {
     token: string;
     admin: boolean;
   };
-}> => request.post(`http://127.0.0.1:8080/login`,data);
+}> => request.post(`/user/login`,data);
+
+export const register = (data: {
+  username: string;
+  password: string;
+  email: string;
+  code: string;
+  profilePicture?: File; // 添加文件类型
+}): Promise<{
+  code: number;
+  message: string;
+  ok: boolean;
+}> => {
+  const formData = new FormData();
+  formData.append('username', data.username);
+  formData.append('password', data.password);
+  formData.append('email', data.email);
+  formData.append('code', data.code);
+
+  // 如果有 profilePicture 文件，则添加到 formData
+  if (data.profilePicture) {
+    formData.append('profilePicture', data.profilePicture);
+  }
+
+  return request.post(`/user/register`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
+export const sendCode = (email: string): Promise<{
+  code: number;
+  message: string;
+  ok: boolean;
+}> => request.post(`/user/sendCode?email=${email}`);
