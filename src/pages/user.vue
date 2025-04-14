@@ -57,7 +57,7 @@
       <component
           :is="activeComponent"
           :form-data="formData"
-          @update-field="handleFieldUpdate"
+          @update="handleUpdate"
       />
     </el-card>
   </div>
@@ -67,13 +67,13 @@
 import { ref, computed } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
 import PersonalInfo from '@/components/PersonalInfo.vue';
-
 import AccountSecurity from '@/components/AccountSecurity.vue'
 import {router} from "@/router";
 import logo from "@/assets/images/logo.jpg";
 import {ElMessage, UploadRequestOptions} from "element-plus";
+
 const activeNav = ref('personalInfo')
-const avatarUrl = ref('')// 头像地址
+const avatarUrl = ref('') // 头像地址
 const formData = ref({
   name: '',
   movieTypes: [],
@@ -82,6 +82,7 @@ const formData = ref({
   newPassword: '',
   newEmail: ''
 })
+
 function toMovie() {
   router.push('/Movie');
 }
@@ -93,9 +94,11 @@ function toComment() {
 function toFeedBack() {
   router.push('/FeedBack');
 }
+
 function toUser() {
   router.push('/User');
 }
+
 // 组件映射
 const componentMap = {
   personalInfo: PersonalInfo,
@@ -129,8 +132,8 @@ const handleAvatarUpload = async (options: UploadRequestOptions) => {
   }
 }
 
-const handleFieldUpdate = (field: string, value: any) => {
-  formData.value[field] = value
+const handleUpdate = (updatedData: any) => {
+  Object.assign(formData.value, updatedData) // 同步更新数据
 }
 </script>
 
@@ -219,14 +222,12 @@ const handleFieldUpdate = (field: string, value: any) => {
   margin-bottom: 30px;
 }
 
-
 /* 导航菜单 */
 .side-menu {
   border-right: none;
   width: 100%;
-
-
 }
+
 /* 头像上传容器 */
 .avatar-uploader {
   position: relative;
@@ -248,14 +249,12 @@ const handleFieldUpdate = (field: string, value: any) => {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-
-
 /* 鼠标悬停效果 */
 .avatar-uploader:hover {
   transform: scale(1.05);
 }
 
-.avatar-uploader:hover  {
+.avatar-uploader:hover {
   color: #409eff;
 }
 
@@ -268,6 +267,7 @@ const handleFieldUpdate = (field: string, value: any) => {
 :deep(.el-upload:hover) {
   border-color: #409eff;
 }
+
 /* 内容区卡片 */
 .content-card {
   min-height: 80vh;

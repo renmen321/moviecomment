@@ -103,7 +103,7 @@ const emit = defineEmits(['update'])
 // 编辑状态
 const isEditing = ref(false)
 
-// 正确初始化响应式对象 ✅
+// 正确初始化响应式对象
 const localData = reactive({
   name: '',
   movieTypes: [] as string[],
@@ -131,11 +131,11 @@ const movieGenres = [
 const toggleEditMode = () => {
   isEditing.value = !isEditing.value
   if (!isEditing.value) {
-    initData() // 使用正确的方式重置数据 ✅
+    initData() // 使用正确的方式重置数据
   }
 }
 
-// 保存修改 ✅ 增强数据校验
+// 保存修改
 const saveChanges = () => {
   const submitData = {
     name: (localData.name || '').trim(),
@@ -156,15 +156,16 @@ const saveChanges = () => {
 
   emit('update', submitData)
   ElMessage.success('保存成功')
+  isEditing.value = false // 保存后退出编辑模式
 }
 
-// 取消编辑 ✅
+// 取消编辑
 const cancelEdit = () => {
   initData()
   isEditing.value = false
 }
 
-// 监听父组件数据变化 ✅
+// 监听父组件数据变化
 watch(
     () => props.formData,
     () => {
@@ -172,8 +173,6 @@ watch(
     },
     { deep: true, immediate: true }
 )
-
-
 </script>
 
 <style scoped>
@@ -234,58 +233,9 @@ h2 {
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px solid #E4E7ED;
-}
-
-/* 按钮样式优化 */
-.el-button {
-  padding: 8px 20px;
-  border-radius: 4px;
-  font-size: 14px;
-  &--primary {
-    background: #409EFF;
-    border-color: #409EFF;
-  }
-}
-
-/* 文本域特殊样式 */
-.el-textarea {
-  ::v-deep .el-textarea__inner {
-    min-height: 80px !important;
-    padding: 8px 12px;
-    line-height: 1.5;
-    resize: vertical;
-    &::placeholder {
-      color: #C0C4CC;
-    }
-  }
-  ::v-deep .el-input__count {
-    bottom: 5px;
-    right: 10px;
-    background: transparent;
-    color: #909399;
-  }
-}
-
-/* 多选标签样式 */
-.el-select ::v-deep {
-  .el-tag {
-    margin: 2px;
-    background: #F5F7FA;
-    border-color: #E4E7ED;
-    &__close {
-      color: #909399;
-      &:hover {
-        background: #909399;
-        color: white;
-      }
-    }
-  }
-  .el-input__inner {
-    padding-left: 10px;
-    &::placeholder {
-      color: #C0C4CC;
-    }
-  }
+  display: flex;
+  justify-content: center; /* 居中对齐按钮 */
+  gap: 15px; /* 按钮间距 */
 }
 
 /* 输入框聚焦样式 */

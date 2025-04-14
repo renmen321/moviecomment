@@ -144,9 +144,14 @@ const pwdForm = reactive({
 })
 
 // 数据初始化
-watch(showEmailEdit, val => val && (emailForm.newEmail = props.formData.email))
+watch(showEmailEdit, val => {
+  if (val) {
+    emailForm.newEmail = props.formData.email
+  }
+})
 
 // 获取邮箱验证码
+const emailCodeCountdown = ref(0)
 const getEmailCode = () => {
   if (!/^\w+@[a-z0-9]+\.[a-z]{2,4}$/i.test(emailForm.newEmail)) {
     ElMessage.error('请输入有效的邮箱地址')
@@ -196,9 +201,6 @@ const emitUpdate = (key: string, value: any) => {
     [key]: value
   })
 }
-
-// 验证码倒计时
-const emailCodeCountdown = ref(0)
 </script>
 
 <style scoped>
