@@ -31,12 +31,7 @@
               class="avatar"
               fit="cover"
           />
-          <el-icon v-else class="avatar-icon">
-            <el-icon-user />
-          </el-icon>
-          <div class="upload-hint">
-            <span>点击上传头像</span>
-          </div>
+
         </el-upload>
 
         <!-- 导航菜单 -->
@@ -62,7 +57,7 @@
       <component
           :is="activeComponent"
           :form-data="formData"
-          @update-field="handleFieldUpdate"
+          @update="handleUpdate"
       />
     </el-card>
   </div>
@@ -72,14 +67,15 @@
 import { ref, computed } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
 import PersonalInfo from '@/components/PersonalInfo.vue';
-
 import AccountSecurity from '@/components/AccountSecurity.vue'
 import {router} from "@/router";
 import logo from "@/assets/images/logo.jpg";
 import {ElMessage, UploadRequestOptions} from "element-plus";
+
 const activeNav = ref('personalInfo')
-const avatarUrl = ref('')// 头像地址
+const avatarUrl = ref('') // 头像地址
 const formData = ref({
+  id: 'wer',
   name: '',
   movieTypes: [],
   favoriteMovie: '',
@@ -87,6 +83,7 @@ const formData = ref({
   newPassword: '',
   newEmail: ''
 })
+
 function toMovie() {
   router.push('/Movie');
 }
@@ -98,9 +95,11 @@ function toComment() {
 function toFeedBack() {
   router.push('/FeedBack');
 }
+
 function toUser() {
   router.push('/User');
 }
+
 // 组件映射
 const componentMap = {
   personalInfo: PersonalInfo,
@@ -134,8 +133,8 @@ const handleAvatarUpload = async (options: UploadRequestOptions) => {
   }
 }
 
-const handleFieldUpdate = (field: string, value: any) => {
-  formData.value[field] = value
+const handleUpdate = (updatedData: any) => {
+  Object.assign(formData.value, updatedData) // 同步更新数据
 }
 </script>
 
@@ -196,8 +195,8 @@ const handleFieldUpdate = (field: string, value: any) => {
 
 /* 主体布局 */
 .account-container {
-  max-width: 1200px;
-  margin: 80px auto 0; /* 调整上边距以避免被导航栏遮挡 */
+  max-width: 80%;
+  margin:15vh  auto 0; /* 调整上边距以避免被导航栏遮挡 */
   padding: 0 20px;
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -224,28 +223,50 @@ const handleFieldUpdate = (field: string, value: any) => {
   margin-bottom: 30px;
 }
 
-.avatar-hint {
-  color: #909399;
-  font-size: 12px;
-  margin-top: 10px;
-}
-
 /* 导航菜单 */
 .side-menu {
   border-right: none;
   width: 100%;
+}
 
-  .el-menu-item {
-    height: 48px;
-    margin: 6px 0;
-    border-radius: 8px;
-    transition: all 0.2s;
+/* 头像上传容器 */
+.avatar-uploader {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: #f0f2f5;
+  cursor: pointer;
+  transition: all 0.3s;
+}
 
-    &.is-active {
-      background: #f0f7ff;
-      color: #409eff;
-    }
-  }
+/* 头像图片样式 */
+.avatar {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50%;
+  background: #f0f2f5;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 鼠标悬停效果 */
+.avatar-uploader:hover {
+  transform: scale(1.05);
+}
+
+.avatar-uploader:hover {
+  color: #409eff;
+}
+
+/* 上传组件覆盖element样式 */
+:deep(.el-upload) {
+  width: 100%;
+  height: 100%;
+}
+
+:deep(.el-upload:hover) {
+  border-color: #409eff;
 }
 
 /* 内容区卡片 */

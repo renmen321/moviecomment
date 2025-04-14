@@ -8,7 +8,7 @@
         <div class="setting-header">
           <div class="info-group">
             <span class="main-label">邮箱</span>&nbsp;
-            <span class="sub-label">已绑定：user@​**​​**​.com</span>
+            <span class="sub-label">已绑定：{{ formData.email || '未设置' }}</span>
           </div>
           <el-button
               type="primary"
@@ -59,7 +59,7 @@
         <div class="setting-header">
           <div class="info-group">
             <span class="main-label">密码</span>&nbsp;
-            <span class="sub-label">​**​​**​​**​​**​</span>
+            <span class="sub-label">******</span>
           </div>
           <el-button
               type="primary"
@@ -73,6 +73,15 @@
         <transition name="el-zoom-in-top">
           <div v-show="showPwdEdit" class="edit-panel">
             <el-form class="center-form">
+              <el-form-item label="原密码：" label-width="100px">
+                <el-input
+                    type="password"
+                    v-model="pwdForm.oldPassword"
+                    placeholder="请输入原密码"
+                    show-password
+                    class="centered-input"
+                />
+              </el-form-item>
               <el-form-item label="新密码：" label-width="100px">
                 <el-input
                     type="password"
@@ -104,25 +113,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 
-// 邮箱相关状态
+// 定义 props 接收初始数据
+const props = defineProps<{
+  formData: {
+    email: string
+    password: string // 假设 formData 中包含 password 字段
+  }
+}>()
+
+// 定义 emit 事件
+const emit = defineEmits(['update'])
+
+// 编辑状态
 const showEmailEdit = ref(false)
-const emailCodeCountdown = ref(0)
+const showPwdEdit = ref(false)
+
+// 临时数据
 const emailForm = reactive({
   newEmail: '',
   code: ''
 })
 
-// 密码相关状态
-const showPwdEdit = ref(false)
 const pwdForm = reactive({
+  oldPassword: '', // 增加原密码字段
   newPassword: '',
   confirmPassword: ''
 })
 
+// 数据初始化
+watch(showEmailEdit, val => {
+  if (val) {
+    emailForm.newEmail = props.formData.email
+  }
+})
+
 // 获取邮箱验证码
+const emailCodeCountdown = ref(0)
 const getEmailCode = () => {
   if (!/^\w+@[a-z0-9]+\.[a-z]{2,4}$/i.test(emailForm.newEmail)) {
     ElMessage.error('请输入有效的邮箱地址')
@@ -143,10 +172,15 @@ const saveEmail = () => {
   }
   ElMessage.success('邮箱修改成功')
   showEmailEdit.value = false
+  emitUpdate('email', emailForm.newEmail)
 }
 
 // 保存密码
 const savePassword = () => {
+  if (pwdForm.oldPassword !== props.formData.password) {
+    ElMessage.error('原密码输入错误')
+    return
+  }
   if (pwdForm.newPassword !== pwdForm.confirmPassword) {
     ElMessage.error('两次输入的密码不一致')
     return
@@ -157,6 +191,15 @@ const savePassword = () => {
   }
   ElMessage.success('密码修改成功')
   showPwdEdit.value = false
+  emitUpdate('password', pwdForm.newPassword)
+}
+
+// 通用更新方法
+const emitUpdate = (key: string, value: any) => {
+  emit('update', {
+    ...props.formData,
+    [key]: value
+  })
 }
 </script>
 

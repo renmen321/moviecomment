@@ -4,14 +4,29 @@
       <h2>注册</h2>
       <form @submit.prevent="validateRegister">
         <div class="form-group1">
+          <el-upload
+              class="avatar-uploader"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </div>
+        <div class="form-group1">
           <input v-model="id" type="text" id="id" placeholder="用户名" required />
         </div>
         <div class="form-group1">
           <input v-model="email" type="email" id="email" placeholder="电子邮箱" required />
+          <p class="email-check" :style="{ display: emailError ? 'block' : 'none' }">邮箱格式不正确</p>
         </div>
         <div class="form-group2">
           <input v-model="check" type="text" id="check" placeholder="验证码" required />
-          <button type="button" @click="sendVerificationCode">发送验证码</button>
+          <button type="button" @click="sendVerificationCode" :disabled="isSending">
+            {{ isSending ? `${countdown} 秒后重试` : '发送验证码' }}
+          </button>
         </div>
         <div class="form-group1">
           <input v-model="password" type="password" id="password" placeholder="密码（至少6位）" minlength="6" required />
@@ -32,6 +47,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { ElMessage, ElUpload } from 'element-plus';
 import { router } from '@/router/index.js';
 import {sendCode,register} from "@/api/test.ts";
 
@@ -87,6 +103,7 @@ async function sendVerificationCode() {
 function login() {
   router.push('/Login');
 }
+
 function Comment() {
   router.push('/Comment');
 }
@@ -154,6 +171,10 @@ button {
 button:hover {
   background: #6f7777;
 }
+button:disabled {
+  background: #6f7777;
+  cursor: not-allowed;
+}
 .toggle-link {
   text-align: center;
   margin-top: 5vh;
@@ -168,5 +189,46 @@ a {
   color: #e74c3c;
   font-size: 12px;
   display: none;
+}
+.email-check {
+  color: #e74c3c;
+  font-size: 12px;
+  display: none;
+}
+.verification-check {
+  color: #e74c3c;
+  font-size: 12px;
+  display: none;
+}
+::v-deep .avatar-uploader {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  .el-upload {
+    border: 2px dashed #ffffff !important;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.2);
+    transition: border-color 0.3s;
+
+    &:hover {
+      border-color: #409EFF;
+    }
+
+    .avatar-uploader-icon {
+      color: #504343;
+      font-size: 24px;
+      transition: all 0.3s;
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 }
 </style>
