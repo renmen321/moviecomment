@@ -23,7 +23,7 @@
       <div class="media-grid">
         <!-- 电影卡片 -->
         <div class="media-card" v-for="(movie, index) in movies" :key="index" @click="draw(index)">
-          <img :src="`http://127.0.0.1:8080/movies/getImage?id=${movie.id}`" @click="tomoviedata(index)"
+          <img :src="`http://127.0.0.1:8080/api/movies/getImage?id=${movie.id}`" @click="tomoviedata(index)"
                style="width:100%;height:20vh;object-fit:cover">
           <h3>{{ movie.movieChineseName }}</h3>
           <p>{{ movie.type }}</p>
@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, reactive} from 'vue';
+import {ref, onMounted} from 'vue';
 import * as echarts from "echarts";
 import {constantRoutes} from "@/router/constantRoutes.js";
 import {onBeforeRouteLeave, useRouter} from "vue-router";
@@ -66,9 +66,9 @@ const draw = (index) => {
 const fetchMovies = async (pages) => {
   try {
     const response = await reqGetMovies(pages);
-    if (response.data.ok) {
+    if (response.ok) {
       // 假设返回的数据结构中有一个 movies 数组
-      movies.value = response.data.data.list
+      movies.value = response.data.list
 
 
     } else {
@@ -82,8 +82,8 @@ const fetchMovies = async (pages) => {
 const fetchMovie = async (movie_name) => {
   try {
     const response = await reqGetMovie(movie_name);
-    if (response.data.ok) {
-      movies.value = [response.data.data];
+    if (response.ok) {
+      movies.value = [response.data];
     } else {
       console.error('获取电影数据失败:', response.message);
     }

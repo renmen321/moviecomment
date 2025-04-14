@@ -68,8 +68,8 @@ const fetchGetAiResult = async (data :{
   sentence: string;
 }) => {
     const response = await reqGetAiResult(data);
-      result.value = response.data[0] ;
-      confidence.value=parseFloat(response.data[1].toFixed(2));
+      result.value = response.prediction_result ;
+      confidence.value=parseFloat(response.probabilities.toFixed(2));
 };
 
     let  comment=ref();

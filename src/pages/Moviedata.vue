@@ -125,10 +125,10 @@ const movieStore = useMovieStore();
 const postComment = async (id,comment,type) => {
   try {
     const response = await reqPostComment({id,comment,type})
-    if (response.data.ok) {
+    if (response.ok) {
 
     } else {
-      console.error('提交评论数百:', response.message);
+      console.error('提交评论失败:', response.message);
     }
   } catch (error) {
     console.error('请求出错:', error);
@@ -139,16 +139,16 @@ onMounted(async () => {
   if (movie.value.id) {
     try {
       const goodResponse = await reqGetMovieCommentById(movie.value.id, goodCurrentPage.value, pageSize.value, 0);
-      goodComments.value = goodResponse.data.data.list.map(item => item.comment);
-      goodCommentsTotal.value=goodResponse.data.data.total;
+      goodComments.value = goodResponse.data.list.map(item => item.comment);
+      goodCommentsTotal.value=goodResponse.data.total;
 
       const mediumResponse = await reqGetMovieCommentById(movie.value.id, mediumCurrentPage.value, pageSize.value, 1);
-      mediumComments.value = mediumResponse.data.data.list.map(item => item.comment);
-      mediumCommentsTotal.value=mediumResponse.data.data.total;
+      mediumComments.value = mediumResponse.data.list.map(item => item.comment);
+      mediumCommentsTotal.value=mediumResponse.data.total;
 
       const badResponse = await reqGetMovieCommentById(movie.value.id, badCurrentPage.value, pageSize.value, 2);
-      badComments.value = badResponse.data.data.list.map(item => item.comment);
-      badCommentsTotal.value=badResponse.data.data.total;
+      badComments.value = badResponse.data.list.map(item => item.comment);
+      badCommentsTotal.value=badResponse.data.total;
 
     } catch (error) {
       console.error('Error fetching initial comments:', error);
@@ -187,7 +187,7 @@ const handleGoodCurrentChange = async (page: number) => {
   goodCurrentPage.value = page;
   try {
     const response = await reqGetMovieCommentById(movie.value.id, goodCurrentPage.value, pageSize.value, 0);
-    goodComments.value = response.data.data.list.map(item => item.comment);
+    goodComments.value = response.data.list.map(item => item.comment);
   } catch (error) {
     console.error('Error fetching good comments:', error);
   }
@@ -198,7 +198,7 @@ const handleMediumCurrentChange = async (page: number) => {
   mediumCurrentPage.value = page;
   try {
     const response = await reqGetMovieCommentById(movie.value.id, mediumCurrentPage.value, pageSize.value, 1);
-    mediumComments.value = response.data.data.list.map(item => item.comment);
+    mediumComments.value = response.data.list.map(item => item.comment);
   } catch (error) {
     console.error('Error fetching medium comments:', error);
   }
@@ -209,7 +209,7 @@ const handleBadCurrentChange = async (page: number) => {
   badCurrentPage.value = page;
   try {
     const response = await reqGetMovieCommentById(movie.value.id, badCurrentPage.value, pageSize.value, 2);
-    badComments.value = response.data.data.list.map(item => item.comment);
+    badComments.value = response.data.list.map(item => item.comment);
   } catch (error) {
     console.error('Error fetching bad comments:', error);
   }
