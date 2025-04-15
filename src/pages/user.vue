@@ -17,22 +17,18 @@
     <!-- 侧边栏卡片 -->
     <el-card class="sidebar-card">
       <div class="sidebar-content">
-        <!-- 头像上传组件 -->
-        <el-upload
-            class="avatar-uploader"
-            action="#"
-            :show-file-list="false"
-            :before-upload="beforeAvatarUpload"
-            :http-request="handleAvatarUpload"
-        >
+        <!-- 头像显示 -->
+        <div class="avatar-container">
           <el-image
-              v-if="avatarUrl"
-              :src="avatarUrl"
+              v-if="formData.avatarUrl"
+              :src="formData.avatarUrl"
               class="avatar"
               fit="cover"
           />
-
-        </el-upload>
+          <div v-else class="avatar-placeholder">
+            <el-icon><User /></el-icon>
+          </div>
+        </div>
 
         <!-- 导航菜单 -->
         <el-menu
@@ -70,12 +66,13 @@ import PersonalInfo from '@/components/PersonalInfo.vue';
 import AccountSecurity from '@/components/AccountSecurity.vue'
 import {router} from "@/router";
 import logo from "@/assets/images/logo.jpg";
-import {ElMessage, UploadRequestOptions} from "element-plus";
+import {ElMessage} from "element-plus";
 
 const activeNav = ref('personalInfo')
-const avatarUrl = ref('') // 头像地址
+
 const formData = ref({
-  id: 'wer',
+  avatarUrl: '',
+  id: '',
   name: '',
   movieTypes: [],
   favoriteMovie: '',
@@ -110,27 +107,6 @@ const activeComponent = computed(() => componentMap[activeNav.value])
 
 const switchNav = (key: string) => {
   activeNav.value = key
-}
-
-const beforeAvatarUpload = (file: File) => {
-  const isImage = ['image/jpeg', 'image/png'].includes(file.type)
-  const isLt5M = file.size / 1024 / 1024 < 5
-
-  if (!isImage) ElMessage.error('仅支持 JPG/PNG 格式!')
-  if (!isLt5M) ElMessage.error('图片大小不能超过5MB!')
-  return isImage && isLt5M
-}
-
-const handleAvatarUpload = async (options: UploadRequestOptions) => {
-  const formData = new FormData()
-  formData.append('file', options.file)
-  try {
-    // 调用上传接口
-    avatarUrl.value = URL.createObjectURL(options.file)
-    ElMessage.success('头像上传成功')
-  } catch (error) {
-    ElMessage.error('上传失败')
-  }
 }
 
 const handleUpdate = (updatedData: any) => {
@@ -218,55 +194,37 @@ const handleUpdate = (updatedData: any) => {
   align-items: center;
 }
 
-.avatar-uploader {
+.avatar-container {
   text-align: center;
   margin-bottom: 30px;
+}
+
+/* 头像图片样式 */
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #f0f2f5;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 头像占位符 */
+.avatar-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #f0f2f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #909399;
+  font-size: 24px;
 }
 
 /* 导航菜单 */
 .side-menu {
   border-right: none;
   width: 100%;
-}
-
-/* 头像上传容器 */
-.avatar-uploader {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 20px;
-  border-radius: 50%;
-  background: #f0f2f5;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-/* 头像图片样式 */
-.avatar {
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 50%;
-  background: #f0f2f5;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* 鼠标悬停效果 */
-.avatar-uploader:hover {
-  transform: scale(1.05);
-}
-
-.avatar-uploader:hover {
-  color: #409eff;
-}
-
-/* 上传组件覆盖element样式 */
-:deep(.el-upload) {
-  width: 100%;
-  height: 100%;
-}
-
-:deep(.el-upload:hover) {
-  border-color: #409eff;
 }
 
 /* 内容区卡片 */
