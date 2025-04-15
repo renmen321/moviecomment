@@ -86,17 +86,17 @@
               </div>
             </template>
             <el-table :data="initialComments" style="width: 100%">
-              <el-table-column prop="user" label="用户名" width="120" />
-              <el-table-column prop="movie" label="电影" width="150" />
-              <el-table-column prop="content" label="评论" />
-              <el-table-column prop="sentiment" label="好中坏" width="100">
+              <el-table-column prop="username" label="用户名" width="120" />
+              <el-table-column prop="movieName" label="电影" width="150" />
+              <el-table-column prop="comment" label="评论" />
+              <el-table-column prop="type" label="好中坏" width="100">
                 <template #default="{ row }">
-                  <el-tag :type="getSentimentType(row.sentiment)" effect="dark">
-                    {{ row.sentiment }}
+                  <el-tag :type="getSentimentType(row.type)" effect="dark">
+                    {{ row.type}}
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column prop="time" label="时间" width="120" />
+              <el-table-column prop="date" label="时间" width="120" />
             </el-table>
 
             <!-- 加载更多按钮 -->
@@ -135,7 +135,7 @@
                   :page-size="pageSize"
                   :current-page="currentPage"
                   @current-change="handlePageChange"
-                  :page-count="Math.ceil(totalComments / pageSize)"
+                  :page-count="Math.ceil(statsData.todayComments / pageSize)"
                   layout="prev, pager, next, jumper"
               />
             </div>
@@ -143,24 +143,24 @@
 
           <!-- 评论表格 -->
           <el-table
-              :data="paginatedComments"
+              :data="statsData.comments"
               stripe
               border
               style="width: 100%"
               class="custom-table"
               empty-text="暂无评论数据"
           >
-            <el-table-column prop="user" label="用户名" width="120" />
-            <el-table-column prop="movie" label="电影" width="150" />
-            <el-table-column prop="content" label="评论" />
-            <el-table-column prop="sentiment" label="好中坏" width="100">
+            <el-table-column prop="username" label="用户名" width="120" />
+            <el-table-column prop="movieName" label="电影" width="150" />
+            <el-table-column prop="comment" label="评论" />
+            <el-table-column prop="type" label="好中坏" width="100">
               <template #default="{ row }">
-                <el-tag :type="getSentimentType(row.sentiment)" effect="dark">
-                  {{ row.sentiment }}
+                <el-tag :type="getSentimentType(row.type)" effect="dark">
+                  {{ row.type }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="time" label="时间" width="120" />
+            <el-table-column prop="date" label="时间" width="120" />
           </el-table>
         </div>
       </el-dialog>
@@ -169,9 +169,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref } from 'vue'
+import {reactive, computed, ref, onMounted} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElCard, ElProgress, ElTable, ElTableColumn, ElButton, ElTag } from 'element-plus'
+import {reqGetAdminCommentByDate} from "@/api/test.ts";
 
 const router = useRouter() // 获取 Vue Router 实例
 const route = useRoute() // 获取当前路由信息
@@ -185,94 +186,13 @@ const statsData = reactive({
     bad: 7
   },
   comments: [
-    {
-      user: '用户A',
-      movie: '肖申克的救赎', // 添加电影名称
-      content: '产品体验非常棒，界面美观易用',
-      sentiment: '好评', // 好中坏标签
-      time: '10:30'
-    },
-    {
-      user:  '用户B',
-      movie: '阿甘正传', // 添加电影名称
-      content: '功能基本满足需求，但加载速度有待优化',
-      sentiment: '中评', // 好中坏标签
-      time: '11:45'
-    },
-    {
-      user: '用户A',
-      movie: '肖申克的救赎', // 添加电影名称
-      content: '产品体验非常棒，界面美观易用',
-      sentiment: '好评', // 好中坏标签
-      time: '10:30'
-    },
-    {
-      user:  '用户B',
-      movie: '阿甘正传', // 添加电影名称
-      content: '功能基本满足需求，但加载速度有待优化',
-      sentiment: '中评', // 好中坏标签
-      time: '11:45'
-    },
-    {
-      user: '用户A',
-      movie: '肖申克的救赎', // 添加电影名称
-      content: '产品体验非常棒，界面美观易用',
-      sentiment: '好评', // 好中坏标签
-      time: '10:30'
-    },
-    {
-      user:  '用户B',
-      movie: '阿甘正传', // 添加电影名称
-      content: '功能基本满足需求，但加载速度有待优化',
-      sentiment: '中评', // 好中坏标签
-      time: '11:45'
-    },
-    {
-      user: '用户A',
-      movie: '肖申克的救赎', // 添加电影名称
-      content: '产品体验非常棒，界面美观易用',
-      sentiment: '好评', // 好中坏标签
-      time: '10:30'
-    },
-    {
-      user:  '用户B',
-      movie: '阿甘正传', // 添加电影名称
-      content: '功能基本满足需求，但加载速度有待优化',
-      sentiment: '中评', // 好中坏标签
-      time: '11:45'
-    } ,{
-      user: '用户A',
-      movie: '肖申克的救赎', // 添加电影名称
-      content: '产品体验非常棒，界面美观易用',
-      sentiment: '好评', // 好中坏标签
-      time: '10:30'
-    },
-    {
-      user:  '用户B',
-      movie: '阿甘正传', // 添加电影名称
-      content: '功能基本满足需求，但加载速度有待优化',
-      sentiment: '中评', // 好中坏标签
-      time: '11:45'
-    },
-    {
-      user: '用户A',
-      movie: '肖申克的救赎', // 添加电影名称
-      content: '产品体验非常棒，界面美观易用',
-      sentiment: '好评', // 好中坏标签
-      time: '10:30'
-    },
-    {
-      user:  '用户B',
-      movie: '阿甘正传', // 添加电影名称
-      content: '功能基本满足需求，但加载速度有待优化',
-      sentiment: '中评', // 好中坏标签
-      time: '11:45'
-    }
-
-
   ]
 })
-
+onMounted(async () => {
+  const response = await reqGetAdminCommentByDate('2025-04-15',1,12);
+  statsData.comments=response.data.list;
+  statsData.todayComments=response.data.total;
+})
 const customColors = [
   { color: '#67C23A', percentage: 20 },
   { color: '#E6A23C', percentage: 40 },
@@ -288,22 +208,18 @@ const currentPage = ref(1)
 const pageSize = ref(10) // 每页显示10条
 const totalComments = computed(() => statsData.comments.length)
 
-// 修改后的分页计算属性
-const paginatedComments = computed(() => {
-  const filtered = statsData.comments.filter(comment =>
-      comment.movie.toLowerCase().includes(movieSearch.value.toLowerCase())
-  )
-  const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return filtered.slice(start, end)
-})
+
 
 // 分页事件处理
-const handlePageChange = (val: number) => {
-  currentPage.value = val
+ const handlePageChange = async (val: number) => {
+  currentPage.value = val;
+  const response = await reqGetAdminCommentByDate('2025-04-15',currentPage.value,pageSize.value);
+  statsData.comments=response.data.list;
+  statsData.todayComments=response.data.total;
+
 }
 // 修改初始评论显示为前2条
-const initialComments = computed(() => statsData.comments.slice(0, 2))
+const initialComments = computed(() => statsData.comments.slice(0, 5))
 
 
 // 方法

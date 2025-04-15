@@ -101,7 +101,7 @@ const fetchMovie = async (movie_name) => {
      introduction :movies.value[index].introduction,
      year : movies.value[index].yearOfRelease
    });
-   router.push({name: constantRoutes[4].name});
+   router.push("MovieData");
  }
 
 const initBar = () => {
@@ -237,7 +237,7 @@ const initBar = () => {
 };
 
 onMounted(() => {
-  const savedPage = localStorage.getItem('moviePage');
+  const savedPage = sessionStorage.getItem('moviePage');
   if (savedPage) {
     page.value = parseInt(savedPage, 10);
   }
@@ -248,7 +248,7 @@ onMounted(() => {
 
 
   onBeforeRouteLeave((to, from, next) => {
-    localStorage.setItem('moviePage', page.value.toString());
+    sessionStorage.setItem('moviePage', page.value.toString());
     next();
   });
 });

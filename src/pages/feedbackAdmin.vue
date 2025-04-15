@@ -139,14 +139,14 @@ interface FeedbackItem {
 const feedbackList = reactive<FeedbackItem[]>([
   {
     id: 1,
-    user: 'user_123',
+    username: 'user_123',
     type: '功能建议',
     content: '希望增加夜间模式...wdaaddwwdfafda daad awda fwa w',
     status: 'pending'
   },
   {
     id: 2,
-    user: 'user_123',
+    username: 'user_123',
     type: '功能建议',
     content: '希望增加夜间模式...',
     status: 'pending'

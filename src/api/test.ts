@@ -118,3 +118,20 @@ export const sendCode = (email: string): Promise<{
   message: string;
   ok: boolean;
 }> => request.post(`/user/sendCode?email=${email}`);
+
+//获取管理员看到的评论
+export const reqGetAdminCommentByDate = (date: string,pageNum: number, pageSize: number): Promise<{
+  code: number;
+  message: string;
+  ok: boolean;
+  data: {
+    total: number;
+    list: {
+      username : string;
+      comment: string;
+      type :string;
+      movieName :string;
+      date: string;
+    }[];
+  };
+}> => request.get(`/movies/page/getMovieCommentByDate?date=${date}&pageNum=${pageNum}&pageSize=${pageSize}`);

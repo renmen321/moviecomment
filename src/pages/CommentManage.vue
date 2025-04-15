@@ -105,17 +105,17 @@ const movies = reactive<Movie[]>([
     id: 1,
     title: "肖申克的救赎",
     comments: [
-      { type: 'good', content: '经典之作，百看不厌', user: '影迷A', time: '2025-03-30' },
-      { type: 'bad', content: '节奏太慢看不下去', user: '用户B', time: '2025-03-29' },
-      { type: 'medium', content: '剧情不错但拍摄手法老旧', user: '观众C', time: '2025-03-28' }
+      { type: 'good', content: '经典之作，百看不厌', username: '影迷A', time: '2025-03-30' },
+      { type: 'bad', content: '节奏太慢看不下去', username: '用户B', time: '2025-03-29' },
+      { type: 'medium', content: '剧情不错但拍摄手法老旧', username: '观众C', time: '2025-03-28' }
     ]
   },
   {
     id: 2,
     title: "阿甘正传",
     comments: [
-      { type: 'good', content: '充满人生哲理', user: '哲学爱好者', time: '2025-03-25' },
-      { type: 'good', content: '汤姆·汉克斯演技炸裂', user: '影评人D', time: '2025-03-24' }
+      { type: 'good', content: '充满人生哲理', username: '哲学爱好者', time: '2025-03-25' },
+      { type: 'good', content: '汤姆·汉克斯演技炸裂', username: '影评人D', time: '2025-03-24' }
     ]
   }
 ])

@@ -9,7 +9,12 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
     config => {
-      // 在发送请求之前做些什么
+        const storedUserData = sessionStorage.getItem('userData');
+        if (storedUserData) {
+            const userData = JSON.parse(storedUserData);
+            // 将 token 添加到请求头中
+            config.headers.Authorization = `Bearer ${userData.token}`;
+        }
       return config;
     },
     error => {
