@@ -6,11 +6,10 @@
         <div class="form-group1">
           <el-upload
               class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :auto-upload="true"
               :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-          >
+              :http-request="handleUpload"
+              :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
@@ -58,6 +57,37 @@ const password = ref('');
 const confirmPassword = ref('');
 const passwordError = ref(false);
 const verificationError = ref(false);
+const file = ref<File | null>(null);
+const imageUrl = ref('');
+
+const handleUpload = (options: any) => {
+  const { file: uploadFile, onSuccess, onError } = options;
+  file.value = uploadFile;
+
+  // 读取文件以进行前端回显
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    imageUrl.value = e.target?.result as string;
+  };
+  reader.readAsDataURL(uploadFile);
+
+  // 这里可以添加上传文件到服务器的逻辑，但因为我们希望在注册时一起发送，所以这里只存储文件
+  onSuccess({}, uploadFile);
+};
+
+
+const beforeAvatarUpload = (file: File) => {
+  const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+  const isLt2M = file.size / 1024 / 1024 < 2;
+
+  if (!isJPG) {
+    alert('上传头像图片只能是 JPG 或 PNG 格式!');
+  }
+  if (!isLt2M) {
+    alert('上传头像图片大小不能超过 2MB!');
+  }
+  return isJPG && isLt2M;
+};
 
 // 表单提交验证
 async function validateRegister() {
@@ -72,7 +102,8 @@ async function validateRegister() {
         username: id.value,
         password: password.value,
         email: email.value,
-        code : check.value
+        code : check.value,
+        profilePicture: imageUrl.value
       }
   );
   if (respose.ok) {

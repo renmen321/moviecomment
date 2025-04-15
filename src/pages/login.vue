@@ -43,14 +43,14 @@
       });
       if(response.ok){
         const userData = {
-          name: response.name,
-          email: response.email,
-          profilePicture: response.profilePicture,
-          token: response.token,
+          name: response.data.name,
+          email: response.data.email,
+          profilePicture: response.data.profilePicture,
+          token: response.data.token,
         };
         // 将用户信息存储在 localStorage 中
         localStorage.setItem('userData', JSON.stringify(userData));
-        if(response.admin){
+        if(response.data.admin){
           router.push('/TodayComment');
         }else{
           router.push('/Comment');
