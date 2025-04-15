@@ -1,4 +1,6 @@
 <template>
+  <!-- 引入导航栏 -->
+  <NavBar />
   <div class="container">
     <!-- 电影信息区域 -->
     <div class="movie-info">
@@ -121,7 +123,9 @@
 import {ref, computed, onMounted} from 'vue';
 import {useMovieStore} from "@/store/movieStore.ts";
 import {reqGetMovie, reqGetMovieCommentById, reqPostComment} from "@/api/test.ts";
+import NavBar from "@/components/Navbar.vue";
 const movieStore = useMovieStore();
+
 const postComment = async (id,comment,type) => {
   try {
     const response = await reqPostComment({id,comment,type})

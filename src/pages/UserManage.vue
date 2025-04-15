@@ -19,82 +19,89 @@
           <span class="text">{{ item.text }}</span>
           <div class="hover-indicator"></div>
         </a>
+        <!-- 添加退出按钮 -->
+        <a
+            @click="logout"
+            class="nav-item"
+        >
+          <span class="icon">🚪</span>
+          <span class="text">退出</span>
+          <div class="hover-indicator"></div>
+        </a>
       </div>
     </nav>
 
     <!-- 内容区域 -->
     <main class="content-area">
-      <el-scrollbar class="content-scroll">
-        <div class="user-management">
-          <div class="search-bar">
-            <el-input
-                v-model="searchQuery"
-                placeholder="搜索用户"
-                class="search-input"
-            >
-              <template #prefix>
-                <el-icon><el-icon-search /></el-icon>
-              </template>
-            </el-input>
-          </div>
-
-          <el-table
-              :data="filteredUsers"
-              style="width: 100%"
-              :header-cell-style="{ background: '#f8f8f8', color: '#333' }"
+      <div class="user-management">
+        <div class="search-bar">
+          <el-input
+              v-model="searchQuery"
+              placeholder="搜索用户"
+              class="search-input"
           >
-            <el-table-column label="头像" width="100%">
-              <template #default="scope">
-                <el-image
-                    :src="scope.row.avatarUrl"
-                    class="avatar"
-                    fit="cover"
-                />
-              </template>
-            </el-table-column>
-            <el-table-column prop="username" label="用户名" width="100%" />
-            <el-table-column prop="name" label="姓名" width="100%" />
-            <el-table-column label="喜欢的电影类型" width="240%">
-              <template #default="scope">
-                <div class="movie-tags">
-                  <el-tag
-                      v-for="genre in scope.row.movieTypes"
-                      :key="genre"
-                      type="info"
-                      class="movie-tag"
-                  >
-                    {{ genre }}
-                  </el-tag>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column label="喜欢的电影" width="240%">
-              <template #default="scope">
-                <div class="movies">
-                  <el-tag
-                      v-for="movie in scope.row.favoriteMovies"
-                      :key="movie"
-                      type="info"
-                      class="movie"
-                  >
-                    {{ movie }}
-                  </el-tag>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="slogan" label="个人标签" width="240%" />
-          </el-table>
-
-          <el-pagination
-              background
-              layout="prev, pager, next"
-              :total="users.length"
-              :page-size="pageSize"
-              v-model:current-page="currentPage"
-              class="pagination"
-          />
+            <template #prefix>
+              <el-icon><el-icon-search /></el-icon>
+            </template>
+          </el-input>
         </div>
-      </el-scrollbar>
+
+        <el-table
+            :data="filteredUsers"
+            style="width: 100%"
+            :header-cell-style="{ background: '#f8f8f8', color: '#333' }"
+        >
+          <el-table-column label="头像" width="100%">
+            <template #default="scope">
+              <el-image
+                  :src="scope.row.avatarUrl"
+                  class="avatar"
+                  fit="cover"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column prop="username" label="用户名" width="100%" />
+          <el-table-column prop="name" label="姓名" width="100%" />
+          <el-table-column label="喜欢的电影类型" width="240%">
+            <template #default="scope">
+              <div class="movie-tags">
+                <el-tag
+                    v-for="genre in scope.row.movieTypes"
+                    :key="genre"
+                    type="info"
+                    class="movie-tag"
+                >
+                  {{ genre }}
+                </el-tag>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="喜欢的电影" width="240%">
+            <template #default="scope">
+              <div class="movies">
+                <el-tag
+                    v-for="movie in scope.row.favoriteMovies"
+                    :key="movie"
+                    type="info"
+                    class="movie"
+                >
+                  {{ movie }}
+                </el-tag>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="slogan" label="个人标签" width="250%" />
+        </el-table>
+
+        <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="users.length"
+            :page-size="pageSize"
+            v-model:current-page="currentPage"
+            class="pagination"
+        />
+      </div>
     </main>
   </div>
 </template>
@@ -102,7 +109,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const route = useRoute()
@@ -134,7 +140,7 @@ const menus = [
   { path: '/FeedBackAdmin', icon: '📩', text: '反馈管理' },
   { path: '/MovieManage', icon: '🎬', text: '电影管理' },
   { path: '/CommentManage', icon: '💬', text: '评论管理' },
-  { path: '/Admin', icon: '👤', text: '账号管理' },
+  { path: '/UserManage', icon: '👤', text: '用户管理' },
 ]
 // 计算属性
 const activeMenu = computed(() => route.path)
@@ -151,6 +157,11 @@ const filteredUsers = computed(() => {
 // 分页功能
 const currentPage = ref(1)
 const pageSize = 10
+
+// 退出功能
+const logout = () => {
+  router.push('/login')
+}
 </script>
 
 <style scoped>
@@ -225,39 +236,40 @@ const pageSize = 10
 .content-area {
   padding: 2vw;
   background: #f8f7f7;
+  overflow-y: auto; /* 添加垂直滚动条 */
 }
 
 .user-management {
-  width: 100%;
-  padding: 20px;
+  width: auto;
+  padding: 2vw;
   background: #FFFFFF;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 .search-bar {
-  margin-bottom: 20px;
+  margin-bottom: 3vh;
 }
 
 .search-input {
-  width: 300px;
+  width: 15vw;
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 4.5vw;
+  height: 7vh;
   border-radius: 50%;
 }
 
 .movie-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 2vw;
 }
 
 .movie-tag {
   border-radius: 20px; /* 设置为椭圆样式 */
-  padding: 4px 12px;
+  padding: 1vw 1vh;
   font-size: 12px;
 }
 
@@ -269,12 +281,12 @@ const pageSize = 10
 
 .movie {
   border-radius: 20px; /* 设置为椭圆样式 */
-  padding: 4px 12px;
+  padding: 1vw 1vh;
   font-size: 12px;
 }
 
 .pagination {
-  margin-top: 20px;
+  margin-top: 2vh;
   display: flex;
   justify-content: flex-end;
 }

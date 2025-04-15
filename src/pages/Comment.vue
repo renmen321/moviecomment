@@ -1,15 +1,5 @@
 <template>
-  <nav>
-    <img :src="logo" class="logo" alt="">
-    <div class="nav-links">
-      <button @click="toComment()" class="nav-item">评价</button>
-      <button @click="toMovie()" class="nav-item">影视剧</button>
-      <button @click="toFeedBack()" class="nav-item">反馈</button>
-    </div>
-    <div class="nav-links-right">
-      <button @click="toUser()"  class="nav-item">账号</button>
-    </div>
-  </nav>
+  <NavBar />
   <div class="container">
     <div class="c-box">
       <!-- 标题 -->
@@ -46,23 +36,8 @@
 <script setup lang="ts">
 import {reqGetAiResult} from "@/api/test.ts";
 import {ref} from "vue";
-import logo from "@/assets/images/logo.jpg";
-import {constantRoutes} from "@/router/constantRoutes.ts";
-import {router} from "@/router";
+import NavBar from "@/components/Navbar.vue";
 
-function toMovie() {
-
-  router.push({ name: constantRoutes[1].name });
-}
-function toComment() {
-  router.push({ name: constantRoutes[2].name });
-}
-function toFeedBack() {
-  router.push('/FeedBack');
-}
-function toUser() {
-  router.push('/User');
-}
 
 let result =ref();
 const fetchGetAiResult = async (data :{
@@ -121,56 +96,7 @@ const fetchGetAiResult = async (data :{
   padding: 0;
   margin: 0;
 }
-/* 公共样式 */
-nav {
-  display: flex;
-  align-items: center;
-  padding: 15px 5rem 15px 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  background: rgba(44, 62, 80, 0.2);
-  /* 使用带透明度的背景色 */
-  backdrop-filter: blur(10px);
-  /* 标准语法 */
-  -webkit-backdrop-filter: blur(10px);
-  /* Safari 兼容 */
-  position: fixed;
-  width: 100vw;
-  z-index: 10;
-}
 
-.logo {
-  width: 100px;
-  /* 根据需要调整图片宽度 */
-  height: auto;
-  /* 保持图片比例 */
-  margin-right: 50px;
-  user-select: none; /* 禁止选中 */
-}
-
-.nav-links {
-  display: flex;
-  gap: 30px;
-}
-
-.nav-item {
-  background: none;
-  color: white;
-  border: none;
-  border-bottom: 1px solid skyblue;
-  text-decoration: none;
-  padding: 4px 4px;
-  font-size: 1.2rem;
-  margin: 0 5px;
-  transition: all 0.3s;
-  user-select: none; /* 禁止选中 */
-}
-.nav-links-right {
-  margin-left: 64vw; /* 将按钮推到最右侧 */
-}
-.nav-item:hover {
-  color: #3498db;
-  background: rgba(255, 255, 255, 0.1);
-}
 /* 基础布局 - 基于视口单位 */
 .container {
   border-radius: 1.5vw;

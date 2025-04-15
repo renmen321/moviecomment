@@ -19,6 +19,15 @@
           <span class="text">{{ item.text }}</span>
           <div class="hover-indicator"></div>
         </a>
+        <!-- 添加退出按钮 -->
+        <a
+            @click="logout"
+            class="nav-item"
+        >
+          <span class="icon">🚪</span>
+          <span class="text">退出</span>
+          <div class="hover-indicator"></div>
+        </a>
       </div>
     </nav>
 
@@ -159,7 +168,7 @@ const menus = [
   { path: '/FeedBackAdmin', icon: '📩', text: '反馈管理' },
   { path: '/MovieManage', icon: '🎬', text: '电影管理' },
   { path: '/CommentManage', icon: '💬', text: '评论管理' },
-  { path: '/Admin', icon: '👤', text: '账号管理' },
+  { path: '/UserManage', icon: '👤', text: '用户管理' },
 ]
 
 // 计算属性
@@ -193,6 +202,10 @@ const markResolved = (item: FeedbackItem) => {
     target.status = 'resolved'
     ElMessage.success('状态更新成功')
   }
+}
+// 退出功能
+const logout = () => {
+  router.push('/login')
 }
 </script>
 
