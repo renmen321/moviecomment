@@ -275,8 +275,8 @@ nav {
 
 /* 头像图片样式 */
 .avatar {
-  width: 4vw;
-  height: 8vh;
+  width: 9vw;
+  height: 14vh;
   border-radius: 50%;
   background: #f0f2f5;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
