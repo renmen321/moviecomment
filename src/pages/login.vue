@@ -37,30 +37,28 @@
     const password = ref('');
 
    async function validateLogin() {
-      // const response= await login({
-      //   username: id.value,
-      //   password: password.value,
-      // });
-      // if(response.ok){
-      //   const userData = {
-      //     name: response.data.name,
-      //     email: response.data.email,
-      //     profilePicture: response.data.profilePicture,
-      //     token: response.data.token,
-      //   };
-      //   // 将用户信息存储在 localStorage 中
-      //   localStorage.setItem('userData', JSON.stringify(userData));
-      //   if(response.data.admin){
-      //     router.push('/TodayComment');
-      //   }else{
-      //     router.push('/Comment');
-      //   }
-      // }else{
-      //   alert(response.message);
-      // }
-       if(id.value=== 'admin' && password.value === 'admin'){
-         router.push('/TodayComment');
+       const response= await login({
+         username: id.value,
+         password: password.value,
+       });
+       if(response.ok){
+         const userData = {
+           name: response.data.name,
+           email: response.data.email,
+          profilePicture: response.data.profilePicture,
+           token: response.data.token,
+         };
+         // 将用户信息存储在 localStorage 中
+         localStorage.setItem('userData', JSON.stringify(userData));
+       if(response.data.admin){
+          router.push('/TodayComment');
+       }else{
+           router.push('/Comment');
+         }
+       }else{
+         alert(response.message);
        }
+
     }
 
     function reset() {
