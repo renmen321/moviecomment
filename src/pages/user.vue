@@ -92,7 +92,7 @@ const comments = ref([
     id: 1,
     movieTitle: '电影A',
     date: '2023-10-01 12:34:56',
-    content: '这是一部非常棒的电影！'
+    content: '这是一部非常棒的电影！这是一部非常棒的电影！这是一部非常棒的电影！'
   },
   {
     id: 2,

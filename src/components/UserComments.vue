@@ -16,26 +16,26 @@
       <el-table-column
           prop="movieTitle"
           label="影视作品"
-          width="220"
+          width="100%"
           align="center"
           show-overflow-tooltip
       />
       <el-table-column
           prop="date"
           label="评论时间"
-          width="200"
+          width="100%"
           align="center"
           show-overflow-tooltip
       />
       <el-table-column
           prop="content"
           label="评论内容"
-          min-width="360"
+          min-width="100%"
           show-overflow-tooltip
       />
       <el-table-column
           label="操作"
-          width="120"
+          width="100%"
           align="center"
       >
         <template #default="{ row }">

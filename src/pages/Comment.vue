@@ -63,6 +63,7 @@ function toFeedBack() {
 function toUser() {
   router.push('/User');
 }
+
 let result =ref();
 const fetchGetAiResult = async (data :{
   sentence: string;
@@ -175,7 +176,7 @@ nav {
   border-radius: 1.5vw;
   box-shadow: 0 0.5vh 1.5vh rgba(0, 0, 0, 0.1);
   padding: 10vh 0 0 0;
-width: 100vw;
+  width: 100vw;
   height: 90vh;
   display: flex;
   justify-content: center;
