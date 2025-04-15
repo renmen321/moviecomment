@@ -222,6 +222,10 @@ const handleDeleteComment = (id: number) => {
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 24px;
+  background-image: url('@/assets/images/background6.jpg'); /* 添加背景图片 */
+  background-size: cover; /* 使背景图片覆盖整个容器 */
+  background-position: center; /* 将背景图片居中 */
+  background-repeat: no-repeat; /* 防止背景图片重复 */
 }
 
 /* 侧边栏卡片 */
