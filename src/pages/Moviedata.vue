@@ -1,16 +1,7 @@
 <template>
-  <nav>
-    <img :src="logo" class="logo" alt="">
-    <div class="nav-links">
-      <button @click="toComment()" class="nav-item">评价</button>
-      <button @click="toMovie()" class="nav-item">影视剧</button>
-      <button @click="toFeedBack()" class="nav-item">反馈</button>
-    </div>
-    <div class="nav-links-right">
-      <button @click="toUser()"  class="nav-item">账号</button>
-    </div>
-  </nav>
-  <div class="container"  >
+  <!-- 引入导航栏 -->
+  <NavBar />
+  <div class="container">
     <!-- 电影信息区域 -->
     <div class="movie-info">
       <div class="poster-section">
@@ -132,10 +123,9 @@
 import {ref, computed, onMounted} from 'vue';
 import {useMovieStore} from "@/store/movieStore.ts";
 import {reqGetMovie, reqGetMovieCommentById, reqPostComment} from "@/api/test.ts";
-import logo from "@/assets/images/logo.jpg";
-import {router} from "@/router";
-import {constantRoutes} from "@/router/constantRoutes.ts";
+import NavBar from "@/components/Navbar.vue";
 const movieStore = useMovieStore();
+
 const postComment = async (id,comment,type) => {
   try {
     const response = await reqPostComment({id,comment,type})

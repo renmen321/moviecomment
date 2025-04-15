@@ -74,3 +74,4 @@ export const constantRoutes: RouteRecordRaw[] = [
   component: () => import("@/pages/Model.vue"),
   }
 ];
+

@@ -1,15 +1,5 @@
 <template>
-  <nav>
-    <img :src="logo" class="logo" alt="">
-    <div class="nav-links">
-      <button @click="toComment()" class="nav-item">评价</button>
-      <button @click="toMovie()" class="nav-item">影视剧</button>
-      <button @click="toFeedBack()" class="nav-item">反馈</button>
-    </div>
-    <div class="nav-links-right">
-      <button @click="toUser()"  class="nav-item">账号</button>
-    </div>
-  </nav>
+  <NavBar />
   <div class="container">
     <!-- 左边影视内容 -->
     <div class="media-section">
@@ -47,6 +37,7 @@ import {onBeforeRouteLeave, useRouter} from "vue-router";
 import {reqGetMovie, reqGetMovies} from "@/api/test";
 import {useMovieStore} from "@/store/movieStore.js";
 import logo from "@/assets/images/logo.jpg";
+import NavBar from "@/components/Navbar.vue";
 const movieStore = useMovieStore();
 const movies = ref([]);
 const router = useRouter();

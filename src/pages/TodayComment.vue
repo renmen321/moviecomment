@@ -20,6 +20,15 @@
           <span class="text">{{ item.text }}</span> <!-- 显示菜单项的文字 -->
           <div class="hover-indicator"></div> <!-- 用于指示鼠标悬停效果的占位符 -->
         </a>
+        <!-- 添加退出按钮 -->
+        <a
+            @click="logout"
+            class="nav-item"
+        >
+          <span class="icon">🚪</span>
+          <span class="text">退出</span>
+          <div class="hover-indicator"></div>
+        </a>
       </div>
     </nav>
 
@@ -247,10 +256,14 @@ const menus = [
   { path: '/FeedBackAdmin', icon: '📩', text: '反馈管理' },
   { path: '/MovieManage', icon: '🎬', text: '电影管理' },
   { path: '/CommentManage', icon: '💬', text: '评论管理' },
-  { path: '/Admin', icon: '👤', text: '账号管理' },
+  { path: '/UserManage', icon: '👤', text: '用户管理' },
 ]
 // 计算属性：获取当前激活的菜单路径
 const activeMenu = computed(() => route.path)
+// 退出功能
+const logout = () => {
+  router.push('/login')
+}
 </script>
 
 <style scoped>

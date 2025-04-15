@@ -1,16 +1,6 @@
 <template>
   <!-- 全局导航栏 -->
-  <nav class="global-nav">
-    <img :src="logo" class="logo" alt="">
-    <div class="nav-links">
-      <button @click="toComment()" class="nav-item">评价</button>
-      <button @click="toMovie()" class="nav-item">影视剧</button>
-      <button @click="toFeedBack()" class="nav-item">反馈</button>
-    </div>
-    <div class="nav-links-right">
-      <button @click="toUser()" class="nav-item">账号</button>
-    </div>
-  </nav>
+  <NavBar />
 
   <!-- 主体内容容器 -->
   <div class="account-container">
@@ -65,13 +55,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed , onMounted } from 'vue'
 import { User, Lock, Edit } from '@element-plus/icons-vue'
 import PersonalInfo from '@/components/PersonalInfo.vue';
 import AccountSecurity from '@/components/AccountSecurity.vue'
 import UserComments from '@/components/UserComments.vue'
-import { router } from "@/router";
-import logo from "@/assets/images/logo.jpg";
+import NavBar from "@/components/Navbar.vue";
+import { useRouter } from 'vue-router';
+
+
+const name = ref('');
+const email = ref('');
+const profilePicture = ref('');
+
+onMounted(() => {
+  const userData = localStorage.getItem('userData');
+  if (userData) {
+    const parsedData = JSON.parse(userData);
+    name.value = parsedData.name;
+    email.value = parsedData.email;
+    profilePicture.value = parsedData.profilePicture;
+  }
+});
 
 const activeNav = ref('personalInfo')
 
@@ -185,21 +190,6 @@ const comments = ref([
   }
 ])
 
-function toMovie() {
-  router.push('/Movie');
-}
-
-function toComment() {
-  router.push('/Comment');
-}
-
-function toFeedBack() {
-  router.push('/FeedBack');
-}
-
-function toUser() {
-  router.push('/User');
-}
 
 // 组件映射
 const componentMap = {
@@ -223,59 +213,6 @@ const handleDeleteComment = (id: number) => {
 </script>
 
 <style scoped>
-/* 公共样式 */
-.global-nav {
-  display: flex;
-  align-items: center;
-  padding: 15px 5rem 15px 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  background: rgba(44, 62, 80, 0.2);
-  /* 使用带透明度的背景色 */
-  backdrop-filter: blur(10px);
-  /* 标准语法 */
-  -webkit-backdrop-filter: blur(10px);
-  /* Safari 兼容 */
-  position: fixed;
-  width: 100%;
-  z-index: 1000;
-  top: 0;
-}
-
-.logo {
-  width: 100px;
-  /* 根据需要调整图片宽度 */
-  height: auto;
-  /* 保持图片比例 */
-  margin-right: 50px;
-  user-select: none; /* 禁止选中 */
-}
-
-.nav-links {
-  display: flex;
-  gap: 30px;
-}
-
-.nav-item {
-  background: none;
-  color: white;
-  border: none;
-  border-bottom: 1px solid skyblue;
-  text-decoration: none;
-  padding: 4px 4px;
-  font-size: 1.2rem;
-  margin: 0 5px;
-  transition: all 0.3s;
-  user-select: none; /* 禁止选中 */
-}
-
-.nav-links-right {
-  margin-left: 64vw; /* 将按钮推到最右侧 */
-}
-
-.nav-item:hover {
-  color: #3498db;
-  background: rgba(255, 255, 255, 0.1);
-}
 
 /* 主体布局 */
 .account-container {
@@ -285,6 +222,10 @@ const handleDeleteComment = (id: number) => {
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 24px;
+  background-image: url('@/assets/images/background6.jpg'); /* 添加背景图片 */
+  background-size: cover; /* 使背景图片覆盖整个容器 */
+  background-position: center; /* 将背景图片居中 */
+  background-repeat: no-repeat; /* 防止背景图片重复 */
 }
 
 /* 侧边栏卡片 */

@@ -53,12 +53,12 @@
         sessionStorage.setItem('userData', JSON.stringify(userData));
         if(response.data.admin){
           router.push('/TodayComment');
-        }else{
-          router.push('/Comment');
-        }
-      }else{
-        alert(response.message);
-      }
+       }else{
+           router.push('/Comment');
+         }
+       }else{
+         alert(response.message);
+       }
 
     }
 
