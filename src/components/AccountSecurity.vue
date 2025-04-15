@@ -1,429 +1,306 @@
 <template>
-  <div class="personal-settings">
-    <div class="header-wrapper">
-      <h2>个人信息</h2>
-      <el-button
-          type="primary"
-          size="small"
-          @click="toggleEditMode"
-      >
-        {{ isEditing ? '取消编辑' : '编辑信息' }}
-      </el-button>
-    </div>
+  <div class="security-container">
+    <div class="security-card">
+      <h2 class="header-title">安全设置</h2>
 
-    <!-- 头像模块（仅在编辑模式显示） -->
-    <!-- 修改后的头像上传组件 -->
-    <div class="info-item" v-if="isEditing">
-      <div class="label">头像：</div>
-      <div class="avatar-container">
-        <el-upload
-            class="avatar-uploader"
-            action="/api/upload"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-            :auto-upload="true"
-            accept="image/jpeg,image/png"
-        >
-          <template #trigger> <!-- 新增触发插槽 -->
-            <div class="upload-wrapper">
-              <div v-if="localData.avatar" class="avatar-preview">
-                <img :src="localData.avatar" class="preview-avatar">
-                <div class="hover-mask">
-                  <i class="el-icon-upload"></i>
+      <!-- 邮箱设置 -->
+      <div class="setting-item">
+        <div class="setting-header">
+          <div class="info-group">
+            <span class="main-label">邮箱</span>&nbsp;
+            <span class="sub-label">已绑定：{{ formData.email || '未设置' }}</span>
+          </div>
+          <el-button
+              type="primary"
+              size="small"
+              @click="showEmailEdit = !showEmailEdit"
+          >
+            {{ showEmailEdit ? '取消' : '更换' }}
+          </el-button>
+        </div>
+
+        <transition name="el-zoom-in-top">
+          <div v-show="showEmailEdit" class="edit-panel">
+            <el-form class="center-form">
+              <el-form-item label="新邮箱：" label-width="100px">
+                <el-input
+                    v-model="emailForm.newEmail"
+                    placeholder="请输入新邮箱地址"
+                    class="centered-input"
+                />
+              </el-form-item>
+              <el-form-item label="验证码：" label-width="100px">
+                <div class="code-group">
+                  <el-input
+                      v-model="emailForm.code"
+                      placeholder="请输入验证码"
+                      class="code-input"
+                  />
+                  <el-button
+                      type="primary"
+                      :disabled="emailCodeCountdown > 0"
+                      @click="getEmailCode"
+                  >
+                    {{ emailCodeCountdown > 0 ? `${emailCodeCountdown}秒后获取` : '获取验证码' }}
+                  </el-button>
                 </div>
+              </el-form-item>
+              <div class="action-buttons">
+                <el-button @click="showEmailEdit = false">取消</el-button>
+                <el-button type="primary" @click="saveEmail">确定</el-button>
               </div>
-              <div v-else class="upload-button">
-                <i class="el-icon-plus"></i>
+            </el-form>
+          </div>
+        </transition>
+      </div>
+
+      <!-- 密码设置 -->
+      <div class="setting-item">
+        <div class="setting-header">
+          <div class="info-group">
+            <span class="main-label">密码</span>&nbsp;
+            <span class="sub-label">******</span>
+          </div>
+          <el-button
+              type="primary"
+              size="small"
+              @click="showPwdEdit = !showPwdEdit"
+          >
+            {{ showPwdEdit ? '取消' : '修改' }}
+          </el-button>
+        </div>
+
+        <transition name="el-zoom-in-top">
+          <div v-show="showPwdEdit" class="edit-panel">
+            <el-form class="center-form">
+              <el-form-item label="原密码：" label-width="100px">
+                <el-input
+                    type="password"
+                    v-model="pwdForm.oldPassword"
+                    placeholder="请输入原密码"
+                    show-password
+                    class="centered-input"
+                />
+              </el-form-item>
+              <el-form-item label="新密码：" label-width="100px">
+                <el-input
+                    type="password"
+                    v-model="pwdForm.newPassword"
+                    placeholder="8-20位字符，包含字母和数字"
+                    show-password
+                    class="centered-input"
+                />
+              </el-form-item>
+              <el-form-item label="确认密码：" label-width="100px">
+                <el-input
+                    type="password"
+                    v-model="pwdForm.confirmPassword"
+                    placeholder="请再次输入新密码"
+                    show-password
+                    class="centered-input"
+                />
+              </el-form-item>
+              <div class="action-buttons">
+                <el-button @click="showPwdEdit = false">取消</el-button>
+                <el-button type="primary" @click="savePassword">确定</el-button>
               </div>
-            </div>
-          </template>
-        </el-upload>
+            </el-form>
+          </div>
+        </transition>
       </div>
-    </div>
-
-    <!-- 用户名 -->
-    <div class="info-item">
-      <div class="label">用户名：</div>
-      <div class="value">{{ formData.id || '未设置' }}</div>
-    </div>
-
-    <!-- 姓名 -->
-    <div class="info-item">
-      <div class="label">姓名：</div>
-      <div v-if="!isEditing" class="value">{{ formData.name || '未设置' }}</div>
-      <el-input
-          v-else
-          v-model="localData.name"
-          placeholder="请输入姓名"
-          class="edit-field"
-      />
-    </div>
-
-    <!-- 电影类型 -->
-    <div class="info-item">
-      <div class="label">电影类型：</div>
-      <div v-if="!isEditing" class="value">
-        {{ formData.movieTypes.join('、') || '未选择' }}
-      </div>
-      <el-select
-          v-else
-          v-model="localData.movieTypes"
-          multiple
-          placeholder="选择喜欢的类型"
-          class="edit-field"
-      >
-        <el-option
-            v-for="genre in movieGenres"
-            :key="genre"
-            :label="genre"
-            :value="genre"
-        />
-      </el-select>
-    </div>
-
-    <!-- 喜欢的电影 -->
-    <div class="info-item">
-      <div class="label">喜欢的电影：</div>
-      <div v-if="!isEditing" class="value">
-        {{ formData.favoriteMovie || '未设置' }}
-      </div>
-      <el-input
-          v-else
-          v-model="localData.favoriteMovie"
-          placeholder="请输入电影名称"
-          class="edit-field"
-      />
-    </div>
-
-    <!-- 个人标语 -->
-    <div class="info-item">
-      <div class="label">个人标语：</div>
-      <div v-if="!isEditing" class="value">
-        {{ formData.slogan || '未设置个人标语' }}
-      </div>
-      <el-input
-          v-else
-          v-model="localData.slogan"
-          type="textarea"
-          :rows="2"
-          placeholder="请输入个人标语（最多30字）"
-          maxlength="30"
-          show-word-limit
-          class="edit-field"
-      />
-    </div>
-
-    <!-- 操作按钮 -->
-    <div v-if="isEditing" class="action-bar">
-      <el-button @click="cancelEdit">取消</el-button>
-      <el-button type="primary" @click="saveChanges">保存</el-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 
+// 定义 props 接收初始数据
 const props = defineProps<{
   formData: {
-    id: string
-    name: string
-    movieTypes: string[]
-    favoriteMovie: string
-    slogan: string
-    avatar: string
+    email: string
+    password: string // 假设 formData 中包含 password 字段
   }
 }>()
 
+// 定义 emit 事件
 const emit = defineEmits(['update'])
 
 // 编辑状态
-const isEditing = ref(false)
+const showEmailEdit = ref(false)
+const showPwdEdit = ref(false)
 
-// 本地数据
-const localData = reactive({
-  id: '',
-  name: '',
-  movieTypes: [] as string[],
-  favoriteMovie: '',
-  slogan: '',
-  avatar: ''
+// 临时数据
+const emailForm = reactive({
+  newEmail: '',
+  code: ''
 })
 
-// 初始化数据
-const initData = () => {
-  Object.assign(localData, {
-    id: props.formData.id,
-    name: props.formData.name,
-    movieTypes: [...props.formData.movieTypes],
-    favoriteMovie: props.formData.favoriteMovie,
-    slogan: props.formData.slogan,
-    avatar: props.formData.avatar
+const pwdForm = reactive({
+  oldPassword: '', // 增加原密码字段
+  newPassword: '',
+  confirmPassword: ''
+})
+
+// 数据初始化
+watch(showEmailEdit, val => val && (emailForm.newEmail = props.formData.email))
+
+// 获取邮箱验证码
+const getEmailCode = () => {
+  if (!/^\w+@[a-z0-9]+\.[a-z]{2,4}$/i.test(emailForm.newEmail)) {
+    ElMessage.error('请输入有效的邮箱地址')
+    return
+  }
+  emailCodeCountdown.value = 60
+  const timer = setInterval(() => {
+    emailCodeCountdown.value--
+    if (emailCodeCountdown.value <= 0) clearInterval(timer)
+  }, 1000)
+}
+
+// 保存邮箱
+const saveEmail = () => {
+  if (!emailForm.code) {
+    ElMessage.error('请输入验证码')
+    return
+  }
+  ElMessage.success('邮箱修改成功')
+  showEmailEdit.value = false
+  emitUpdate('email', emailForm.newEmail)
+}
+
+// 保存密码
+const savePassword = () => {
+  if (pwdForm.oldPassword !== props.formData.password) {
+    ElMessage.error('原密码输入错误')
+    return
+  }
+  if (pwdForm.newPassword !== pwdForm.confirmPassword) {
+    ElMessage.error('两次输入的密码不一致')
+    return
+  }
+  if (!/(?=.*[a-zA-Z])(?=.*\d).{8,20}/.test(pwdForm.newPassword)) {
+    ElMessage.error('密码需包含字母和数字，长度8-20位')
+    return
+  }
+  ElMessage.success('密码修改成功')
+  showPwdEdit.value = false
+  emitUpdate('password', pwdForm.newPassword)
+}
+
+// 通用更新方法
+const emitUpdate = (key: string, value: any) => {
+  emit('update', {
+    ...props.formData,
+    [key]: value
   })
 }
 
-// 电影类型选项
-const movieGenres = [
-  '动作', '喜剧', '科幻', '爱情', '悬疑',
-  '惊悚', '动画', '战争', '纪录片'
-]
-
-// 切换编辑模式
-const toggleEditMode = () => {
-  isEditing.value = !isEditing.value
-  isEditing.value ? initData() : cancelEdit()
-}
-
-// 保存修改
-const saveChanges = () => {
-  const submitData = {
-    ...localData,
-    name: localData.name.trim(),
-    slogan: localData.slogan.trim()
-  }
-
-  if (!submitData.name) {
-    ElMessage.error('姓名不能为空')
-    return
-  }
-
-  if (submitData.slogan.length > 30) {
-    ElMessage.error('标语长度不能超过30个字符')
-    return
-  }
-
-  emit('update', submitData)
-  ElMessage.success('保存成功')
-  isEditing.value = false // 自动返回非编辑模式
-}
-
-// 取消编辑
-const cancelEdit = () => {
-  initData()
-  isEditing.value = false
-}
-
-// 处理头像上传
-const handleAvatarSuccess = (res: any, file: File) => {
-  localData.avatar = URL.createObjectURL(file)
-  ElMessage.success('头像上传成功')
-}
-
-// 处理头像上传错误
-const handleAvatarError = (err: any, file: File, fileList: File[]) => {
-  ElMessage.error('头像上传失败')
-}
-
-// 上传验证
-const beforeAvatarUpload = (file: File) => {
-  console.log('Selected file:', file) // 添加日志
-  const isImage = ['image/jpeg', 'image/png'].includes(file.type)
-  const isLt2M = file.size / 1024 / 1024 < 2
-
-  if (!isImage) {
-    ElMessage.error('只支持JPG/PNG格式!')
-    return false
-  }
-  if (!isLt2M) {
-    ElMessage.error('图片大小不能超过2MB!')
-    return false
-  }
-
-  return isImage && isLt2M
-}
-
-// 监听数据变化
-watch(
-    () => props.formData,
-    () => initData(),
-    { deep: true, immediate: true }
-)
+// 验证码倒计时
+const emailCodeCountdown = ref(0)
 </script>
 
 <style scoped>
-.personal-settings {
-  width: 640px;
+.security-container {
+  max-width: 800px;
   margin: 20px auto;
-  padding: 32px 40px;
-  background: #FFFFFF;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 0 20px;
 }
 
-.header-wrapper {
+.security-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+}
+
+.header-title {
+  font-size: 20px;
+  color: #303133;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.setting-item {
+  padding: 24px 0;
+  &:not(:last-child) {
+    border-bottom: 1px solid #f0f2f5;
+  }
+}
+
+.setting-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #EBEEF5;
-}
-.upload-wrapper {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  cursor: pointer;
 }
 
-.avatar-preview {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px dashed #dcdfe6;
-  transition: border-color 0.3s;
+.info-group {
+  .main-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #606266;
+    margin-bottom: 6px;
+  }
+  .sub-label {
+    font-size: 14px;
+    color: #909399;
+  }
 }
 
-.avatar-preview:hover {
-  border-color: #409eff;
+.edit-panel {
+  margin-top: 20px;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 8px;
 }
 
-.preview-avatar {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.center-form {
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-.hover-mask {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+.code-group {
   display: flex;
-  align-items: center;
+  gap: 10px;
+  .el-button {
+    width: 120px;
+    flex-shrink: 0;
+  }
+}
+
+.centered-input {
+  width: 100%;
+}
+
+.action-buttons {
+  display: flex;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s;
+  gap: 15px;
+  margin-top: 25px;
 }
 
-.avatar-preview:hover .hover-mask {
-  opacity: 1;
-}
+@media (max-width: 768px) {
+  .security-card {
+    padding: 20px;
+    border-radius: 8px;
+  }
 
-.hover-mask i {
-  color: #fff;
-  font-size: 24px;
-}
+  .setting-item {
+    padding: 20px 0;
+  }
 
-.upload-button {
-  width: 100%;
-  height: 100%;
-  border: 2px dashed #dcdfe6;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  color: #8c939d;
-  transition: all 0.3s;
-}
+  .code-group {
+    flex-direction: column;
+    .el-button {
+      width: 100%;
+    }
+  }
 
-.upload-button:hover {
-  border-color: #409eff;
-  color: #409eff;
-}
-.info-item {
-  display: flex;
-  align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid #F0F2F5;
-}
-
-.label {
-  width: 100px;
-  color: #606266;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
-.value {
-  flex: 1;
-  color: #303133;
-  font-size: 14px;
-}
-
-.avatar-container {
-  display: flex;
-  align-items: center;
-  height: 80px;
-}
-
-.current-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #F0F2F5;
-}
-
-.default-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #F0F2F5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #909399;
-  font-size: 24px;
-}
-
-.avatar-uploader {
-  position: relative;
-  cursor: pointer;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 2px dashed #d9d9d9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.3s;
-}
-
-.avatar-uploader:hover {
-  border-color: #409EFF;
-}
-
-.avatar-uploader .avatar-upload-button {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #8c939d;
-}
-
-.preview-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-
-
-.edit-field {
-  width: 100%;
-  max-width: 400px;
-}
-
-.action-bar {
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid #EBEEF5;
-  display: flex;
-  justify-content: center; /* 居中对齐按钮 */
-  gap: 16px;
-}
-
-.el-input ::v-deep .el-input__inner,
-.el-textarea ::v-deep .el-textarea__inner {
-  border-radius: 4px;
+  .header-title {
+    font-size: 18px;
+    margin-bottom: 25px;
+  }
 }
 </style>

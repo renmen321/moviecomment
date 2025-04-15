@@ -44,6 +44,10 @@
             <el-icon><Lock /></el-icon>
             <span>安全设置</span>
           </el-menu-item>
+          <el-menu-item index="userComments">
+            <el-icon><Edit /></el-icon>
+            <span>历史评论</span>
+          </el-menu-item>
         </el-menu>
       </div>
     </el-card>
@@ -53,7 +57,8 @@
       <component
           :is="activeComponent"
           :form-data="formData"
-          @update="handleUpdate"
+          :comments="comments"
+          @delete="handleDeleteComment"
       />
     </el-card>
   </div>
@@ -61,12 +66,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { User, Lock } from '@element-plus/icons-vue'
+import { User, Lock, Edit } from '@element-plus/icons-vue'
 import PersonalInfo from '@/components/PersonalInfo.vue';
 import AccountSecurity from '@/components/AccountSecurity.vue'
-import {router} from "@/router";
+import UserComments from '@/components/UserComments.vue'
+import { router } from "@/router";
 import logo from "@/assets/images/logo.jpg";
-import {ElMessage} from "element-plus";
 
 const activeNav = ref('personalInfo')
 
@@ -80,6 +85,105 @@ const formData = ref({
   newPassword: '',
   newEmail: ''
 })
+
+// 假设评论数据从某个 API 获取
+const comments = ref([
+  {
+    id: 1,
+    movieTitle: '电影A',
+    date: '2023-10-01 12:34:56',
+    content: '这是一部非常棒的电影！'
+  },
+  {
+    id: 2,
+    movieTitle: '电影B',
+    date: '2023-09-25 09:12:34',
+    content: '剧情很吸引人，值得一看。'
+  },
+  {
+    id: 3,
+    movieTitle: '电影A',
+    date: '2023-10-01 12:34:56',
+    content: '这是一部非常棒的电影！'
+  },
+  {
+    id: 4,
+    movieTitle: '电影B',
+    date: '2023-09-25 09:12:34',
+    content: '剧情很吸引人，值得一看。'
+  },
+  {
+    id: 5,
+    movieTitle: '电影A',
+    date: '2023-10-01 12:34:56',
+    content: '这是一部非常棒的电影！'
+  },
+  {
+    id: 6,
+    movieTitle: '电影B',
+    date: '2023-09-25 09:12:34',
+    content: '剧情很吸引人，值得一看。'
+  },
+  {
+    id: 7,
+    movieTitle: '电影A',
+    date: '2023-10-01 12:34:56',
+    content: '这是一部非常棒的电影！'
+  },
+  {
+    id: 8,
+    movieTitle: '电影B',
+    date: '2023-09-25 09:12:34',
+    content: '剧情很吸引人，值得一看。'
+  },{
+    id: 9,
+    movieTitle: '电影A',
+    date: '2023-10-01 12:34:56',
+    content: '这是一部非常棒的电影！'
+  },
+  {
+    id: 10,
+    movieTitle: '电影B',
+    date: '2023-09-25 09:12:34',
+    content: '剧情很吸引人，值得一看。'
+  },
+  {
+    id: 11,
+    movieTitle: '电影A',
+    date: '2023-10-01 12:34:56',
+    content: '这是一部非常棒的电影！'
+  },
+  {
+    id: 12,
+    movieTitle: '电影B',
+    date: '2023-09-25 09:12:34',
+    content: '剧情很吸引人，值得一看。'
+  },
+  {
+    id: 13,
+    movieTitle: '电影A',
+    date: '2023-10-01 12:34:56',
+    content: '这是一部非常棒的电影！'
+  },
+  {
+    id: 14,
+    movieTitle: '电影B',
+    date: '2023-09-25 09:12:34',
+    content: '剧情很吸引人，值得一看。'
+  },
+  {
+    id: 15,
+    movieTitle: '电影A',
+    date: '2023-10-01 12:34:56',
+    content: '这是一部非常棒的电影！'
+  },
+  {
+    id: 16,
+    movieTitle: '电影B',
+    date: '2023-09-25 09:12:34',
+    content: '剧情很吸引人，值得一看。'
+  }
+])
 
 function toMovie() {
   router.push('/Movie');
@@ -100,7 +204,8 @@ function toUser() {
 // 组件映射
 const componentMap = {
   personalInfo: PersonalInfo,
-  accountSecurity: AccountSecurity
+  accountSecurity: AccountSecurity,
+  userComments: UserComments // 添加 UserComments 组件
 }
 
 const activeComponent = computed(() => componentMap[activeNav.value])
@@ -109,8 +214,11 @@ const switchNav = (key: string) => {
   activeNav.value = key
 }
 
-const handleUpdate = (updatedData: any) => {
-  Object.assign(formData.value, updatedData) // 同步更新数据
+const handleDeleteComment = (id: number) => {
+  const index = comments.value.findIndex(comment => comment.id === id)
+  if (index !== -1) {
+    comments.value.splice(index, 1)
+  }
 }
 </script>
 

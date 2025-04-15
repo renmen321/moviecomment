@@ -189,11 +189,6 @@ const saveChanges = () => {
     return
   }
 
-  if (submitData.slogan.length > 30) {
-    ElMessage.error('标语长度不能超过30个字符')
-    return
-  }
-
   emit('update', submitData)
   ElMessage.success('保存成功')
   isEditing.value = false
