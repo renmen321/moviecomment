@@ -92,10 +92,6 @@ const fetchGetAiResult = async (data :{
 </script>
 
 <style scoped>
-* {
-  padding: 0;
-  margin: 0;
-}
 
 /* 基础布局 - 基于视口单位 */
 .container {
