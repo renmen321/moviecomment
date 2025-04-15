@@ -24,11 +24,12 @@
             :http-request="handleAvatarUpload"
         >
           <el-image
-              v-if="formData.avatarUrl"
-              :src="formData.avatarUrl"
+              v-if="localData.avatarUrl"
+              :src="localData.avatarUrl"
               class="avatar"
               fit="cover"
           />
+
 
         </el-upload>
       </div>
