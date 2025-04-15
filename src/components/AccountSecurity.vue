@@ -203,16 +203,16 @@ const emailCodeCountdown = ref(0)
 
 <style scoped>
 .security-container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 0 20px;
+  width:50vw;
 }
 
 .security-card {
+  width: 50vw;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  padding: 30px;
+  padding: 3vh;
+  margin: 0 auto;
 }
 
 .header-title {

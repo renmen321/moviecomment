@@ -243,73 +243,14 @@ onMounted(() => {
     next();
   });
 });
-function toMovie() {
 
-  router.push('/Movie');
-}
-function toComment() {
-  router.push('/Comment');
-}
-function toFeedBack() {
-  router.push('/FeedBack');
-}
-function toUser() {
-  router.push('/User');
-}
 </script>
 <style scoped>
 * {
   padding: 0;
   margin: 0;
 }
-/* 公共样式 */
-nav {
-  display: flex;
-  align-items: center;
-  padding: 15px 5rem 15px 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  background: rgba(44, 62, 80, 0.2);
-  /* 使用带透明度的背景色 */
-  backdrop-filter: blur(10px);
-  /* 标准语法 */
-  -webkit-backdrop-filter: blur(10px);
-  /* Safari 兼容 */
-  position: fixed;
-  width: 100vw;
-  z-index: 10;
-}
 
-.logo {
-  width: 100px;
-  /* 根据需要调整图片宽度 */
-  height: auto;
-  /* 保持图片比例 */
-  margin-right: 50px;
-}
-
-.nav-links {
-  display: flex;
-  gap: 30px;
-}
-
-.nav-item {
-  background: none;
-  color: white;
-  border: none;
-  border-bottom: 1px solid skyblue;
-  text-decoration: none;
-  padding: 4px 4px;
-  font-size: 1.2rem;
-  margin: 0 5px;
-  transition: all 0.3s;
-}
-.nav-links-right {
-  margin-left: 64vw; /* 将按钮推到最右侧 */
-}
-.nav-item:hover {
-  color: #3498db;
-  background: rgba(255, 255, 255, 0.1);
-}
 .echart {
   width: 50vw;
 }
@@ -345,10 +286,12 @@ nav {
 
 .media-card {
   background: white;
-  border-radius: 1vh;
   padding: 2vh;
-  box-shadow: 0 0.2vh 0.8vh rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
 .media-card:hover {

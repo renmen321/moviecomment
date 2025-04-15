@@ -109,12 +109,15 @@ const fetchGetAiResult = async (data :{
   background-repeat: no-repeat; /* 防止背景图片重复 */
 }
 .c-box{
+  max-width: 60vh; /* 设置最大宽度 */
+  margin: 0 auto; /* 水平居中 */
+  padding: 5vh;
   width: 80%;
-  backdrop-filter: blur(15px);
-  background-color: rgba(255, 255, 255, 0.5);
-  padding: 2rem 5rem;
   overflow: hidden;
-  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 /* 标题样式 */
 .title {
@@ -161,7 +164,7 @@ const fetchGetAiResult = async (data :{
   width: 20vw;
   height: 6vh;
   border: none;
-  border-radius: 1vw;
+  border-radius: 25px; /* 胶囊按钮形状 */
   font-size: clamp(1.8vh, 2vw, 2.5vh);
   margin: 3vh auto 0;
   display: block;

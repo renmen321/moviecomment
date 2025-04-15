@@ -77,16 +77,14 @@ nav {
   display: flex;
   align-items: center;
   padding: 15px 5rem 15px 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  background: rgba(44, 62, 80, 0.2);
-  /* 使用带透明度的背景色 */
-  backdrop-filter: blur(10px);
-  /* 标准语法 */
-  -webkit-backdrop-filter: blur(10px);
   /* Safari 兼容 */
   position: fixed;
   width: 100vw;
   z-index: 10;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
 .logo {

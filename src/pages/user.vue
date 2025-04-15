@@ -49,6 +49,7 @@
           :form-data="formData"
           :comments="comments"
           @delete="handleDeleteComment"
+          @update="handleUpdate"
       />
     </el-card>
   </div>
@@ -210,6 +211,10 @@ const handleDeleteComment = (id: number) => {
     comments.value.splice(index, 1)
   }
 }
+const handleUpdate = (updatedData: any) => {
+  formData.value = { ...formData.value, ...updatedData }
+
+}
 </script>
 
 <style scoped>
@@ -241,21 +246,26 @@ nav {
   padding: 0 20px;
   display: grid;
   grid-template-columns: 260px 1fr;
-  gap: 24px;
+  gap: 5vw;
+
 }
 /* 侧边栏卡片 */
 .sidebar-card {
   height: fit-content;
-
   :deep(.el-card__body) {
-    padding: 30px 20px;
+    padding:3vh 2vw;
   }
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-content {
   display: flex;
   flex-direction: column;
   align-items: center;
+
 }
 
 .avatar-container {
@@ -265,8 +275,8 @@ nav {
 
 /* 头像图片样式 */
 .avatar {
-  width: 120px;
-  height: 120px;
+  width: 4vw;
+  height: 8vh;
   border-radius: 50%;
   background: #f0f2f5;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -274,8 +284,8 @@ nav {
 
 /* 头像占位符 */
 .avatar-placeholder {
-  width: 120px;
-  height: 120px;
+  width: 9vw;
+  height: 14.5vh;
   border-radius: 50%;
   background: #f0f2f5;
   display: flex;
@@ -289,6 +299,10 @@ nav {
 .side-menu {
   border-right: none;
   width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* 内容区卡片 */
@@ -298,5 +312,9 @@ nav {
   :deep(.el-card__body) {
     padding: 30px 40px;
   }
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 </style>

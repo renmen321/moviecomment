@@ -146,13 +146,14 @@ input:focus, textarea:focus {
 
 /* 提交按钮样式 */
 .submit-btn {
-  background: #5894da; /* 新的背景颜色 */
-  color: #3761b9;
-  padding: 1vh 5vw;
+  background: #2196F3;
+  color: white;
+  width: 20vw;
+  height: 6vh;
   border: none;
+  padding: 1vh 5vw;
   border-radius: 25px; /* 胶囊按钮形状 */
   cursor: pointer;
-  width: 50%; /* 全宽按钮 */
   font-size: 16px;
   transition: transform 0.3s ease; /* 悬停动画效果 */
   display: block; /* 新增 */

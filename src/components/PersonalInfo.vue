@@ -29,8 +29,6 @@
               class="avatar"
               fit="cover"
           />
-
-
         </el-upload>
       </div>
     </div>
@@ -109,15 +107,17 @@
 
     <!-- 操作按钮 -->
     <div v-if="isEditing" class="action-bar">
-      <el-button @click="cancelEdit">取消</el-button>
-      <el-button  @click="saveChanges">保存</el-button>
+      <div class="button-container">
+        <el-button @click="cancelEdit">取消</el-button>
+        <el-button type="primary" @click="saveChanges">保存</el-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, reactive } from 'vue'
-import {ElMessage, UploadRequestOptions} from 'element-plus'
+import { ElMessage, UploadRequestOptions } from 'element-plus'
 
 const props = defineProps<{
   formData: {
@@ -136,7 +136,6 @@ const emit = defineEmits(['update'])
 // 编辑状态
 const isEditing = ref(false)
 
-
 // 本地数据
 const localData = reactive({
   avatarUrl: '',
@@ -148,12 +147,10 @@ const localData = reactive({
   avatar: ''
 })
 
-
-
 // 初始化数据
 const initData = () => {
   Object.assign(localData, {
-    avatarUrl:props.formData.avatarUrl,
+    avatarUrl: props.formData.avatarUrl,
     id: props.formData.id,
     name: props.formData.name,
     movieTypes: [...props.formData.movieTypes],
@@ -232,21 +229,23 @@ watch(
 
 <style scoped>
 .personal-settings {
-  width: 640px;
-  margin: 20px auto;
-  padding: 32px 40px;
+  width: 50vw;
+  margin: 0 auto;
   background: #FFFFFF;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  padding: 3vh ;
+
 }
 
 .header-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  margin-bottom: 5vh;
+  padding-bottom: 5vh;
   border-bottom: 1px solid #EBEEF5;
+
 }
 
 .info-item {
@@ -324,8 +323,6 @@ watch(
   font-size: 24px;
 }
 
-
-
 .edit-field {
   width: 100%;
   max-width: 400px;
@@ -336,22 +333,13 @@ watch(
   padding-top: 24px;
   border-top: 1px solid #EBEEF5;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center; /* 居中对齐 */
   gap: 16px;
 }
 
-.el-upload {
-  display: block !important;
-  width: 100%;
-  height: 100%;
-}
-
-.el-upload__input {
-  display: none;
-}
-
-.el-input ::v-deep .el-input__inner,
-.el-textarea ::v-deep .el-textarea__inner {
-  border-radius: 4px;
+.button-container {
+  display: flex;
+  justify-content: center; /* 居中对齐 */
+  gap: 16px;
 }
 </style>
