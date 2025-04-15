@@ -113,10 +113,9 @@ async function validateRegister() {
       name: id.value,
       email: email.value,
       profilePicture: imageUrl.value,
-      token: response.data.token,
     };
-    // 将用户信息存储在 localStorage 中
-    localStorage.setItem('userData', JSON.stringify(userData));
+    // 将用户信息存储在 sessionStorage 中
+    sessionStorage.setItem('userData', JSON.stringify(userData));
     Comment();
   }else if(respose.message=="验证码错误或已过期"){
     verificationError.value = true;

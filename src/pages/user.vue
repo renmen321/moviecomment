@@ -1,9 +1,9 @@
 <template>
   <!-- 全局导航栏 -->
-  <NavBar />
-
+    <NavBar />
   <!-- 主体内容容器 -->
   <div class="account-container">
+    <div class="c-box">
     <!-- 侧边栏卡片 -->
     <el-card class="sidebar-card">
       <div class="sidebar-content">
@@ -52,6 +52,7 @@
       />
     </el-card>
   </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -61,7 +62,6 @@ import PersonalInfo from '@/components/PersonalInfo.vue';
 import AccountSecurity from '@/components/AccountSecurity.vue'
 import UserComments from '@/components/UserComments.vue'
 import NavBar from "@/components/Navbar.vue";
-import { useRouter } from 'vue-router';
 
 
 const name = ref('');
@@ -213,21 +213,36 @@ const handleDeleteComment = (id: number) => {
 </script>
 
 <style scoped>
-
+nav {
+  position: fixed;
+  top: 0; /* 明确坐标 */
+  left: 0;
+  right: 0;
+  height: 60px; /* 固定高度 */
+  z-index: 1000; /* 提高层级 */
+}
 /* 主体布局 */
 .account-container {
-  max-width: 80%;
-  margin:15vh  auto 0; /* 调整上边距以避免被导航栏遮挡 */
-  padding: 0 20px;
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 24px;
+  border-radius: 1.5vw;
+  box-shadow: 0 0.5vh 1.5vh rgba(0, 0, 0, 0.1);
+  padding: 10vh 0 0 0;
+  width: 100vw;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-image: url('@/assets/images/background6.jpg'); /* 添加背景图片 */
   background-size: cover; /* 使背景图片覆盖整个容器 */
   background-position: center; /* 将背景图片居中 */
   background-repeat: no-repeat; /* 防止背景图片重复 */
 }
-
+.c-box{
+  width: 80%;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+}
 /* 侧边栏卡片 */
 .sidebar-card {
   height: fit-content;

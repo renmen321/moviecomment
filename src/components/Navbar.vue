@@ -29,7 +29,7 @@ const isLoggedIn = ref(false);
 const userName = ref('');
 
 onMounted(() => {
-  const userData = localStorage.getItem('userData');
+  const userData = sessionStorage.getItem('userData');
   if (userData) {
     const parsedData = JSON.parse(userData);
     isLoggedIn.value = true;

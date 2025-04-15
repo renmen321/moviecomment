@@ -45,6 +45,7 @@
           </div>
           <el-pagination
               background
+              :pager-count="4"
               layout="prev, pager, next"
               :total="goodCommentsTotal"
               :page-size="pageSize"
@@ -65,6 +66,7 @@
           </div>
           <el-pagination
               background
+              :pager-count="4"
               layout="prev, pager, next"
               :total="mediumCommentsTotal"
               :page-size="pageSize"
@@ -85,6 +87,7 @@
           </div>
           <el-pagination
               background
+              :pager-count="4"
               layout="prev, pager, next"
               :total="badCommentsTotal"
               :page-size="pageSize"
@@ -138,19 +141,7 @@ const postComment = async (id,comment,type) => {
     console.error('请求出错:', error);
   }
 };
-function toMovie() {
 
-  router.push({ name: constantRoutes[1].name });
-}
-function toComment() {
-  router.push({ name: constantRoutes[2].name });
-}
-function toFeedBack() {
-  router.push('/FeedBack');
-}
-function toUser() {
-  router.push('/User');
-}
 
 onMounted(async () => {
   movie.value=movieStore.movie;
@@ -280,7 +271,7 @@ const submitComment = () => {
   box-shadow: 0 0.5vh 1.5vh rgba(0, 0, 0, 0.1);
   padding: 10vh 0 0 0;
   width: 100vw;
-  height: 90vh;
+  height:auto;
   justify-content: center;
   align-items: center;
   background-image: url('@/assets/images/background.jpg'); /* 添加背景图片 */
@@ -291,15 +282,15 @@ const submitComment = () => {
 /* 电影信息区域 */
 .movie-info {
   display: flex;
-  gap: 30px;
-  margin-bottom: 40px;
+  gap: 10vw;
+  margin-bottom: 2vh;
   justify-content: center;
   align-content: center;
 }
 
 .poster {
   display: flex;
-  width: 300px;
+  width: 40vh;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
@@ -331,15 +322,19 @@ const submitComment = () => {
   background: #f8f9fa;
   padding: 10px;
   border-radius: 8px;
+  overflow-y: auto; /* 启用垂直滚动 */
 }
-
+.synopsis h3 {
+  font-size: 1.5rem; /* 调整字体大小 */
+  margin-bottom: 10px; /* 添加底部间距 */
+}
 /* 评论区域 */
 .comment-area {
-  height: 43vh;
-  width: 70vw;
+  height: 45vh;
+  width: 80vw;
   background: #fff;
   border-radius: 12px;
-  padding: 20px;
+  padding: 2VW;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -366,15 +361,14 @@ const submitComment = () => {
 
 .comment-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
-  height: 34vh;
+  height: 30vh;
 }
 
 .comment-column {
-
+  width:25vw;
   border-radius: 8px;
-  padding: 15px;
   display: flex;
   flex-direction: column;
 }
@@ -390,10 +384,16 @@ const submitComment = () => {
 }
 
 .bad {
+
   background: rgba(244, 67, 54, 0.05);
   border: 2px solid #F44336;
 }
 
+
+
+.el-pager li {
+  font-size: 12px !important;
+}
 .comment-title {
   margin-bottom: 15px;
   padding-bottom: 10px;
@@ -499,54 +499,5 @@ const submitComment = () => {
 button:hover {
   opacity: 0.9;
 }
-/* 公共样式 */
-nav {
-  display: flex;
-  align-items: center;
-  padding: 15px 5rem 15px 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  background: rgba(44, 62, 80, 0.2);
-  /* 使用带透明度的背景色 */
-  backdrop-filter: blur(10px);
-  /* 标准语法 */
-  -webkit-backdrop-filter: blur(10px);
-  /* Safari 兼容 */
-  position: fixed;
-  width: 100vw;
-  z-index: 10;
-}
 
-.logo {
-  width: 100px;
-  /* 根据需要调整图片宽度 */
-  height: auto;
-  /* 保持图片比例 */
-  margin-right: 50px;
-  user-select: none; /* 禁止选中 */
-}
-
-.nav-links {
-  display: flex;
-  gap: 30px;
-}
-
-.nav-item {
-  background: none;
-  color: white;
-  border: none;
-  border-bottom: 1px solid skyblue;
-  text-decoration: none;
-  padding: 4px 4px;
-  font-size: 1.2rem;
-  margin: 0 5px;
-  transition: all 0.3s;
-  user-select: none; /* 禁止选中 */
-}
-.nav-links-right {
-  margin-left: 64vw; /* 将按钮推到最右侧 */
-}
-.nav-item:hover {
-  color: #3498db;
-  background: rgba(255, 255, 255, 0.1);
-}
 </style>

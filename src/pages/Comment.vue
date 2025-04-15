@@ -109,7 +109,7 @@ const fetchGetAiResult = async (data :{
   background-repeat: no-repeat; /* 防止背景图片重复 */
 }
 .c-box{
-  width: 70%;
+  width: 80%;
   backdrop-filter: blur(15px);
   background-color: rgba(255, 255, 255, 0.5);
   padding: 2rem 5rem;
