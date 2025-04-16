@@ -36,7 +36,7 @@ onMounted(() => {
   });
 });
 function goToPage() {
-  router.push('/login');
+  router.push('/Comment');
 }
 
 

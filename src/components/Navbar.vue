@@ -10,6 +10,7 @@
     <div class="nav-links-right">
       <template v-if="isLoggedIn">
         <button @click="toUser()" class="nav-item">{{ userName }}</button>
+        <button @click="toAdmin()" v-if="isAdmin" class="nav-item">管理端</button>
         <button @click="logout()" class="nav-item">退出</button>
       </template>
       <template v-else>
@@ -26,6 +27,7 @@ import { router } from "@/router";
 import { ref, onMounted } from 'vue';
 
 const isLoggedIn = ref(false);
+const isAdmin = ref(false);
 const userName = ref('');
 
 onMounted(() => {
@@ -34,6 +36,7 @@ onMounted(() => {
     const parsedData = JSON.parse(userData);
     isLoggedIn.value = true;
     userName.value = parsedData.name;
+    isAdmin.value = parsedData.admin;
   }
 });
 
@@ -61,8 +64,12 @@ function toRegister() {
   router.push('/Register');
 }
 
+function toAdmin() {
+  router.push('/Admin');
+}
+
 function logout() {
-  localStorage.removeItem('userData');
+  sessionStorage.removeItem('userData');
   router.push('/Login');
 }
 </script>

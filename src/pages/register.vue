@@ -1,5 +1,5 @@
 <template>
-  <div class="body">
+  <div class="body body login-register-bg">
     <div class="auth-card">
       <h2>注册</h2>
       <form @submit.prevent="validateRegister">
@@ -59,7 +59,8 @@ const passwordError = ref(false);
 const verificationError = ref(false);
 const file = ref<File | null>(null);
 const imageUrl = ref('');
-
+const isSending = ref(false); // 控制按钮禁用状态
+const countdown = ref(60); // 倒计时时间
 const handleUpload = (options: any) => {
   const { file: uploadFile, onSuccess, onError } = options;
   file.value = uploadFile;
@@ -81,10 +82,10 @@ const beforeAvatarUpload = (file: File) => {
   const isLt2M = file.size / 1024 / 1024 < 2;
 
   if (!isJPG) {
-    alert('上传头像图片只能是 JPG 或 PNG 格式!');
+    ElMessage.error('上传头像图片只能是 JPG 或 PNG 格式!');
   }
   if (!isLt2M) {
-    alert('上传头像图片大小不能超过 2MB!');
+    ElMessage.error('上传头像图片大小不能超过 2MB!');
   }
   return isJPG && isLt2M;
 };
@@ -120,21 +121,36 @@ async function validateRegister() {
   }else if(respose.message=="验证码错误或已过期"){
     verificationError.value = true;
   }else {
-    alert('注册失败，请稍后再试');
+    ElMessage.error('注册失败，请稍后再试');
   }
   passwordError.value = false;
 }
 
 // 发送验证码
 async function sendVerificationCode() {
+  if (isSending.value) return; // 如果正在发送验证码，则直接返回
+
   const respose=await sendCode(
     email.value
   );
   if(respose.ok){
-    alert('验证码已发送，请查收邮箱！');
+    ElMessage.success('验证码已发送，请查收邮箱！');
+    startCountdown();
   }else{
-    alert('发送验证码失败，请稍后再试');
+    ElMessage.error('发送验证码失败，请稍后再试');
   }
+}
+// 启动倒计时
+function startCountdown() {
+  isSending.value = true;
+  let timer = setInterval(() => {
+    countdown.value--;
+    if (countdown.value <= 0) {
+      clearInterval(timer);
+      isSending.value = false;
+      countdown.value = 60;
+    }
+  }, 1000);
 }
 
 // 返回登录界面
@@ -163,6 +179,9 @@ function Comment() {
   justify-content: center;
   align-items: center;
   margin: 0;
+}
+.login-register-bg {
+  backdrop-filter: blur(10px); /* 添加模糊背景效果 */
 }
 .auth-card {
   background: rgba(255, 255, 255, 0.1); /* 半透明背景 */

@@ -8,12 +8,9 @@
       <!-- 输入区 -->
       <div class="input-section">
         <textarea class="comment-input" placeholder="请输入您的评论..." rows="5" v-model="comment" />
-        <button class="analyze-btn" @click="startAnalysis">开始分析</button>
-      </div>
-
-      <!-- 加载动画 -->
-      <div class="loading" v-if="isLoading">
-        <div class="loader"></div>
+        <el-button class="analyze-btn" @click="startAnalysis" :loading="isLoading">
+          {{ isLoading ? '分析中...' : '开始分析' }}
+        </el-button>
       </div>
 
       <!-- 结果展示 -->
@@ -34,65 +31,59 @@
 </template>
 
 <script setup lang="ts">
-import {reqGetAiResult} from "@/api/test.ts";
-import {ref} from "vue";
+import { reqGetAiResult } from "@/api/test.ts";
+import { ref } from "vue";
 import NavBar from "@/components/Navbar.vue";
+import { ElButton,ElMessage} from 'element-plus';
 
-
-let result =ref();
-const fetchGetAiResult = async (data :{
+let result = ref();
+const fetchGetAiResult = async (data: {
   sentence: string;
 }) => {
-    const response = await reqGetAiResult(data);
-      result.value = response.prediction_result ;
-      confidence.value=parseFloat(response.probabilities.toFixed(2));
+  const response = await reqGetAiResult(data);
+  result.value = response.prediction_result;
+  confidence.value = parseFloat(response.probabilities.toFixed(2));
 };
 
-    let  comment=ref();
-    let  isLoading=ref(false); // 控制加载动画的显示
-    let  resultVisible=ref(false);
-    let  resultText=ref();
-    let  confidence=ref();
-  async function startAnalysis() {
-    if (!comment.value.trim()) {
-      alert("请输入评论内容");
-    }
-    // 显示加载动画
-    isLoading.value = true;
-    resultVisible.value = false;
-    try {
-      await fetchGetAiResult({
-        sentence: comment.value
-      });
-      isLoading.value = false; // 隐藏加载动画
-      // 分析结果
+let comment = ref();
+let isLoading = ref(false); // 控制加载动画的显示
+let resultVisible = ref(false);
+let resultText = ref();
+let confidence = ref();
 
-        if( result.value === "好评"){
-          resultText.value =  "正面评价 😊" ;
-        }else if(result.value==="差评"){
-          resultText.value ="负面评价 😞";
-        }else {
-          resultText.value ="中性评价 😐";
-        }
-
-
-
-      // 显示结果卡片
-      resultVisible.value = true;
-    }catch (error){
-      alert("服务器错误，请稍后再试");
-      isLoading.value = false;
-      resultVisible.value = false;
-    }
-
+async function startAnalysis() {
+  if (!comment.value.trim()) {
+    ElMessage.error("请输入评论内容");
+    return;
   }
+  // 显示加载动画
+  isLoading.value = true;
+  resultVisible.value = false;
+  try {
+    await fetchGetAiResult({
+      sentence: comment.value
+    });
+    isLoading.value = false; // 隐藏加载动画
+    // 分析结果
+    if (result.value === "好评") {
+      resultText.value = "正面评价 😊";
+    } else if (result.value === "差评") {
+      resultText.value = "负面评价 😞";
+    } else {
+      resultText.value = "中性评价 😐";
+    }
 
-
-
+    // 显示结果卡片
+    resultVisible.value = true;
+  } catch (error) {
+    ElMessage.error("服务器错误，请稍后再试");
+    isLoading.value = false;
+    resultVisible.value = false;
+  }
+}
 </script>
 
 <style scoped>
-
 /* 基础布局 - 基于视口单位 */
 .container {
   border-radius: 1.5vw;
@@ -108,7 +99,7 @@ const fetchGetAiResult = async (data :{
   background-position: center; /* 将背景图片居中 */
   background-repeat: no-repeat; /* 防止背景图片重复 */
 }
-.c-box{
+.c-box {
   max-width: 60vh; /* 设置最大宽度 */
   margin: 0 auto; /* 水平居中 */
   padding: 5vh;
@@ -170,41 +161,13 @@ const fetchGetAiResult = async (data :{
   display: block;
   cursor: pointer;
   transition:
-    transform 0.2s ease,
-    box-shadow 0.3s ease;
+      transform 0.2s ease,
+      box-shadow 0.3s ease;
 }
 
 .analyze-btn:hover {
   transform: translateY(-0.3vh);
   box-shadow: 0 0.5vh 1.5vh rgba(33, 150, 243, 0.3);
-}
-
-/* 加载动画 */
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 4vh 0;
-}
-
-.loader {
-  width: 5vw;
-  height: 5vw;
-  border: 0.5vw solid #f3f3f3;
-  border-top: 0.5vw solid #2196F3;
-  border-radius: 50%;
-  animation: spin 1.2s linear infinite;
-}
-
-/* 动画定义 */
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 /* 结果卡片 */
