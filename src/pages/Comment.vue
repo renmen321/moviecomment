@@ -4,7 +4,7 @@
     <div class="c-box">
       <!-- 标题 -->
       <h1 class="title">评论情感分析系统</h1>
-
+·
       <!-- 输入区 -->
       <div class="input-section">
         <textarea class="comment-input" placeholder="请输入您的评论..." rows="5" v-model="comment" />

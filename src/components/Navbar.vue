@@ -20,16 +20,16 @@
     </div>
   </nav>
   <!-- 登录弹出框 -->
-  <el-dialog v-model="loginDialogVisible" width="30%" custom-class="custom-dialog login-dialog" style="--el-dialog-bg-color:#333">
+  <el-dialog v-model="loginDialogVisible" width="30%" style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
     <LoginForm @close="closeLoginDialog" @reset="showResetDialog" @register="showRegisterDialog" />
 
   </el-dialog>
   <!-- 注册弹出框 -->
-  <el-dialog v-model="registerDialogVisible" width="30%"  class="fixed-height-dialog">
+  <el-dialog v-model="registerDialogVisible" width="30%"  style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
     <RegisterForm @close="closeRegisterDialog" @login="showLoginDialog" />
   </el-dialog>
   <!-- 重置密码弹出框 -->
-  <el-dialog v-model="resetDialogVisible" width="30%">
+  <el-dialog v-model="resetDialogVisible" width="30%"   style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
     <ResetForm @close="closeResetDialog" @login="showLoginDialog"/>
   </el-dialog>
 </template>
