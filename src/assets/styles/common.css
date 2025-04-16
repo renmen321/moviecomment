@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.body {
+    font-family: Arial, sans-serif;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.login-register-bg {
+    backdrop-filter: blur(10px); /* 添加模糊背景效果 */
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+    backdrop-filter: blur(10px); /* 背景虚化效果 */
+    padding: 4vw;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(240, 238, 238, 0.3);
+    width: 100%;
+}
+
+h2 {
+    text-align: center;
+    color: white;
+    font-size: 3vw;
+    margin-bottom: 5vh;
+    user-select: none; /* 禁止选中 */
+}
+
+.form-group {
+    margin-bottom: 5vh;
+}
+
+/* 输入样式 */
+input {
+    background-color: rgba(255, 255, 255, 0.1);
+    width: 100%;
+    padding: 2vh;
+    border: 1px solid #d7d6d6;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 2vh;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid white; /* 添加白色边框 */
+    border-radius: 50px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #6f7777;
+}
+
+.link {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5vh;
+    cursor: pointer;
+    margin-bottom: 3vh;
+}
+
+.toggle-link {
+    text-align: left; /* 确保文本左对齐 */
+    margin: 0; /* 移除内边距 */
+    user-select: none; /* 禁止选中 */
+}
+
+a {
+    color: #2f2f79;
+    text-decoration: none;
+}

@@ -9,35 +9,67 @@
     </div>
     <div class="nav-links-right">
       <template v-if="isLoggedIn">
+        <button @click="toAdmin()" v-if="isAdmin" class="nav-item">切换管理端</button>
         <button @click="toUser()" class="nav-item">{{ userName }}</button>
-        <button @click="toAdmin()" v-if="isAdmin" class="nav-item">管理端</button>
         <button @click="logout()" class="nav-item">退出</button>
       </template>
       <template v-else>
-        <button @click="toLogin()" class="nav-item">登录</button>
-        <button @click="toRegister()" class="nav-item">注册</button>
+        <button @click="showLoginDialog" class="nav-item">登录</button>
+        <button @click="showRegisterDialog" class="nav-item">注册</button>
       </template>
     </div>
   </nav>
+  <!-- 登录弹出框 -->
+  <el-dialog v-model="loginDialogVisible" width="30%" custom-class="custom-dialog login-dialog" style="--el-dialog-bg-color:#333">
+    <LoginForm @close="closeLoginDialog" @reset="showResetDialog" @register="showRegisterDialog" />
+
+  </el-dialog>
+  <!-- 注册弹出框 -->
+  <el-dialog v-model="registerDialogVisible" width="30%"  class="fixed-height-dialog">
+    <RegisterForm @close="closeRegisterDialog" @login="showLoginDialog" />
+  </el-dialog>
+  <!-- 重置密码弹出框 -->
+  <el-dialog v-model="resetDialogVisible" width="30%">
+    <ResetForm @close="closeResetDialog" @login="showLoginDialog"/>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
 import logo from "@/assets/images/logo.jpg";
 import { router } from "@/router";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import LoginForm from '@/components/LoginForm.vue';
+import RegisterForm from '@/components/RegisterForm.vue';
+import ResetForm from '@/components/ResetForm.vue';
 
 const isLoggedIn = ref(false);
 const isAdmin = ref(false);
 const userName = ref('');
+const loginDialogVisible = ref(false);
+const registerDialogVisible = ref(false);
+const resetDialogVisible = ref(false);
 
-onMounted(() => {
+function updateUserData() {
   const userData = sessionStorage.getItem('userData');
   if (userData) {
     const parsedData = JSON.parse(userData);
     isLoggedIn.value = true;
     userName.value = parsedData.name;
     isAdmin.value = parsedData.admin;
+  } else {
+    isLoggedIn.value = false;
+    isAdmin.value = false;
+    userName.value = '';
   }
+}
+
+onMounted(() => {
+  updateUserData();
+  window.addEventListener('storage', updateUserData);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('storage', updateUserData);
 });
 
 function toMovie() {
@@ -56,21 +88,41 @@ function toUser() {
   router.push('/User');
 }
 
-function toLogin() {
-  router.push('/Login');
-}
-
-function toRegister() {
-  router.push('/Register');
-}
-
 function toAdmin() {
-  router.push('/Admin');
+  router.push('/TodayComment');
 }
 
 function logout() {
   sessionStorage.removeItem('userData');
-  router.push('/Login');
+  window.dispatchEvent(new Event('storage')); // 手动触发storage事件
+}
+
+function showLoginDialog() {
+  loginDialogVisible.value = true;
+  registerDialogVisible.value = false;
+ resetDialogVisible.value = false;
+}
+
+function closeLoginDialog() {
+  loginDialogVisible.value = false;
+}
+
+function showRegisterDialog() {
+  loginDialogVisible.value = false; // 关闭登录弹窗
+  registerDialogVisible.value = true;
+}
+
+function closeRegisterDialog() {
+  registerDialogVisible.value = false;
+}
+
+function showResetDialog() {
+  loginDialogVisible.value = false; // 关闭登录弹窗
+  resetDialogVisible.value = true;
+}
+
+function closeResetDialog() {
+  resetDialogVisible.value = false;
 }
 </script>
 
@@ -116,15 +168,19 @@ nav {
   text-decoration: none;
   padding: 4px 4px;
   font-size: 1.2rem;
-  margin: 0 5px;
+  margin: 0 10px;
   transition: all 0.3s;
   user-select: none; /* 禁止选中 */
 }
 .nav-links-right {
-  margin-left: 60vw; /* 将按钮推到最右侧 */
+  margin-left: 50vw; /* 将按钮推到最右侧 */
 }
 .nav-item:hover {
   color: #3498db;
   background: rgba(255, 255, 255, 0.1);
 }
+.fixed-height-dialog {
+  height: 2px; /* 固定高度 */
+}
+
 </style>

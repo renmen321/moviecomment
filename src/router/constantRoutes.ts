@@ -20,21 +20,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     name: "MovieData",
     component: () => import("@/pages/Moviedata.vue")
   },
-  {
-    path: '/Login',
-    name: 'Login',
-    component: () => import("@/pages/Login.vue"),
-  },
-  {
-    path: '/Reset',
-    name: 'Reset',
-    component: () => import("@/pages/Reset.vue"),
-  },
-  {
-    path: '/Register',
-    name: 'Register',
-    component: () => import("@/pages/Register.vue"),
-  },
+
   {
     path: '/Home',
     name: 'Home',
