@@ -95,6 +95,7 @@ function toAdmin() {
 function logout() {
   sessionStorage.removeItem('userData');
   window.dispatchEvent(new Event('storage')); // 手动触发storage事件
+  router.push('/Comment');
 }
 
 function showLoginDialog() {

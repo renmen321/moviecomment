@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import {router} from '../router/index.js';
+import {router} from '@/router';
 import {onBeforeUnmount, onMounted} from 'vue'
 onMounted(() => {
   const background=document.querySelector<Element>('.background');

@@ -19,13 +19,14 @@
         </el-form-item>
 
         <!-- 详细描述输入区 -->
-        <el-form-item label="详细描述" prop="description" label-position="top">
+        <el-form-item label="详细描述" prop="description" label-position="top" >
           <el-input
               v-model="form.description"
               type="textarea"
               :rows="5"
               resize="none"
               placeholder="请具体描述您的建议或遇到的问题..."
+              class="custom-textarea"
           />
         </el-form-item>
 
@@ -174,5 +175,8 @@ h1 {
 .el-button:hover {
   transform: translateY(-2px); /* 轻微上移效果 */
   box-shadow: 0 5px 15px rgba(195,128,159,0.3); /* 动态阴影 */
+}
+.custom-textarea .el-textarea__inner {
+  border-radius: 100px;
 }
 </style>
