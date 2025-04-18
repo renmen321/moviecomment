@@ -6,7 +6,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "module": "es2020",
+    "module": "ESNext",
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

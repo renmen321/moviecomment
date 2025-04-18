@@ -153,27 +153,48 @@
 import {reactive, computed, ref, onMounted} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElCard, ElProgress, ElTable, ElTableColumn, ElButton, ElTag } from 'element-plus'
-import {reqGetAdminCommentByDate} from "@/api/test.ts";
+import {getTypePercentageByDate, reqGetAdminCommentByDate} from "@/api/test.ts";
 import AdminSidebar from "@/components/AdminSidebar.vue";
 
 const router = useRouter() // 获取 Vue Router 实例
 const route = useRoute() // 获取当前路由信息
-
-const statsData = reactive({
-  todayComments: 1347,
-  commentProgress: 72,
+interface StatsData {
+  todayComments: number;
+  commentProgress: number;
+  sentiment: Sentiment;
+  comments: any[];
+}
+interface Sentiment {
+  good: number;
+  medium: number;
+  bad: number;
+}
+const statsData = reactive<StatsData>({
+  todayComments: 0,
+  commentProgress: 0,
   sentiment: {
-    good: 68,
-    medium: 25,
-    bad: 7
+    good: 0,
+    medium: 0,
+    bad: 0
   },
-  comments: [
-  ]
-})
+  comments: []
+});
 onMounted(async () => {
   const response = await reqGetAdminCommentByDate('2025-04-15',1,12);
-  statsData.comments=response.data.list;
-  statsData.todayComments=response.data.total;
+  if(response.ok) {
+    statsData.comments = response.data.list;
+    statsData.todayComments = response.data.total;
+  }else {
+    console.error('Error fetching comments:', response.message);
+  }
+  if(response.ok) {
+    const response1 = await getTypePercentageByDate('2025-04-15');
+    statsData.sentiment.good = response1.data.goodPercentage.toFixed(2);
+    statsData.sentiment.medium = response1.data.generalPercentage.toFixed(2);
+    statsData.sentiment.bad = response1.data.badPercentage.toFixed(2);
+  }else {
+    console.error('Error fetching comments:', response.message);
+  }
 })
 const customColors = [
   { color: '#67C23A', percentage: 20 },

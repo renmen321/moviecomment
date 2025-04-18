@@ -20,22 +20,13 @@
 
         <!-- 详细描述输入区 -->
         <el-form-item label="详细描述" prop="description" label-position="top">
-          <el-input
-              v-model="form.description"
-              type="textarea"
-              :rows="5"
-              resize="none"
-              placeholder="请具体描述您的建议或遇到的问题..."
-          />
+          <el-input v-model="form.description" type="textarea" :rows="5" resize="none"
+            placeholder="请具体描述您的建议或遇到的问题..." />
         </el-form-item>
 
         <!-- 提交按钮 -->
         <el-form-item>
-          <el-button
-              type="primary"
-              @click="submitForm"
-              :disabled="isSubmitting"
-          >
+          <el-button type="primary" @click="submitForm" :disabled="isSubmitting">
             提交反馈
           </el-button>
         </el-form-item>
@@ -48,6 +39,7 @@
 import NavBar from "@/components/Navbar.vue";
 import { reactive, ref } from 'vue';
 import { ElMessage, ElForm, ElFormItem, ElSelect, ElOption, ElInput, ElButton } from 'element-plus';
+import { PostFeedback } from "@/api/Feedback.ts";
 
 // 表单数据
 const form = reactive({
@@ -71,27 +63,43 @@ const formRef = ref(null);
 // 提交状态
 const isSubmitting = ref(false);
 
+
+
 // 提交表单方法
-const submitForm = () => {
-  formRef.value.validate((valid: boolean) => {
+const submitForm = async () => {
+  const userData = JSON.parse(sessionStorage.getItem('userData'));
+  if (!userData) {
+    ElMessage.error('请先登录');
+    return;
+  }
+  formRef.value.validate(async (valid: boolean) => {
     if (valid) {
       // 禁用提交按钮
       isSubmitting.value = true;
 
       // 处理表单提交逻辑
-      ElMessage.success('反馈提交成功');
-      console.log(form);
+      const response = await PostFeedback({
+        username: userData.username,
+        content: form.description,
+        type: form.type
+      })
 
-      // 10秒后启用提交按钮
-      setTimeout(() => {
+      if (response.ok) {
+        ElMessage.success('反馈提交成功');
+        console.log(form);
         isSubmitting.value = false;
-      }, 10000);
+      } else {
+        ElMessage.error('反馈提交失败');
+        isSubmitting.value = false;
+      }
+
     } else {
       ElMessage.error('请填写完整信息');
       return false;
     }
   });
 };
+
 </script>
 
 <style scoped>
@@ -102,13 +110,18 @@ const submitForm = () => {
 
 :root {
   /* 主题色 */
-  --primary-pink: #566fe0;    /* 主色调（淡紫色） */
-  --accent-mint: #7fcca3;     /* 强调色（薄荷绿） */
-  --light-pink: #727fc7;      /* 页面背景色（浅粉色） */
+  --primary-pink: #566fe0;
+  /* 主色调（淡紫色） */
+  --accent-mint: #7fcca3;
+  /* 强调色（薄荷绿） */
+  --light-pink: #727fc7;
+  /* 页面背景色（浅粉色） */
 
   /* 功能色 */
-  --dark-text: #333;          /* 主要文本颜色 */
-  --error-red: #a8d7b5;       /* 错误提示色（当前为薄荷绿） */
+  --dark-text: #333;
+  /* 主要文本颜色 */
+  --error-red: #a8d7b5;
+  /* 错误提示色（当前为薄荷绿） */
 }
 
 /* 基础页面样式 */
@@ -123,9 +136,12 @@ const submitForm = () => {
 }
 
 .feedback-container {
-  max-width: 60vh; /* 设置最大宽度 */
-  width: 100%; /* 自适应宽度 */
-  margin: 0 auto; /* 水平居中 */
+  max-width: 60vh;
+  /* 设置最大宽度 */
+  width: 100%;
+  /* 自适应宽度 */
+  margin: 0 auto;
+  /* 水平居中 */
   padding: 5vh;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
@@ -139,13 +155,15 @@ h1 {
   text-align: center;
   margin-bottom: 2vh;
   font-family: 'Arial Black', sans-serif;
-  border-bottom: 2px solid var(--primary-pink); /* 底部装饰线 */
+  border-bottom: 2px solid var(--primary-pink);
+  /* 底部装饰线 */
   padding-bottom: 2vh;
 }
 
 /* 表单元素组样式 */
 .el-form-item {
-  margin-bottom: 3vh; /* 表单元素间距 */
+  margin-bottom: 3vh;
+  /* 表单元素间距 */
 }
 
 /* 标签样式 */
@@ -155,7 +173,9 @@ h1 {
 }
 
 /* 通用输入控件样式 */
-.el-select, .el-input, .el-textarea {
+.el-select,
+.el-input,
+.el-textarea {
   width: 92%;
 }
 
@@ -163,16 +183,22 @@ h1 {
 .el-button {
   width: 20vw;
   height: 6vh;
-  border-radius: 25px; /* 胶囊按钮形状 */
+  border-radius: 25px;
+  /* 胶囊按钮形状 */
   font-size: 16px;
-  transition: transform 0.3s ease; /* 悬停动画效果 */
-  display: block; /* 新增 */
-  margin: 0 auto; /* 新增 */
+  transition: transform 0.3s ease;
+  /* 悬停动画效果 */
+  display: block;
+  /* 新增 */
+  margin: 0 auto;
+  /* 新增 */
 }
 
 /* 按钮悬停状态 */
 .el-button:hover {
-  transform: translateY(-2px); /* 轻微上移效果 */
-  box-shadow: 0 5px 15px rgba(195,128,159,0.3); /* 动态阴影 */
+  transform: translateY(-2px);
+  /* 轻微上移效果 */
+  box-shadow: 0 5px 15px rgba(195, 128, 159, 0.3);
+  /* 动态阴影 */
 }
 </style>

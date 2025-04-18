@@ -42,6 +42,7 @@ async function validateLogin() {
   if (response.ok) {
     const userData = {
       id: response.data.id,
+      username: response.data.username,
       name: response.data.name,
       email: response.data.email,
       profilePicture: response.data.profilePicture,
