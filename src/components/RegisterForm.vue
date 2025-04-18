@@ -16,11 +16,10 @@
         </el-upload>
       </div>
       <div class="form-group1">
-        <input v-model="id" type="text" id="id" placeholder="用户名" required />
+        <input v-model="id" type="text" id="id" placeholder="用户名"  />
       </div>
       <div class="form-group1">
         <input v-model="email" type="email" id="email" placeholder="电子邮箱" required />
-        <p class="email-check" :style="{ display: emailError ? 'block' : 'none' }">邮箱格式不正确</p>
       </div>
       <div class="form-group2">
         <input v-model="check" type="text" id="check" placeholder="验证码" required />
@@ -29,13 +28,11 @@
         </button>
       </div>
       <div class="form-group1">
-        <input v-model="password" type="password" id="password" placeholder="密码（至少6位）" minlength="6" required />
+        <input v-model="password" type="password" id="password" placeholder="密码（至少6位）" minlength="6"  />
       </div>
       <div class="form-group1">
         <input v-model="confirmPassword" type="password" id="confirmPassword" placeholder="确认密码" required />
-        <p class="password-check" :style="{ display: passwordError ? 'block' : 'none' }">两次密码输入不一致</p>
       </div>
-      <p class="verification-check" :style="{ display: verificationError ? 'block' : 'none' }">验证码错误或已过期</p>
       <button type="submit">立即注册</button>
     </form>
     <div class="toggle-link">
@@ -56,8 +53,6 @@ const email = ref('');
 const check = ref('');
 const password = ref('');
 const confirmPassword = ref('');
-const passwordError = ref(false);
-const verificationError = ref(false);
 const file = ref<File | null>(null);
 const imageUrl = ref('');
 const isSending = ref(false); // 控制按钮禁用状态
@@ -92,9 +87,18 @@ const beforeAvatarUpload = (file: File) => {
 
 // 表单提交验证
 async function validateRegister() {
+  // 验证邮箱格式
+  if (!validateEmail(email.value)) {
+    ElMessage.error('邮箱格式不正确');
+    return false;
+  }
+  // 验证密码长度和字符类型
+  if (!validatePassword(password.value)) {
+    ElMessage.error('密码长度不能小于8，且必须包含大小写字母和数字');
+    return false;
+  }
   if (password.value !== confirmPassword.value) {
-    passwordError.value = true;
-    verificationError.value = false;
+    ElMessage.error('两次密码输入不一致');
     return false;
   }
   const response = await register(
@@ -107,8 +111,6 @@ async function validateRegister() {
       }
   );
   if (response.ok) {
-    passwordError.value = false;
-    verificationError.value = false;
     const userData = {
       name: id.value,
       email: email.value,
@@ -116,16 +118,29 @@ async function validateRegister() {
     };
     // 将用户信息存储在 sessionStorage 中
     sessionStorage.setItem('userData', JSON.stringify(userData));
+    window.dispatchEvent(new Event('storage')); // 手动触发storage事件
     emit('close');
     emit('registerSuccess');
   } else if (response.message === "验证码错误或已过期") {
-    verificationError.value = true;
+    ElMessage.error('验证码错误或已过期');
   } else {
     ElMessage.error('注册失败，请稍后再试');
   }
-  passwordError.value = false;
 }
+// 邮箱格式验证
+function validateEmail(email: string) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+// 密码验证
+function validatePassword(password: string) {
+  const minLength = 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
 
+  return password.length >= minLength && hasUpperCase && hasLowerCase && hasNumber;
+}
 // 发送验证码
 async function sendVerificationCode() {
   if (isSending.value) return; // 如果正在发送验证码，则直接返回
