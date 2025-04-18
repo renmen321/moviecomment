@@ -120,7 +120,7 @@ async function validateRegister() {
     sessionStorage.setItem('userData', JSON.stringify(userData));
     window.dispatchEvent(new Event('storage')); // 手动触发storage事件
     emit('close');
-    emit('registerSuccess');
+    emit('Success');
   } else if (response.message === "验证码错误或已过期") {
     ElMessage.error('验证码错误或已过期');
   } else {
@@ -174,7 +174,7 @@ function login() {
   emit('login');
 }
 
-const emit = defineEmits(['close', 'login', 'registerSuccess']);
+const emit = defineEmits(['close', 'login', 'Success']);
 </script>
 
 <style scoped>

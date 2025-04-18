@@ -1,6 +1,6 @@
 <!-- src/components/SelectMovieTypeDialog.vue -->
 <template>
-  <el-dialog v-model="dialogVisible" width="30%" style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
+  <el-dialog v-model="dialogVisible" width="30%" style="--el-dialog-bg-color:#2a2828">
     <h2>请选择你喜欢的电影类型</h2>
     <div>
       <el-checkbox-group v-model="selectedTypes">
@@ -15,7 +15,7 @@
         <el-checkbox label="纪录片"></el-checkbox>
       </el-checkbox-group>
     </div>
-    <div style="margin-top: 20px;">
+    <div class="button-container">
       <el-button @click="closeDialog">取消</el-button>
       <el-button type="primary" @click="saveSelection">确定</el-button>
     </div>
@@ -45,5 +45,15 @@ function saveSelection() {
 </script>
 
 <style scoped>
-/* 添加样式 */
+
+.button-container {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  margin-top: 20px;
+}
+
+.el-button {
+  margin-right: 10px;
+}
+
 </style>

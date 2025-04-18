@@ -26,7 +26,7 @@
   </el-dialog>
   <!-- 注册弹出框 -->
   <el-dialog v-model="registerDialogVisible" width="30%"  style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
-    <RegisterForm @close="closeRegisterDialog" @login="showLoginDialog" @success="handleRegisterSuccess"/>
+    <RegisterForm @close="closeRegisterDialog" @login="showLoginDialog" @Success="handleRegisterSuccess"/>
   </el-dialog>
   <!-- 重置密码弹出框 -->
   <el-dialog v-model="resetDialogVisible" width="30%"   style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
