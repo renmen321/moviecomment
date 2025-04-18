@@ -13,7 +13,8 @@ service.interceptors.request.use(
         if (storedUserData) {
             const userData = JSON.parse(storedUserData);
             // 将 token 添加到请求头中
-            config.headers.Authorization = `Bearer ${userData.token}`;
+            // config.headers.Authorization = `${userData.token}`;
+            config.headers.setAuthorization(`${userData.token}`)
         }
       return config;
     },

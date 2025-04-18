@@ -74,10 +74,11 @@
         <!-- 分页组件 -->
         <div class="pagination-wrapper">
           <el-pagination
-              v-model:page-count="pageNum"
+              v-model:current-page="pageNum"
               :pageSize="pageSize"
               layout="total, prev, pager, next"
-              :total="feedbackList.length"
+              :total="total"
+              @current-change="handlePageChange"
           />
         </div>
       </section>
@@ -110,13 +111,18 @@ import {reqGetMovieCommentById} from "@/api/test.ts";
 import {GetFeedback, UpdateFeedbackStatus} from "@/api/Feedback.ts";
 let pageNum = ref(1);
 let pageSize = ref(10);
+let total = ref(0);
 const router = useRouter();
 const route = useRoute();
 onMounted(async () => {
   const response =await GetFeedback(pageNum.value,pageSize.value);
-  // 清空并替换数组内容（推荐）
-  feedbackList.splice(0, feedbackList.length, ...response.data.list);
-
+  if(response.ok) {
+    // 清空并替换数组内容（推荐）
+    feedbackList.splice(0, feedbackList.length, ...response.data.list);
+    total.value = response.data.total;
+  }else {
+    ElMessage.error('获取反馈数据失败');
+  }
 })
 interface FeedbackItem {
   id : number;
@@ -149,6 +155,16 @@ const truncatedContent = (content: string) => {
   return content;
 }
 
+const handlePageChange = async (pageNum: number) => {
+  const response = await GetFeedback(pageNum,pageSize.value);
+  if(response.ok) {
+    // 清空并替换数组内容（推荐）
+    feedbackList.splice(0, feedbackList.length, ...response.data.list);
+    total.value = response.data.total;
+  }else {
+    ElMessage.error('获取反馈数据失败');
+  }
+}
 // 操作方法
 const openModal = (item: FeedbackItem) => {
   selectedFeedback.value = item;

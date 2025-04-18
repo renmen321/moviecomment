@@ -120,7 +120,7 @@ async function validateRegister() {
   } else if (response.message === "验证码错误或已过期") {
     verificationError.value = true;
   } else {
-    ElMessage.error('注册失败，请稍后再试');
+    ElMessage.error(response.message);
   }
   passwordError.value = false;
 }
