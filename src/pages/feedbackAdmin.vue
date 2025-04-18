@@ -16,7 +16,7 @@
             class="custom-table"
             empty-text="暂无反馈数据"
         >
-          <el-table-column prop="user" label="用户" width="180" align="center" />
+          <el-table-column prop="username" label="用户" width="180" align="center" />
           <el-table-column prop="type" label="类型" width="120" align="center" />
 
           <!-- 内容摘要列（不可点击） -->
@@ -74,8 +74,8 @@
         <!-- 分页组件 -->
         <div class="pagination-wrapper">
           <el-pagination
-              v-model:current-page="currentPage"
-              :page-size="pageSize"
+              v-model:page-count="pageNum"
+              :pageSize="pageSize"
               layout="total, prev, pager, next"
               :total="feedbackList.length"
           />
@@ -90,7 +90,7 @@
           top="5vh"
       >
         <el-descriptions :column="1" border>
-          <el-descriptions-item label="用户">{{ selectedFeedback?.user }}</el-descriptions-item>
+          <el-descriptions-item label="用户">{{ selectedFeedback?.username }}</el-descriptions-item>
           <el-descriptions-item label="类型">{{ selectedFeedback?.type }}</el-descriptions-item>
           <el-descriptions-item label="完整内容">
             <pre class="content-pre">{{ selectedFeedback?.content }}</pre>
@@ -102,40 +102,34 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref } from 'vue'
+import {reactive, computed, ref, onMounted} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {ElMessage} from "element-plus";
 import AdminSidebar from '@/components/AdminSidebar.vue';
+import {reqGetMovieCommentById} from "@/api/test.ts";
+import {GetFeedback, UpdateFeedbackStatus} from "@/api/Feedback.ts";
+let pageNum = ref(1);
+let pageSize = ref(10);
+const router = useRouter();
+const route = useRoute();
+onMounted(async () => {
+  const response =await GetFeedback(pageNum.value,pageSize.value);
+  // 清空并替换数组内容（推荐）
+  feedbackList.splice(0, feedbackList.length, ...response.data.list);
 
-const router = useRouter()
-const route = useRoute()
-
+})
 interface FeedbackItem {
-  id: number;
-  user: string;
+  id : number;
+  username: string;
   type: string;
   content: string;
+  date: string;
   status: 'pending' | 'resolved';
 }
 
 // 反馈数据状态管理
 //读取反馈数据
-const feedbackList = reactive<FeedbackItem[]>([
-  {
-    id: 1,
-    user: 'user_123',
-    type: '功能建议',
-    content: '希望增加夜间模式...wdaaddwwdfafda daad awda fwa w',
-    status: 'pending'
-  },
-  {
-    id: 2,
-    user: 'user_123',
-    type: '功能建议',
-    content: '希望增加夜间模式...',
-    status: 'pending'
-  }
-])
+let feedbackList = reactive<FeedbackItem[]>([])
 
 
 const statusMap: Record<string, string> = {
@@ -157,15 +151,19 @@ const truncatedContent = (content: string) => {
 
 // 操作方法
 const openModal = (item: FeedbackItem) => {
-  selectedFeedback.value = item
-  isModalVisible.value = true
+  selectedFeedback.value = item;
+  isModalVisible.value = true;
 }
 
-const markResolved = (item: FeedbackItem) => {
+const markResolved = async (item: FeedbackItem) => {
   const target = feedbackList.find(f => f.id === item.id)
-  if (target) {
-    target.status = 'resolved'
-    ElMessage.success('状态更新成功')
+  const response = await UpdateFeedbackStatus(target.id, 'resolved');
+  if (response.ok) {
+    target.status = 'resolved';
+
+    ElMessage.success('状态更新成功');
+  }else{
+    ElMessage.error('状态更新失败');
   }
 }
 </script>

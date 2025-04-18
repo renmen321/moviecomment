@@ -45,7 +45,7 @@ export const reqGetAiResult =(data: {
     result: string;
     // reliability: number;
   };
-}> => request.post(`http://127.0.0.1:8000/predict`,data);
+}> => request.post(`http://127.0.0.1:5000/predict`,data);
 
 export const reqGetMovieCommentById = (id: number, pageNum: number, pageSize: number,type: number): Promise<{
   code: number;
@@ -81,6 +81,7 @@ export  const login = (data: {
     profilePicture: string;
     token: string;
     admin: boolean;
+    username: string;
   };
 }> => request.post(`/user/login`,data);
 
@@ -134,4 +135,16 @@ export const reqGetAdminCommentByDate = (date: string,pageNum: number, pageSize:
       date: string;
     }[];
   };
-}> => request.get(`/movies/page/getMovieCommentByDate?date=${date}&pageNum=${pageNum}&pageSize=${pageSize}`);
+}> => request.get(`/admin/movies/page/getMovieCommentByDate?date=${date}&pageNum=${pageNum}&pageSize=${pageSize}`);
+
+export const getTypePercentageByDate = (date: string): Promise<{
+  code: number;
+  message: string;
+  ok: boolean;
+  data: {
+    goodPercentage : number;
+    badPercentage : number;
+    generalPercentage : number;
+    };
+}> => request.get(`/admin/movies/getTypePercentageByDate?date=${date}`);
+
