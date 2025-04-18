@@ -117,6 +117,7 @@ async function validateRegister() {
     // 将用户信息存储在 sessionStorage 中
     sessionStorage.setItem('userData', JSON.stringify(userData));
     emit('close');
+    emit('registerSuccess');
   } else if (response.message === "验证码错误或已过期") {
     verificationError.value = true;
   } else {
@@ -158,7 +159,7 @@ function login() {
   emit('login');
 }
 
-const emit = defineEmits(['close', 'login']);
+const emit = defineEmits(['close', 'login', 'registerSuccess']);
 </script>
 
 <style scoped>
