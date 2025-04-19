@@ -304,7 +304,7 @@ onMounted(() => {
 
 <style scoped>
 .body{
- background: #3b3838;
+ background: black;
 
 }
 nav {
@@ -314,6 +314,7 @@ nav {
   right: 0;
   height: 11vh; /* 固定高度 */
   z-index: 1000; /* 提高层级 */
+  background: #2d2d2d !important;
 }
 .poster-container {
   position: relative;
@@ -329,11 +330,10 @@ nav {
   width: 100%;
   height: 36vh;
   background-size: 70% 100%; /* 使用 cover 以确保图片覆盖整个元素 */
-  background-position: center;
+  background-position: 32% ; /* 调整图片位置 */
   background-repeat: no-repeat;
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: rgb(16,21,25);
-  mask-image: linear-gradient(to right, transparent 0%, transparent 20%, rgb(16,21,25) 90%, rgb(16,21,25) 100%
+  mask-image: linear-gradient(to right, transparent 0%, transparent 10%, rgba(255,255,255,0.9) 90%, black 100%
   );
 }
 
@@ -412,9 +412,7 @@ nav {
 }
 .media-card img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute; /* 绝对定位以铺满整个卡片 */
+  height: 60%;
   top: 0;
   left: 0;
   right: 0;

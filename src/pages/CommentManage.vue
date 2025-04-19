@@ -76,7 +76,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import AdminSidebar from '@/components/AdminSidebar.vue';
 
 interface Comment {
-  type: 'good' | 'medium' | 'bad'
+  type: 'good' | 'general' | 'bad'
   content: string
   user: string
   time: string
@@ -103,7 +103,7 @@ const movies = reactive<Movie[]>([
 const comments = reactive<Comment[]>([
   { type: 'good', content: '经典之作，百看不厌', user: '影迷A', time: '2025-03-30', movieId: 1 },
   { type: 'bad', content: '节奏太慢看不下去', user: '用户B', time: '2025-03-29', movieId: 1 },
-  { type: 'medium', content: '剧情不错但拍摄手法老旧', user: '观众C', time: '2025-03-28', movieId: 1 }
+  { type: 'general', content: '剧情不错但拍摄手法老旧', user: '观众C', time: '2025-03-28', movieId: 1 }
 ])
 
 // 响应式状态
@@ -116,7 +116,7 @@ const loading = ref(false)
 const activeCommentType = ref('good')
 const commentTypes = reactive([
   { type: 'good', label: '好评' },
-  { type: 'medium', label: '中评' },
+  { type: 'general', label: '中评' },
   { type: 'bad', label: '差评' }
 ])
 
@@ -139,7 +139,7 @@ const currentComments = computed(() => {
 })
 
 const currentCommentCounts = computed(() => {
-  const counts = { good: 0, medium: 0, bad: 0 }
+  const counts = { good: 0, general: 0, bad: 0 }
   currentComments.value.forEach(c => counts[c.type]++)
   return counts
 })

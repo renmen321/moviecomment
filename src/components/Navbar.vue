@@ -155,7 +155,8 @@ nav {
   position: fixed;
   width: 100vw;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.2);
+/*background: rgba(255, 255, 255, 0.2)*/
+  background: black;
   backdrop-filter: blur(5px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
