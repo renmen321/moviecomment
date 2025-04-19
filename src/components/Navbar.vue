@@ -3,6 +3,7 @@
   <nav>
     <img :src="logo" class="logo" alt="Logo">
     <div class="nav-links">
+      <button @click="toMain()" class="nav-item">主页</button>
       <button @click="toComment()" class="nav-item">评价</button>
       <button @click="toMovie()" class="nav-item">影视剧</button>
       <button @click="toFeedBack()" class="nav-item">反馈</button>
@@ -106,7 +107,9 @@ function toUser() {
 function toAdmin() {
   router.push('/TodayComment');
 }
-
+function toMain() {
+  router.push('/Main');
+}
 function logout() {
   sessionStorage.removeItem('userData');
   window.dispatchEvent(new Event('storage')); // 手动触发storage事件
@@ -158,7 +161,6 @@ nav {
   z-index: 10;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
-  border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 

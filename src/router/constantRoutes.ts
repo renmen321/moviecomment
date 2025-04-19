@@ -58,6 +58,10 @@ export const constantRoutes: RouteRecordRaw[] = [
   path:'/Model',
   name:'Model',
   component: () => import("@/pages/Model.vue"),
+  },{
+  path:'/Main',
+  name:'Main',
+  component: () => import("@/pages/Main.vue"),
   }
 ];
 
