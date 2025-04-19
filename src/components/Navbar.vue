@@ -5,7 +5,6 @@
     <div class="nav-links">
       <button @click="toMain()" class="nav-item">主页</button>
       <button @click="toComment()" class="nav-item">评价</button>
-      <button @click="toMovie()" class="nav-item">影视剧</button>
       <button @click="toFeedBack()" class="nav-item">反馈</button>
     </div>
     <div class="nav-links-right">
@@ -88,9 +87,6 @@ onUnmounted(() => {
   window.removeEventListener('storage', updateUserData);
 });
 
-function toMovie() {
-  router.push('/Movie');
-}
 
 function toComment() {
   router.push('/Comment');

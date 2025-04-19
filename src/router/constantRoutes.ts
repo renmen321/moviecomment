@@ -6,11 +6,6 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import("@/App.vue"),
   },
   {
-    path: "/Movie",
-    name: "Movie",
-    component: () => import("@/pages/Movie.vue"),
-  },
-  {
     path: "/Comment",
     name: "Comment",
     component: () => import("@/pages/Comment.vue")
