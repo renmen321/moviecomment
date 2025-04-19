@@ -5,7 +5,7 @@
     <!-- 电影信息区域 -->
     <div class="movie-info">
       <div class="poster-section">
-        <img :src="`http://127.0.0.1:8080/api/movies/getImage?id=${movie.id}`" class="poster" alt="电影海报">
+        <img :src="`http://127.0.0.1:8080/api/images/${movie.image}`" class="poster" alt="电影海报">
       </div>
       <div class="detail-section">
         <div>
@@ -125,7 +125,7 @@
 <script setup lang="ts">
 import {ref, computed, onMounted} from 'vue';
 import {useMovieStore} from "@/store/movieStore.ts";
-import {reqGetMovie, reqGetMovieCommentById, reqPostComment} from "@/api/test.ts";
+import { reqGetMovieCommentById, reqPostComment} from "@/api/test.ts";
 import NavBar from "@/components/Navbar.vue";
 const movieStore = useMovieStore();
 

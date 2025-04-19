@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-export const reqGetMovies = (pages: number): Promise<{
+export const reqGetMovies = (pageNum: number, pageSize: number): Promise<{
   code: number;
   message: string;
   ok: boolean;
@@ -16,9 +16,10 @@ export const reqGetMovies = (pages: number): Promise<{
       good: number;
       bad: number;
       general : number;
+      image: string;
     }[];
   };
-}> => request.get(`/movies/page?pages=${pages}`);
+}> => request.get(`/movies/page?pageNum=${pageNum}&pageSize=${pageSize}`);
 
 export const reqGetMovie = (name :string): Promise<{
   code: number;
@@ -32,6 +33,7 @@ export const reqGetMovie = (name :string): Promise<{
     good: number;
     bad: number;
     general : number;
+    image: string;
   };
 }> => request.get(`/movies/getMovieByName?name=${name}`);
 

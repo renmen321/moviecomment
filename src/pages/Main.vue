@@ -30,7 +30,7 @@
         <div class="media-grid">
           <!-- 电影卡片 -->
           <div class="media-card" v-for="(movie, index) in movies" :key="index" @click="showDialog(index)">
-            <img :src="`http://127.0.0.1:8080/api/movies/getImage?id=${movie.id}`" @click="tomoviedata(index)"
+            <img :src="`http://127.0.0.1:8080/api/images/${movie.image}`" @click="tomoviedata(index)"
                  style="width:100%;height:20vh;object-fit:cover">
             <h3>{{ movie.movieChineseName }}</h3>
             <p>{{ movie.type }}</p>
@@ -112,7 +112,7 @@ const handleClose = () => {
 };
 const fetchMovies = async (pages) => {
   try {
-    const response = await reqGetMovies(pages);
+    const response = await reqGetMovies(pages,4);
     if (response.ok) {
       // 假设返回的数据结构中有一个 movies 数组
       movies.value = response.data.list
@@ -139,18 +139,19 @@ const fetchMovie = async (movie_name) => {
   }
 };
 
-async function tomoviedata(index) {
-  await movieStore.setMovie({
-    id: movies.value[index].id,
-    movieChineseName: movies.value[index].movieChineseName,
-    type: movies.value[index].type,
-    ratings: movies.value[index].ratings,
-    introduction :movies.value[index].introduction,
-    year : movies.value[index].yearOfRelease
-  });
-  router.push("MovieData");
-}
 
+ async function tomoviedata(index) {
+   await movieStore.setMovie({
+     id: movies.value[index].id,
+     movieChineseName: movies.value[index].movieChineseName,
+     type: movies.value[index].type,
+     ratings: movies.value[index].ratings,
+     introduction :movies.value[index].introduction,
+     year : movies.value[index].yearOfRelease,
+     image : movies.value[index].image
+   });
+   router.push("MovieData");
+ }
 const initBar = () => {
   const option = {
     title: { // 标题组件

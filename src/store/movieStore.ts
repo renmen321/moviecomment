@@ -7,7 +7,9 @@ export const useMovieStore = defineStore("movieStore",{
             movieChineseName :'',
             type :'',
             ratings :0,
-            introduction:''
+            introduction:'',
+            image :'',
+            year: 0
         },
     }),
     actions: {
@@ -17,7 +19,8 @@ export const useMovieStore = defineStore("movieStore",{
             type :string;
             ratings :number;
             introduction:string;
-
+            image :string;
+            year: number
         }) {
             this.movie = movie;
         }

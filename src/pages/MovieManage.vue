@@ -7,10 +7,11 @@
     <main class="content-area">
       <div class="operation-bar">
         <el-input
-            v-model="searchQuery"
+            v-model="movieName"
             placeholder="搜索电影..."
             clearable
             style="width: 300px; margin-right: 16px;"
+            @keyup.enter="searchMovies"
         />
         <el-button type="primary" @click="openDialog('add')">
           <el-icon><Plus /></el-icon>新增电影
@@ -18,7 +19,7 @@
       </div>
 
       <el-table
-          :data="paginatedMovies"
+          :data="movies"
           style="width: 100%; margin-top: 16px;"
           v-loading="loading"
           border
@@ -26,18 +27,23 @@
         <el-table-column label="海报" width="150" align="center">
           <template #default="{ row }">
             <el-image
-                :src="row.poster"
-                :preview-src-list="[row.poster]"
+                v-if="row.movieImage === undefined"
+                :src="`http://127.0.0.1:8080/api/images/${row.image}`"
                 class="poster-image"
-                fit="cover"
-                style="width: 100px; height: 140px;"
+                fit="cover"        style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;"
             />
+            <el-image
+                v-else-if="true"
+                :src="row.image"
+                class="poster-image"
+                fit="cover"        style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;"
+                />
           </template>
         </el-table-column>
 
-        <el-table-column prop="title" label="片名" sortable />
+        <el-table-column prop="movieChineseName" label="片名" sortable />
 
-        <el-table-column prop="year" label="年份" width="100" align="center" />
+        <el-table-column prop="yearOfRelease" label="年份" width="100" align="center" />
 
         <el-table-column label="导演" width="180" align="center">
           <template #default="{ row }">
@@ -48,13 +54,13 @@
         <el-table-column label="类型" width="200" align="center">
           <template #default="{ row }">
             <el-tag
-                v-for="genre in row.genres"
-                :key="genre"
+                v-for="type in (Array.isArray(row.type) ? row.type : (row.type || '').split(' '))"
+                :key="type"
                 type="success"
                 effect="plain"
                 style="margin-right: 5px;"
             >
-              {{ genre }}
+              {{ type }}
             </el-tag>
           </template>
         </el-table-column>
@@ -72,8 +78,9 @@
         <el-pagination
             background
             layout="prev, pager, next, jumper"
-            :total="totalMovies"
+            :total="total"
             :page-size="pageSize"
+            v-model:current-page="pageNum"
             @current-change="handlePageChange"
         />
       </div>
@@ -101,23 +108,28 @@
               :auto-upload="false"
           >
             <el-image
-                v-if="currentMovie.poster"
-                :src="currentMovie.poster"
+                v-if="currentMovie.movieImage === undefined"
+                :src="`http://127.0.0.1:8080/api/images/${currentMovie.image}`"
                 class="upload-poster"
-                fit="cover"
-                style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;"
+                fit="cover"        style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;"
+            />
+            <el-image
+                v-else-if="true"
+                :src="currentMovie.image"
+                class="upload-poster"
+                fit="cover"        style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;"
             />
             <el-button v-else type="primary" plain>点击上传</el-button>
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="电影名称" prop="title">
-          <el-input v-model="currentMovie.title" placeholder="请输入电影名称" />
+        <el-form-item label="电影名称" prop="movieChineseName">
+          <el-input v-model="currentMovie.movieChineseName" placeholder="请输入电影名称" />
         </el-form-item>
 
-        <el-form-item label="上映年份" prop="year">
+        <el-form-item label="上映年份" prop="yearOfRelease">
           <el-date-picker
-              v-model="currentMovie.year"
+              v-model="currentMovie.yearOfRelease"
               type="year"
               value-format="YYYY"
               placeholder="请选择上映年份"
@@ -128,9 +140,9 @@
           <el-input v-model="currentMovie.director" placeholder="请输入导演名称" />
         </el-form-item>
 
-        <el-form-item label="电影类型" prop="genres">
+        <el-form-item label="电影类型" prop="type">
           <el-select
-              v-model="currentMovie.genres"
+              v-model="currentMovie.type"
               multiple
               placeholder="请选择类型"
               style="width: 100%;"
@@ -144,9 +156,9 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="剧情简介" prop="description">
+        <el-form-item label="剧情简介" prop="introduction">
           <el-input
-              v-model="currentMovie.description"
+              v-model="currentMovie.introduction"
               type="textarea"
               :rows="4"
               maxlength="500"
@@ -173,51 +185,81 @@ import type { UploadFile } from "element-plus";
 import { useRouter, useRoute } from "vue-router";
 import axios from 'axios';
 import AdminSidebar from "@/components/AdminSidebar.vue";
+import {GetFeedback} from "@/api/Feedback.ts";
+import {addMovie, deleteMovieById, reqGetAdminMovies, reqGetAdminMoviesByName, UpdateMovie} from "@/api/Movies.ts";
 
 interface movie {
   id: number;
-  poster: string;
-  title: string;
-  year: string;
+  // poster: string;
+  movieChineseName: string;
+  yearOfRelease: string;
   director: string;
-  genres: string[];
-  description: string;
+  type: string;
+  introduction: string;
+  image: string;
+  movieImage?: File;
 }
 
 const router = useRouter();
-
+// 加载状态
+const loading = ref(true);
 
 // 电影数据
 const movies = reactive<movie[]>([
   {
     id: 1,
-    poster: "https://example.com/poster1.jpg",
-    title: "肖申克的救赎",
-    year: "1994",
+    // poster: "https://example.com/poster1.jpg",
+    movieChineseName: "肖申克的救赎",
+    yearOfRelease: "1994",
     director: "弗兰克·德拉邦特",
-    genres: ["剧情"],
-    description: "一位被冤枉入狱的银行家安迪，在监狱中通过智慧和毅力最终获得自由的故事。",
+    type: " ",
+    introduction: "一位被冤枉入狱的银行家安迪，在监狱中通过智慧和毅力最终获得自由的故事。",
+    image: "https://example.com/poster1.jpg",
+    movieImage: undefined,
   },
-]);
+]);// 分页相关
+let pageSize = ref(10); // 每页显示4个电影
+const pageNum = ref(1);
+const total =ref(0);
+onMounted(async () => {
+  loading.value = true;
+  const response =await reqGetAdminMovies(pageNum.value,pageSize.value);
+  if(response.ok) {
+    loading.value = false;
+    // 清空并替换数组内容（推荐）
+    movies.splice(0, movies.length, ...response.data.list);
+    total.value = response.data.total;
+  }else {
+    loading.value = false;
+    ElMessage.error('获取电影数据失败');
+  }
+})
 
-// 分页相关
-const pageSize = 4; // 每页显示4个电影
-const currentPage = ref(1);
-const totalMovies = computed(() => movies.length);
-const paginatedMovies = computed(() => {
-  const start = (currentPage.value - 1) * pageSize;
-  return movies.slice(start, start + pageSize);
-});
 
 // 搜索功能
-const searchQuery = ref("");
-
+let movieName = ref("");
+const searchMovies= async () => {
+  loading.value = true;
+  const response = await reqGetAdminMoviesByName(movieName.value);
+  if(response.ok) {
+    loading.value = false;
+    if(response.data.total === 0) {
+      ElMessage.error('没有找到相关电影');
+    }else {
+      movies.splice(0, movies.length, ...response.data.list);
+      total.value = response.data.total;
+    }
+  }else{
+    loading.value = false;
+    ElMessage.error('获取电影数据失败');
+  }
+}
 
 // 表单验证规则
 const rules = {
-  title: [{ required: true, message: "请输入电影名称", trigger: "blur" }],
-  year: [{ required: true, message: "请选择上映年份", trigger: "change" }],
-  genres: [
+  movieChineseName: [{ required: true, message: "请输入电影名称", trigger: "blur" }],
+  yearOfRelease: [{ required: true, message: "请选择上映年份", trigger: "change" }],
+  type: [
     { type: "array", required: true, message: "请至少选择一个类型", trigger: "change" },
   ],
 };
@@ -229,18 +271,27 @@ const genreOptions = [
   { value: "科幻", label: "科幻" },
   { value: "爱情", label: "爱情" },
   { value: "悬疑", label: "悬疑" },
+  {value: "犯罪", label: "犯罪"},
+  {value: "惊悚", label: "惊悚"},
+    {value: "同性", label: "同性"},
 ];
 
 // 弹窗相关状态
 const dialogVisible = ref(false);
 const dialogType = ref<"add" | "edit">("add");
-const currentMovie = reactive<Partial<movie>>({});
+let currentMovie = reactive<Partial<movie>>({});
 
 // 打开弹窗
 const openDialog = (type: "add" | "edit", row?: movie) => {
   dialogType.value = type;
   if (type === "edit" && row) {
     Object.assign(currentMovie, row);
+    currentMovie.movieImage = undefined;
+    // 将类型数组转换为空格隔开的字符串
+    currentMovie.type = Array.isArray(currentMovie.type)
+        ? currentMovie.type.join(' ') // 如果是数组，使用空格连接成字符串
+        : (currentMovie.type || "").toString(); // 确保是字符串
+    currentMovie.image = row.image;
   } else {
     resetForm();
   }
@@ -248,87 +299,115 @@ const openDialog = (type: "add" | "edit", row?: movie) => {
 };
 
 // 保存电影
-const saveMovie = () => {
+const saveMovie = async () => {
   if (dialogType.value === "add") {
-    movies.push({
-      ...currentMovie,
-      id: Date.now(),
-    } as movie);
+    currentMovie.type = (currentMovie.type || []).join(' ');
+    const response= await addMovie({
+      movieChineseName: currentMovie.movieChineseName as string,
+      type: currentMovie.type as string,
+      introduction: currentMovie.introduction as string,
+      yearOfRelease: currentMovie.yearOfRelease as string,
+      director: currentMovie.director as string,
+      image: currentMovie.image as string,
+      movieImage: currentMovie.movieImage as File
+    });
+    if(response.ok){
+      currentMovie.movieImage = undefined;
+      assignNonNullValues(currentMovie, response.data);
+      const movieCopy = Object.assign({}, currentMovie) as movie;
+      movies.push(movieCopy as movie);
+    }else {
+      ElMessage.error(response.message);
+    }
   } else {
+    currentMovie.type = (currentMovie.type || []).join(' ');
+    const response = await UpdateMovie({
+      id: currentMovie.id as number,
+      movieChineseName: currentMovie.movieChineseName as string,
+      type: currentMovie.type as string,
+      introduction: currentMovie.introduction as string,
+      yearOfRelease: currentMovie.yearOfRelease as string,
+      director: currentMovie.director as string,
+      image: currentMovie.image as string,
+      movieImage: currentMovie.movieImage as File,
+    });
+    if(response.ok){
     const index = movies.findIndex((m) => m.id === currentMovie.id);
     if (index !== -1) {
-      movies.splice(index, 1, currentMovie as movie);
+      currentMovie.movieImage = undefined;
+      assignNonNullValues(currentMovie, response.data);
+      const movieCopy = Object.assign({}, currentMovie) as movie;
+      movies.splice(index, 1, movieCopy as movie);
+    }}else {
+      ElMessage.error(response.message);
     }
   }
   dialogVisible.value = false;
   ElMessage.success("保存成功");
 };
+const assignNonNullValues = (target: any, source: any) => {
+  for (const key in source) {
+    if (source[key] !== null) {
+      target[key] = source[key];
+    }
+  }
+};
 
 // 删除电影
-const deleteMovie = (id: number) => {
+const deleteMovie = async (id: number) => {
   ElMessageBox.confirm("确定删除该电影？", "警告", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(() => {
+  }).then(async () => {
     const index = movies.findIndex((m) => m.id === id);
     movies.splice(index, 1);
-    ElMessage.success("删除成功");
+    const response = await deleteMovieById(id);
+    if(response.ok) {
+      ElMessage.success("删除成功");
+    }else {
+      ElMessage.error(response.message);
+    }
   });
 };
 
 // 图片上传处理
 const handleUpload = (file: UploadFile) => {
-  const formData = new FormData();
-  formData.append('file', file.raw);
-
-  axios.post('/api/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
-      .then(response => {
-        currentMovie.poster = response.data.url; // 假设服务器返回图片的 URL
-        ElMessage.success('图片上传成功');
-      })
-      .catch(error => {
-        ElMessage.error('图片上传失败');
-        console.error(error);
-      });
+  if(file.raw!==undefined) {
+    currentMovie.movieImage = file.raw;
+    currentMovie.image = URL.createObjectURL(file.raw); // 用于预览
+    ElMessage.success('图片已选择，点击保存后上传');
+  }
 };
 
 // 重置表单
 const resetForm = () => {
-  currentMovie.poster = "";
-  currentMovie.title = "";
-  currentMovie.year = "";
+  currentMovie.id = undefined;
+  currentMovie.image = "";
+  currentMovie.movieChineseName = "";
+  currentMovie.yearOfRelease = "";
   currentMovie.director = "";
-  currentMovie.genres = [];
-  currentMovie.description = "";
+  currentMovie.type = "";
+  currentMovie.introduction= "";
+  currentMovie.movieImage = undefined;
 };
 
 // 分页处理
-const handlePageChange = (val: number) => {
-  currentPage.value = val;
+const handlePageChange = async (pageNum: number) => {
+
+  loading.value = true;
+  const response = await reqGetAdminMovies(pageNum,pageSize.value);
+  if(response.ok) {
+    loading.value = false;
+    // 清空并替换数组内容（推荐）
+    movies.splice(0, movies.length, ...response.data.list);
+    total.value = response.data.total;
+  }else {
+    loading.value = false;
+    ElMessage.error('获取电影数据失败');
+  }
 };
 
-
-// 加载状态
-const loading = ref(true);
-
-// 监听分页变化，确保在合理范围内
-watch(currentPage, (newPage) => {
-  if (newPage < 1 || newPage > Math.ceil(totalMovies.value / pageSize)) {
-    currentPage.value = 1;
-  }
-});
-
-// 模拟加载完成后关闭加载状态
-onMounted(() => {
-  setTimeout(() => {
-    loading.value = false;
-  }, 1000);
-});
 
 </script>
 

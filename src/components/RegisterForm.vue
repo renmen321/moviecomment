@@ -124,7 +124,7 @@ async function validateRegister() {
   } else if (response.message === "验证码错误或已过期") {
     ElMessage.error('验证码错误或已过期');
   } else {
-    ElMessage.error('注册失败，请稍后再试');
+    ElMessage.error(response.message);
   }
 }
 // 邮箱格式验证
