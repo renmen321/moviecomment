@@ -27,12 +27,17 @@
         <el-table-column label="海报" width="150" align="center">
           <template #default="{ row }">
             <el-image
+                v-if="row.movieImage === undefined"
                 :src="`http://127.0.0.1:8080/api/images/${row.image}`"
-                :preview-src-list="[row.poster]"
                 class="poster-image"
-                fit="cover"
-                style="width: 100px; height: 140px;"
+                fit="cover"        style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;"
             />
+            <el-image
+                v-else-if="true"
+                :src="row.image"
+                class="poster-image"
+                fit="cover"        style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;"
+                />
           </template>
         </el-table-column>
 
@@ -49,7 +54,7 @@
         <el-table-column label="类型" width="200" align="center">
           <template #default="{ row }">
             <el-tag
-                v-for="type in (row.type || '').split(' ')"
+                v-for="type in (Array.isArray(row.type) ? row.type : (row.type || '').split(' '))"
                 :key="type"
                 type="success"
                 effect="plain"
@@ -103,11 +108,16 @@
               :auto-upload="false"
           >
             <el-image
-                v-if="`http://127.0.0.1:8080/api/images/${currentMovie.image}`"
+                v-if="currentMovie.movieImage === undefined"
                 :src="`http://127.0.0.1:8080/api/images/${currentMovie.image}`"
                 class="upload-poster"
-                fit="cover"
-                style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;"
+                fit="cover"        style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;"
+            />
+            <el-image
+                v-else-if="true"
+                :src="currentMovie.image"
+                class="upload-poster"
+                fit="cover"        style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;"
             />
             <el-button v-else type="primary" plain>点击上传</el-button>
           </el-upload>
@@ -176,7 +186,7 @@ import { useRouter, useRoute } from "vue-router";
 import axios from 'axios';
 import AdminSidebar from "@/components/AdminSidebar.vue";
 import {GetFeedback} from "@/api/Feedback.ts";
-import {reqGetAdminMovies, reqGetAdminMoviesByName, UpdateMovie} from "@/api/Movies.ts";
+import {addMovie, deleteMovieById, reqGetAdminMovies, reqGetAdminMoviesByName, UpdateMovie} from "@/api/Movies.ts";
 
 interface movie {
   id: number;
@@ -261,6 +271,9 @@ const genreOptions = [
   { value: "科幻", label: "科幻" },
   { value: "爱情", label: "爱情" },
   { value: "悬疑", label: "悬疑" },
+  {value: "犯罪", label: "犯罪"},
+  {value: "惊悚", label: "惊悚"},
+    {value: "同性", label: "同性"},
 ];
 
 // 弹窗相关状态
@@ -273,6 +286,12 @@ const openDialog = (type: "add" | "edit", row?: movie) => {
   dialogType.value = type;
   if (type === "edit" && row) {
     Object.assign(currentMovie, row);
+    currentMovie.movieImage = undefined;
+    // 将类型数组转换为空格隔开的字符串
+    currentMovie.type = Array.isArray(currentMovie.type)
+        ? currentMovie.type.join(' ') // 如果是数组，使用空格连接成字符串
+        : (currentMovie.type || "").toString(); // 确保是字符串
+    currentMovie.image = row.image;
   } else {
     resetForm();
   }
@@ -282,11 +301,26 @@ const openDialog = (type: "add" | "edit", row?: movie) => {
 // 保存电影
 const saveMovie = async () => {
   if (dialogType.value === "add") {
-    movies.push({
-      ...currentMovie,
-      id: Date.now(),
-    } as movie);
+    currentMovie.type = (currentMovie.type || []).join(' ');
+    const response= await addMovie({
+      movieChineseName: currentMovie.movieChineseName as string,
+      type: currentMovie.type as string,
+      introduction: currentMovie.introduction as string,
+      yearOfRelease: currentMovie.yearOfRelease as string,
+      director: currentMovie.director as string,
+      image: currentMovie.image as string,
+      movieImage: currentMovie.movieImage as File
+    });
+    if(response.ok){
+      currentMovie.movieImage = undefined;
+      assignNonNullValues(currentMovie, response.data);
+      const movieCopy = Object.assign({}, currentMovie) as movie;
+      movies.push(movieCopy as movie);
+    }else {
+      ElMessage.error(response.message);
+    }
   } else {
+    currentMovie.type = (currentMovie.type || []).join(' ');
     const response = await UpdateMovie({
       id: currentMovie.id as number,
       movieChineseName: currentMovie.movieChineseName as string,
@@ -300,7 +334,10 @@ const saveMovie = async () => {
     if(response.ok){
     const index = movies.findIndex((m) => m.id === currentMovie.id);
     if (index !== -1) {
-      movies.splice(index, 1, currentMovie as movie);
+      currentMovie.movieImage = undefined;
+      assignNonNullValues(currentMovie, response.data);
+      const movieCopy = Object.assign({}, currentMovie) as movie;
+      movies.splice(index, 1, movieCopy as movie);
     }}else {
       ElMessage.error(response.message);
     }
@@ -308,23 +345,35 @@ const saveMovie = async () => {
   dialogVisible.value = false;
   ElMessage.success("保存成功");
 };
+const assignNonNullValues = (target: any, source: any) => {
+  for (const key in source) {
+    if (source[key] !== null) {
+      target[key] = source[key];
+    }
+  }
+};
 
 // 删除电影
-const deleteMovie = (id: number) => {
+const deleteMovie = async (id: number) => {
   ElMessageBox.confirm("确定删除该电影？", "警告", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(() => {
+  }).then(async () => {
     const index = movies.findIndex((m) => m.id === id);
     movies.splice(index, 1);
-    ElMessage.success("删除成功");
+    const response = await deleteMovieById(id);
+    if(response.ok) {
+      ElMessage.success("删除成功");
+    }else {
+      ElMessage.error(response.message);
+    }
   });
 };
 
 // 图片上传处理
 const handleUpload = (file: UploadFile) => {
-  if(!file.raw) {
+  if(file.raw!==undefined) {
     currentMovie.movieImage = file.raw;
     currentMovie.image = URL.createObjectURL(file.raw); // 用于预览
     ElMessage.success('图片已选择，点击保存后上传');
@@ -333,6 +382,7 @@ const handleUpload = (file: UploadFile) => {
 
 // 重置表单
 const resetForm = () => {
+  currentMovie.id = undefined;
   currentMovie.image = "";
   currentMovie.movieChineseName = "";
   currentMovie.yearOfRelease = "";
@@ -357,12 +407,6 @@ const handlePageChange = async (pageNum: number) => {
     ElMessage.error('获取电影数据失败');
   }
 };
-
-
-
-
-
-
 
 
 </script>

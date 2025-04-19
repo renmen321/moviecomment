@@ -3,8 +3,8 @@
   <nav>
     <img :src="logo" class="logo" alt="Logo">
     <div class="nav-links">
+      <button @click="toMain()" class="nav-item">主页</button>
       <button @click="toComment()" class="nav-item">评价</button>
-      <button @click="toMovie()" class="nav-item">影视剧</button>
       <button @click="toFeedBack()" class="nav-item">反馈</button>
     </div>
     <div class="nav-links-right">
@@ -26,11 +26,15 @@
   </el-dialog>
   <!-- 注册弹出框 -->
   <el-dialog v-model="registerDialogVisible" width="30%"  style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
-    <RegisterForm @close="closeRegisterDialog" @login="showLoginDialog" />
+    <RegisterForm @close="closeRegisterDialog" @login="showLoginDialog" @Success="handleRegisterSuccess"/>
   </el-dialog>
   <!-- 重置密码弹出框 -->
   <el-dialog v-model="resetDialogVisible" width="30%"   style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
     <ResetForm @close="closeResetDialog" @login="showLoginDialog"/>
+  </el-dialog>
+  <!-- 选择电影类型弹出框 -->
+  <el-dialog v-model="selectMovieTypeDialogVisible" width="30%" style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
+    <SelectMovieTypeDialog v-model="selectMovieTypeDialogVisible" @confirm="handleMovieTypeSelection" />
   </el-dialog>
 </template>
 
@@ -41,6 +45,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import LoginForm from '@/components/LoginForm.vue';
 import RegisterForm from '@/components/RegisterForm.vue';
 import ResetForm from '@/components/ResetForm.vue';
+import SelectMovieTypeDialog from '@/components/SelectMovieTypeDialog.vue';
 
 const isLoggedIn = ref(false);
 const isAdmin = ref(false);
@@ -48,6 +53,7 @@ const userName = ref('');
 const loginDialogVisible = ref(false);
 const registerDialogVisible = ref(false);
 const resetDialogVisible = ref(false);
+const selectMovieTypeDialogVisible = ref(false);
 
 function updateUserData() {
   const userData = sessionStorage.getItem('userData');
@@ -62,7 +68,16 @@ function updateUserData() {
     userName.value = '';
   }
 }
-
+//处理注册成功
+function handleRegisterSuccess() {
+  registerDialogVisible.value = false;
+  selectMovieTypeDialogVisible.value = true;
+}
+//选择的类型为数组
+function handleMovieTypeSelection(selectedTypes: string[]) {
+  console.log('Selected movie types:', selectedTypes);
+  // 处理选中的电影类型
+}
 onMounted(() => {
   updateUserData();
   window.addEventListener('storage', updateUserData);
@@ -72,9 +87,6 @@ onUnmounted(() => {
   window.removeEventListener('storage', updateUserData);
 });
 
-function toMovie() {
-  router.push('/Movie');
-}
 
 function toComment() {
   router.push('/Comment');
@@ -91,10 +103,13 @@ function toUser() {
 function toAdmin() {
   router.push('/TodayComment');
 }
-
+function toMain() {
+  router.push('/Main');
+}
 function logout() {
   sessionStorage.removeItem('userData');
   window.dispatchEvent(new Event('storage')); // 手动触发storage事件
+  router.push('/Comment');
 }
 
 function showLoginDialog() {
@@ -142,7 +157,6 @@ nav {
   z-index: 10;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
-  border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 

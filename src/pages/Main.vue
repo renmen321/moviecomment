@@ -1,5 +1,7 @@
 <template>
+  <div class="body">
   <NavBar />
+<<<<<<< HEAD:src/pages/Movie.vue
   <div class="container">
     <!-- 左边影视内容 -->
     <div class="media-section">
@@ -19,25 +21,92 @@
           <p>{{ movie.type }}</p>
           <p>{{ movie.ratings }}</p>
         </div>
+=======
+  <div class="poster-container">
+    <!-- 主视觉区 -->
+    <div class="main-visual" :style="{ backgroundImage: `url(${Movies[currentIndex].image})` }">
+    </div>
+    <!-- 固定电影列表 -->
+    <div class="film-list">
+      <div
+          v-for="(Movie, index) in Movies"
+          :key="Movie.movieName"
+          class="film-item"
+          :class="{ active: currentIndex === index }"
+          @click="handleClick(index)"
+      >
+        <div class="film-title">{{ Movie.movieName }}</div>
+>>>>>>> c2f4d691eb9d126a2889fb770fc7cdaf06ca4b8a:src/pages/Main.vue
       </div>
     </div>
-    <div style="width: 50vw;display: flex;height: 100vh;justify-content: center;align-items: center;">
-      <div class="chart-container" id="chart">
-        <div class="echart" ref="mychart1" style="height:74.5vh;"></div>
+  </div>
+    <div class="container">
+      <div class="media-section">
+        <h1>热门影视</h1>
+        <div style="display: flex ;margin-bottom:1vh ">
+          <el-input v-model="movie_name" placeholder="电影名称" style="width: 10vw;"
+                    @change="fetchMovie(movie_name)"></el-input>
+          <el-input-number v-model="page" :min="1" :max="63" @change="fetchMovies(page)"
+                           style="width: 10vw;margin-left: 80vw"></el-input-number>
+        </div>
+        <div class="media-grid">
+          <!-- 电影卡片 -->
+          <div class="media-card" v-for="(movie, index) in movies" :key="index" @click="showDialog(index)">
+            <img :src="`http://127.0.0.1:8080/api/movies/getImage?id=${movie.id}`" @click="tomoviedata(index)"
+                 style="width:100%;height:20vh;object-fit:cover">
+            <h3>{{ movie.movieChineseName }}</h3>
+            <p>{{ movie.type }}</p>
+            <p>{{ movie.ratings }}</p>
+          </div>
+        </div>
       </div>
+      <!-- 弹窗 -->
+      <el-dialog v-model="dialogVisible" title="电影评论" width="50%" :before-close="handleClose">
+        <div class="chart-container" id="chart">
+          <div class="echart" ref="mychart1" style="height: 74.5vh;"></div>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, onUnmounted, nextTick} from 'vue'
+import NavBar from "@/components/Navbar.vue";
 import * as echarts from "echarts";
-import {constantRoutes} from "@/router/constantRoutes.js";
+
 import {onBeforeRouteLeave, useRouter} from "vue-router";
 import {reqGetMovie, reqGetMovies} from "@/api/test";
 import {useMovieStore} from "@/store/movieStore.js";
-import logo from "@/assets/images/logo.jpg";
-import NavBar from "@/components/Navbar.vue";
+
+interface Movie {
+  movieName: string;
+  image: string;
+}
+
+const Movies = ref<Movie[]>([
+  { movieName: '肖申克的救赎', image: 'src/assets/images/main.1.jpg' },
+  { movieName: '哈利·波特与魔法石', image: 'src/assets/images/main.2.jpg' },
+  { movieName: '泰坦尼克号', image: 'src/assets/images/main.3.jpg' },
+  { movieName: '哪吒之魔童闹海', image: 'src/assets/images/main.4.jpg' }
+]);
+
+const currentIndex = ref(0)
+let timer = null
+//点击事件
+const handleClick = (index: number) => {
+  currentIndex.value = index
+}
+
+const switchMovie = () => {
+  currentIndex.value = (currentIndex.value + 1) % movies.value.length
+}
+
+onMounted(() => {
+  timer = setInterval(switchMovie, 3000) // 3秒切换
+})
+
+onUnmounted(() => clearInterval(timer))
 const movieStore = useMovieStore();
 const movies = ref([]);
 const router = useRouter();
@@ -50,9 +119,18 @@ let movie = ref({
   bad: 0,
 });
 let myChartInstance = null;
-const draw = (index) => {
+const dialogVisible = ref(false);
+// 初始化图表，弹窗
+const showDialog = (index) => {
   movie.value = movies.value[index];
-  initBar();
+  dialogVisible.value = true;
+  nextTick(() => { // 确保弹窗内容已渲染
+    initBar();
+  });
+};
+//关闭弹窗
+const handleClose = () => {
+  dialogVisible.value = false;
 };
 const fetchMovies = async (pages) => {
   try {
@@ -83,6 +161,7 @@ const fetchMovie = async (movie_name) => {
   }
 };
 
+<<<<<<< HEAD:src/pages/Movie.vue
  async function tomoviedata(index) {
    await movieStore.setMovie({
      id: movies.value[index].id,
@@ -95,6 +174,19 @@ const fetchMovie = async (movie_name) => {
    });
    router.push("MovieData");
  }
+=======
+async function tomoviedata(index) {
+  await movieStore.setMovie({
+    id: movies.value[index].id,
+    movieChineseName: movies.value[index].movieChineseName,
+    type: movies.value[index].type,
+    ratings: movies.value[index].ratings,
+    introduction :movies.value[index].introduction,
+    year : movies.value[index].yearOfRelease
+  });
+  router.push("MovieData");
+}
+>>>>>>> c2f4d691eb9d126a2889fb770fc7cdaf06ca4b8a:src/pages/Main.vue
 
 const initBar = () => {
   const option = {
@@ -246,12 +338,76 @@ onMounted(() => {
 });
 
 </script>
+
 <style scoped>
-* {
-  padding: 0;
-  margin: 0;
+.body{
+ background: #3b3838;
+
+}
+nav {
+  position: fixed;
+  top: 0; /* 明确坐标 */
+  left: 0;
+  right: 0;
+  height: 11vh; /* 固定高度 */
+  z-index: 1000; /* 提高层级 */
+}
+.poster-container {
+  position: relative;
+  padding: 10vh 0 0 0;
+  background: #332c2c;
 }
 
+/* 主视觉区 */
+.main-visual {
+  position: absolute;
+  right: 0;
+  top: 10vh;
+  width: 100%;
+  height: 36vh;
+  background-size: 70% 100%; /* 使用 cover 以确保图片覆盖整个元素 */
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgb(16,21,25);
+  mask-image: linear-gradient(to right, transparent 0%, transparent 20%, rgb(16,21,25) 90%, rgb(16,21,25) 100%
+  );
+}
+
+
+/* 电影列表 */
+.film-list {
+  position: absolute;
+  right: 5vw;
+  top: 10vh;
+  width: 15vw;
+  background: rgba(0,0,0,0.8);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.film-item {
+  display: flex;
+  align-items: center;
+  height: 9vh;
+  background: rgba(255,255,255,0.1);
+  border-left: 3px solid transparent;
+  transition: all 0.6s ease;
+}
+
+.film-item.active {
+  border-color: #a9a898;
+  background: rgba(26, 12, 12, 0.1);
+  transform:  translateZ(20px) scale(1.1); /* 添加 3D 浮动效果 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 增加阴影效果 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
+}
+
+
+.film-title {
+  color: #fff;
+  font-size: 1.1em;
+  letter-spacing: 1px;
+}
 .echart {
   width: 50vw;
 }
@@ -259,13 +415,10 @@ onMounted(() => {
 .container {
   padding-top: 10vh;
   display: grid;
-  grid-template-columns: 50vw 50vw;
-  height: 90vh;
+  grid-template-columns: 100vw;
+  margin-top:36vh;
+  height: 60vh;
   overflow: hidden;
-  background-image: url('@/assets/images/background2.jpg'); /* 添加背景图片 */
-  background-size: cover; /* 使背景图片覆盖整个容器 */
-  background-position: center; /* 将背景图片居中 */
-  background-repeat: no-repeat; /* 防止背景图片重复 */
 }
 
 .media-section {
@@ -280,8 +433,8 @@ onMounted(() => {
   display: grid;
   justify-content: center;
   align-items: start;
-  grid-template-columns: 1fr 1fr;
-  gap: 1vh;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 自动调整列数 */
+  gap: 5vw;
   flex: 1;
 }
 
@@ -294,7 +447,16 @@ onMounted(() => {
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
-
+.media-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute; /* 绝对定位以铺满整个卡片 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 .media-card:hover {
   transform: translateY(-5px);
 }
@@ -304,9 +466,8 @@ onMounted(() => {
   width: 45vw;
   background: white;
   padding: 20px 20px 0;
-  margin-bottom:2.5vh;
+  margin-bottom: 2.5vh;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-
 </style>

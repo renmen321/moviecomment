@@ -201,4 +201,7 @@ h1 {
   box-shadow: 0 5px 15px rgba(195, 128, 159, 0.3);
   /* 动态阴影 */
 }
+.custom-textarea .el-textarea__inner {
+  border-radius: 100px;
+}
 </style>
