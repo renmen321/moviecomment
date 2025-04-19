@@ -121,3 +121,41 @@ export const deleteMovieById = (id: number): Promise<{
     message: string;
     ok: boolean;
 }> => request.delete(`/admin/movies/deleteMovieById?id=${id}`);
+
+export const getAllMovieName = (): Promise<{
+    code: number;
+    message: string;
+    ok: boolean;
+    data: {
+        total: number;
+        list: string[];
+    };
+}> => request.get(`/admin/movies/getAllMovieName`);
+
+export const getMovieCommentByName = (movieName: string,pageNum: number, pageSize: number,type: number): Promise<{
+    code: number;
+    message: string;
+    ok: boolean;
+    data: {
+        total: number;
+        list: {
+            id: number;
+            username: string;
+            date: string;
+            comment: string;
+        }[];
+    };
+}> => request.get(`/admin/movies/getMovieCommentByName?movieName=${movieName}&pageSize=${pageSize}&pageNum=${pageNum}&type=${type}`);
+
+export const getCommentTypeCountByName= (movieName: string): Promise<{
+    code: number;
+    message: string;
+    ok: boolean;
+    data: {
+        total: number;
+        list: {
+            type: number;
+            count: number;
+        }[];
+    };
+}> => request.get(`/admin/movies/getCommentTypeCountByName?movieName=${movieName}`);
