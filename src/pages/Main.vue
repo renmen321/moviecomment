@@ -1,27 +1,6 @@
 <template>
   <div class="body">
   <NavBar />
-<<<<<<< HEAD:src/pages/Movie.vue
-  <div class="container">
-    <!-- 左边影视内容 -->
-    <div class="media-section">
-      <h1>热门影视</h1>
-      <div style="display: flex ;margin-bottom:1vh ">
-        <el-input v-model="movie_name" placeholder="电影名称" style="width: 10vw;"
-                  @change="fetchMovie(movie_name)"></el-input>
-        <el-input-number v-model="page" :min="1" :max="63" @change="fetchMovies(page)"
-                         style="width: 10vw;margin-left: 30vw"></el-input-number>
-      </div>
-      <div class="media-grid">
-        <!-- 电影卡片 -->
-        <div class="media-card" v-for="(movie, index) in movies" :key="index" @click="draw(index)">
-          <img :src="`http://127.0.0.1:8080/api/images/${movie.image}`" @click="tomoviedata(index)"
-               style="width:100%;height:20vh;object-fit:cover">
-          <h3>{{ movie.movieChineseName }}</h3>
-          <p>{{ movie.type }}</p>
-          <p>{{ movie.ratings }}</p>
-        </div>
-=======
   <div class="poster-container">
     <!-- 主视觉区 -->
     <div class="main-visual" :style="{ backgroundImage: `url(${Movies[currentIndex].image})` }">
@@ -36,7 +15,6 @@
           @click="handleClick(index)"
       >
         <div class="film-title">{{ Movie.movieName }}</div>
->>>>>>> c2f4d691eb9d126a2889fb770fc7cdaf06ca4b8a:src/pages/Main.vue
       </div>
     </div>
   </div>
@@ -52,7 +30,7 @@
         <div class="media-grid">
           <!-- 电影卡片 -->
           <div class="media-card" v-for="(movie, index) in movies" :key="index" @click="showDialog(index)">
-            <img :src="`http://127.0.0.1:8080/api/movies/getImage?id=${movie.id}`" @click="tomoviedata(index)"
+            <img :src="`http://127.0.0.1:8080/api/images/${movie.image}`" @click="tomoviedata(index)"
                  style="width:100%;height:20vh;object-fit:cover">
             <h3>{{ movie.movieChineseName }}</h3>
             <p>{{ movie.type }}</p>
@@ -161,7 +139,7 @@ const fetchMovie = async (movie_name) => {
   }
 };
 
-<<<<<<< HEAD:src/pages/Movie.vue
+
  async function tomoviedata(index) {
    await movieStore.setMovie({
      id: movies.value[index].id,
@@ -174,20 +152,6 @@ const fetchMovie = async (movie_name) => {
    });
    router.push("MovieData");
  }
-=======
-async function tomoviedata(index) {
-  await movieStore.setMovie({
-    id: movies.value[index].id,
-    movieChineseName: movies.value[index].movieChineseName,
-    type: movies.value[index].type,
-    ratings: movies.value[index].ratings,
-    introduction :movies.value[index].introduction,
-    year : movies.value[index].yearOfRelease
-  });
-  router.push("MovieData");
-}
->>>>>>> c2f4d691eb9d126a2889fb770fc7cdaf06ca4b8a:src/pages/Main.vue
-
 const initBar = () => {
   const option = {
     title: { // 标题组件
@@ -449,9 +413,8 @@ nav {
 }
 .media-card img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute; /* 绝对定位以铺满整个卡片 */
+  height: 60%;
+
   top: 0;
   left: 0;
   right: 0;
