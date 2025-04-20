@@ -14,7 +14,7 @@ export const getUserPage = (pageNum: number, pageSize: number): Promise<{
       username: string;
       personalLabel: string;
       favoriteType: string;
-      likedMovies: string[];
+      likeMovies: string[];
     }[]
   }
-}> => request.get(`/admin/user/page?pageNum=${pageNum}&pageSize=${pageSize}`)
+}> => request.get(`/user/page?pageNum=${pageNum}&pageSize=${pageSize}`)

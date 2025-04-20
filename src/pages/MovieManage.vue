@@ -41,11 +41,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="movieChineseName" label="片名" sortable />
+        <el-table-column prop="movieChineseName" width="200" label="片名" sortable />
 
-        <el-table-column prop="yearOfRelease" label="年份" width="100" align="center" />
+        <el-table-column prop="yearOfRelease" label="年份" width="200" align="center" />
 
-        <el-table-column label="导演" width="180" align="center">
+        <el-table-column label="导演" width="250" align="center">
           <template #default="{ row }">
             <el-tag type="info" effect="dark">{{ row.director }}</el-tag>
           </template>

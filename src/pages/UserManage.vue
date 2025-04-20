@@ -58,7 +58,7 @@
             <template #default="scope">
               <div class="movies">
                 <el-tag
-                    v-for="movie in scope.row.likedMovies"
+                    v-for="movie in scope.row.likeMovies"
                     :key="movie"
                     type="info"
                     class="movie"
@@ -115,7 +115,7 @@ interface User {
   admin: boolean,
   email: string,
   personalLabel : string,
-  likedMovies: string[],
+  likeMovies: string[],
   favoriteType : string
 }
 // 响应式状态管理
@@ -125,6 +125,7 @@ let total = ref(0)
 const searchQuery = ref('')
 // 方法：将 favoriteType 字符串转换为数组
 const getFavoriteTypesArray = (favoriteType: string): string[] => {
+  if(favoriteType)
   return favoriteType.trim().split(/\s+/).filter(type => type.length > 0);
 }
 onMounted(async () => {
