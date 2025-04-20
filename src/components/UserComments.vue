@@ -14,21 +14,21 @@
         empty-text="暂无评论"
     >
       <el-table-column
-          prop="movieTitle"
+          prop="movieChineseName"
           label="影视作品"
           width="100%"
           align="center"
           show-overflow-tooltip
       />
       <el-table-column
-          prop="date"
+          prop="time"
           label="评论时间"
           width="100%"
           align="center"
           show-overflow-tooltip
       />
       <el-table-column
-          prop="content"
+          prop="comment"
           label="评论内容"
           min-width="100%"
           show-overflow-tooltip
