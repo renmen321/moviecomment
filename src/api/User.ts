@@ -18,3 +18,9 @@ export const getUserPage = (pageNum: number, pageSize: number): Promise<{
     }[]
   }
 }> => request.get(`/user/page?pageNum=${pageNum}&pageSize=${pageSize}`)
+
+export const deleteUserById = (id: number): Promise<{
+  code: number;
+  message: string;
+  ok: boolean;
+}> => request.delete(`/user/${id}`)

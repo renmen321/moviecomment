@@ -16,13 +16,13 @@
       </div>
 
       <el-table :data="movies" style="width: 100%; margin-top: 16px;" v-loading="loading" border>
-        <el-table-column label="海报" width="150" align="center">
+        <el-table-column label="海报" width="165" align="center">
           <template #default="{ row }">
             <el-image v-if="row.movieImage === undefined" :src="`http://127.0.0.1:8080/api/images/${row.image}`"
               class="poster-image" fit="cover"
-              style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;" />
+              style="width: 13vh; height: 16vh; border: 1px dashed #ccc; border-radius: 4px;" />
             <el-image v-else-if="true" :src="row.image" class="poster-image" fit="cover"
-              style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;" />
+              style="width: 13vh; height: 16vh; border: 1px dashed #ccc; border-radius: 4px;" />
           </template>
         </el-table-column>
 
@@ -46,7 +46,7 @@
         </el-table-column>
         <el-table-column label="简介" width="300">
           <template #default="{ row }">
-            <div class="introduction">{{ row.introduction }}</div>
+            <div class="introduction" :title="row.introduction">{{ row.introduction }}</div>
           </template>
         </el-table-column>
 
@@ -140,19 +140,7 @@ const router = useRouter();
 const loading = ref(true);
 
 // 电影数据
-const movies = reactive<movie[]>([
-  {
-    id: 1,
-    // poster: "https://example.com/poster1.jpg",
-    movieChineseName: "肖申克的救赎",
-    yearOfRelease: "1994",
-    director: "弗兰克·德拉邦特",
-    type: " ",
-    introduction: "一位被冤枉入狱的银行家安迪，在监狱中通过智慧和毅力最终获得自由的故事。",
-    image: "https://example.com/poster1.jpg",
-    movieImage: undefined,
-  },
-]);// 分页相关
+const movies = reactive<movie[]>([]);// 分页相关
 let pageSize = ref(10); // 每页显示4个电影
 const pageNum = ref(1);
 const total = ref(0);
@@ -378,4 +366,12 @@ const handlePageChange = async (pageNum: number) => {
   border-radius: 4px;
   display: block;
 }
+.introduction {
+  white-space: nowrap; /* 防止文本换行 */
+  overflow: hidden; /* 隐藏溢出的文本 */
+  text-overflow: ellipsis; /* 显示省略号 */
+  max-width: 100%; /* 确保宽度不超过容器 */
+  cursor: pointer; /* 鼠标悬停时显示为指针 */
+}
+
 </style>

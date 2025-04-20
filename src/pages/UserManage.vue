@@ -100,7 +100,7 @@
 import {ref, reactive, computed, onMounted} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminSidebar from "@/components/AdminSidebar.vue";
-import {getUserPage} from "@/api/User.ts";
+import {deleteUserById, getUserPage} from "@/api/User.ts";
 import {getAllMovieName, getCommentTypeCountByName, getMovieCommentByName} from "@/api/Movies.ts";
 import {ElMessage} from "element-plus";
 
@@ -154,7 +154,19 @@ const handlePageChange= async (newPageNum: number) => {
     ElMessage.error('获取用户数据失败');
   }
 }
-// 退出功能
+//删除用户
+  const deleteUser = async (id: number) => {
+    const response = await deleteUserById(id);
+    if(response.ok){
+      ElMessage.success('删除成功');
+      const index = users.findIndex(user => user.id === id);
+      if (index !== -1) {
+        users.splice(index, 1);
+      }
+    }else {
+      ElMessage.error('删除失败');
+    }
+  }
 
 </script>
 
