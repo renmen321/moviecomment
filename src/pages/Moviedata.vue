@@ -1,3 +1,4 @@
+<!-- Moviedata.vue -->
 <template>
   <!-- 引入导航栏 -->
   <NavBar />
@@ -11,111 +12,100 @@
         <div>
           <h1 class="title">{{ movie.movieChineseName }}</h1>
           <div class="meta">
-            <span class="year" style="font-size: 2vw;color: #7b7bba">{{ movie.year }}</span>
-            <span class="genre" style="color: #bd7474;font-size: 1.2vw;margin-top: 0.9vh">{{ movie.type }}</span>
-            <div class="rating" style="font-size: 1.1vw;margin-top: 0.92vh">
+            <span class="year" style="font-size: 2vw; color: #7b7bba">{{ movie.year }}</span>
+            <span class="genre" style="color: #bd7474; font-size: 1.2vw; margin-top: 0.9vh">{{ movie.type }}</span>
+            <div class="rating" style="font-size: 1.1vw; margin-top: 0.92vh">
               <span v-for="star in movie.ratings" :key="star" class="star">★</span>
               <span class="score">{{ movie.ratings }}</span>
             </div>
           </div>
         </div>
-        <div class="synopsis">
-          <h3>剧情简介</h3>
+        <!-- 使用 el-card 组件美化剧情简介 -->
+        <el-card class="box-card synopsis"
+                 style="width:30vw"
+                 :body-style="{ maxHeight: '20vh', overflowY: 'auto' }">
+          <template #header>
+            <div class="card-header">
+              <span>剧情简介</span>
+            </div>
+          </template>
           <p>{{ movie.introduction }}</p>
-        </div>
+        </el-card>
       </div>
     </div>
     <!-- 评论区域 -->
     <div class="comment-area">
-      <div class="comment-header">
-        <h2>观众评论（共 {{ totalComments }} 条）</h2>
-        <button class="comment-btn" @click="showCommentModal">发表评论</button>
-      </div>
-
-      <div class="comment-container">
-        <!-- 好评 -->
-        <div class="comment-column good">
-          <div class="comment-title">
-            <span class="tag">好评（{{ goodCommentsTotal }}）</span>
+      <el-card class="box-card">
+        <template #header>
+          <div class="card-header">
+            <h2>观众评论（共 {{ totalComments }} 条）</h2>
+            <button class="comment-btn" @click="showCommentModal">发表评论</button>
           </div>
-          <div class="comment-list">
+        </template>
+        <!-- 使用 el-tabs 和 el-tab-pane 组件分组显示评论 -->
+        <el-tabs type="border-card" v-model="activeTab">
+          <el-tab-pane :label="`好评（${goodCommentsTotal}）`" name="good" style="background: rgba(76, 175, 80, 0.05);
+         border: 2px solid #4CAF50;">
             <div v-for="(comment, index) in goodComments" :key="'good' + index" class="comment-item">
               {{ comment }}
             </div>
-          </div>
-          <el-pagination
-              background
-              :pager-count="4"
-              layout="prev, pager, next"
-              :total="goodCommentsTotal"
-              :page-size="pageSize"
-              :current-page="goodCurrentPage"
-              @current-change="handleGoodCurrentChange"
-          />
-        </div>
-
-        <!-- 中评 -->
-        <div class="comment-column medium">
-          <div class="comment-title">
-            <span class="tag">中评（{{ mediumCommentsTotal }}）</span>
-          </div>
-          <div class="comment-list">
+            <el-pagination
+                background
+                :pager-count="4"
+                layout="prev, pager, next"
+                :total="goodCommentsTotal"
+                :page-size="pageSize"
+                :current-page="goodCurrentPage"
+                @current-change="handleGoodCurrentChange"
+            />
+          </el-tab-pane>
+          <el-tab-pane :label="`中评（${mediumCommentsTotal}）`" name="medium" style="background: rgba(255, 193, 7, 0.05);
+  border: 2px solid #FFC107;">
             <div v-for="(comment, index) in mediumComments" :key="'medium' + index" class="comment-item">
               {{ comment }}
             </div>
-          </div>
-          <el-pagination
-              background
-              :pager-count="4"
-              layout="prev, pager, next"
-              :total="mediumCommentsTotal"
-              :page-size="pageSize"
-              :current-page="mediumCurrentPage"
-              @current-change="handleMediumCurrentChange"
-          />
-        </div>
-
-        <!-- 差评 -->
-        <div class="comment-column bad">
-          <div class="comment-title">
-            <span class="tag">差评（{{ badCommentsTotal }}）</span>
-          </div>
-          <div class="comment-list">
+            <el-pagination
+                background
+                :pager-count="4"
+                layout="prev, pager, next"
+                :total="mediumCommentsTotal"
+                :page-size="pageSize"
+                :current-page="mediumCurrentPage"
+                @current-change="handleMediumCurrentChange"
+            />
+          </el-tab-pane>
+          <el-tab-pane :label="`坏评（${badCommentsTotal}）`" name="bad" style=" background: rgba(244, 67, 54, 0.05);
+  border: 2px solid #F44336;">
             <div v-for="(comment, index) in badComments" :key="'bad' + index" class="comment-item">
               {{ comment }}
             </div>
-          </div>
-          <el-pagination
-              background
-              :pager-count="4"
-              layout="prev, pager, next"
-              :total="badCommentsTotal"
-              :page-size="pageSize"
-              :current-page="badCurrentPage"
-              @current-change="handleBadCurrentChange"
-          />
-        </div>
-
-      </div>
+            <el-pagination
+                background
+                :pager-count="4"
+                layout="prev, pager, next"
+                :total="badCommentsTotal"
+                :page-size="pageSize"
+                :current-page="badCurrentPage"
+                @current-change="handleBadCurrentChange"
+            />
+          </el-tab-pane>
+        </el-tabs>
+      </el-card>
     </div>
     <!-- 评论模态框 -->
     <div v-if="showModal" class="modal">
       <div class="modal-content">
         <h3>发表你的评论</h3>
-        <textarea v-model="newComment" placeholder="请输入你的评论..." class="comment-input"></textarea>
-        <div class="rating-select">
-          <label>评分：</label>
-          <select v-model="selectedRating">
-            <option value="5">★★★★★</option>
-            <option value="4">★★★★☆</option>
-            <option value="3">★★★☆☆</option>
-            <option value="2">★★☆☆☆</option>
-            <option value="1">★☆☆☆☆</option>
-          </select>
-        </div>
+        <el-input
+            v-model="newComment"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入你的评论..."
+            class="comment-input"
+        />
         <div class="modal-actions">
-          <button class="cancel" @click="cancelComment">返回</button>
-          <button class="submit" @click="submitComment">提交</button>
+          <el-button class="cancel" @click="cancelComment">返回</el-button>
+          <el-button type="primary" class="submit" @click="submitComment">提交</el-button>
         </div>
       </div>
     </div>
@@ -123,17 +113,19 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed, onMounted} from 'vue';
-import {useMovieStore} from "@/store/movieStore.ts";
-import { reqGetMovieCommentById, reqPostComment} from "@/api/test.ts";
+import { ref, computed, onMounted } from 'vue';
+import { useMovieStore } from "@/store/movieStore.ts";
+import { reqGetMovieCommentById, reqPostComment } from "@/api/test.ts";
 import NavBar from "@/components/Navbar.vue";
+
 const movieStore = useMovieStore();
 
-const postComment = async (id,comment,type) => {
+const postComment = async (id, comment, type) => {
   try {
-    const response = await reqPostComment({id,comment,type})
+    const response = await reqPostComment({ id, comment, type });
     if (response.ok) {
-
+      // 刷新评论列表
+      fetchComments();
     } else {
       console.error('提交评论失败:', response.message);
     }
@@ -142,36 +134,21 @@ const postComment = async (id,comment,type) => {
   }
 };
 
-
 onMounted(async () => {
-  movie.value=movieStore.movie;
+  movie.value = movieStore.movie;
   if (movie.value.id) {
-    try {
-      const goodResponse = await reqGetMovieCommentById(movie.value.id, goodCurrentPage.value, pageSize.value, 0);
-      goodComments.value = goodResponse.data.list.map(item => item.comment);
-      goodCommentsTotal.value=goodResponse.data.total;
-
-      const mediumResponse = await reqGetMovieCommentById(movie.value.id, mediumCurrentPage.value, pageSize.value, 1);
-      mediumComments.value = mediumResponse.data.list.map(item => item.comment);
-      mediumCommentsTotal.value=mediumResponse.data.total;
-
-      const badResponse = await reqGetMovieCommentById(movie.value.id, badCurrentPage.value, pageSize.value, 2);
-      badComments.value = badResponse.data.list.map(item => item.comment);
-      badCommentsTotal.value=badResponse.data.total;
-
-    } catch (error) {
-      console.error('Error fetching initial comments:', error);
-    }
+    fetchComments();
   }
-})
+});
+
 // 电影数据
 let movie = ref({});
-
 
 // 模态框状态
 const showModal = ref(false);
 const newComment = ref('');
 const selectedRating = ref('5');
+
 // 分页相关
 const pageSize = ref(5); // 每页显示的评论数量
 
@@ -190,6 +167,27 @@ const badCurrentPage = ref(1);
 const badComments = ref<string[]>([]);
 const badCommentsTotal = ref(0);
 
+// 当前选中的标签
+const activeTab = ref('good');
+
+// 获取评论数据
+const fetchComments = async () => {
+  try {
+    const goodResponse = await reqGetMovieCommentById(movie.value.id, goodCurrentPage.value, pageSize.value, 0);
+    goodComments.value = goodResponse.data.list.map(item => item.comment);
+    goodCommentsTotal.value = goodResponse.data.total;
+
+    const mediumResponse = await reqGetMovieCommentById(movie.value.id, mediumCurrentPage.value, pageSize.value, 1);
+    mediumComments.value = mediumResponse.data.list.map(item => item.comment);
+    mediumCommentsTotal.value = mediumResponse.data.total;
+
+    const badResponse = await reqGetMovieCommentById(movie.value.id, badCurrentPage.value, pageSize.value, 2);
+    badComments.value = badResponse.data.list.map(item => item.comment);
+    badCommentsTotal.value = badResponse.data.total;
+  } catch (error) {
+    console.error('Error fetching initial comments:', error);
+  }
+};
 
 // 处理好评页码变化
 const handleGoodCurrentChange = async (page: number) => {
@@ -249,17 +247,20 @@ const submitComment = () => {
 
   const rating = parseInt(selectedRating.value);
   const type = rating >= 4 ? 0 : rating === 3 ? 1 : 2;
-  if (rating >= 4) {
-    goodComments.value.push(newComment.value);
-  } else if (rating === 3) {
-    mediumComments.value.push(newComment.value);
-  } else {
-    badComments.value.push(newComment.value);
+  postComment(movie.value.id, newComment.value, type);
+  // 根据评分类型将新评论添加到对应数组的开头
+  if (type === 0) {
+    goodComments.value.unshift(newComment.value);
+    goodCommentsTotal.value += 1;
+  } else if (type === 1) {
+    mediumComments.value.unshift(newComment.value);
+    mediumCommentsTotal.value += 1;
+  } else if (type === 2) {
+    badComments.value.unshift(newComment.value);
+    badCommentsTotal.value += 1;
   }
-  postComment(movie.value.id,newComment.value,type);
   showModal.value = false;
   newComment.value = '';
-
 };
 </script>
 
@@ -271,15 +272,16 @@ const submitComment = () => {
   box-shadow: 0 0.5vh 1.5vh rgba(0, 0, 0, 0.1);
   padding: 10vh 0 0 0;
   width: 100vw;
-  height:auto;
+  height: auto;
   justify-content: center;
   align-items: center;
-  background-image: url('@/assets/images/background4.jpg'); /* 添加背景图片 */
-  background-size: 100% 100%; /* 使背景图片覆盖整个容器 */
+  background-color: rgb(16, 21, 25);
+  background-image: url('@/assets/images/background5.jpg'); /* 添加背景图片 */
+  background-size: cover; /* 使背景图片覆盖整个容器 */
   background-position: center; /* 将背景图片居中 */
   background-repeat: no-repeat; /* 防止背景图片重复 */
-
 }
+
 /* 电影信息区域 */
 .movie-info {
   display: flex;
@@ -319,24 +321,25 @@ const submitComment = () => {
 
 .synopsis {
   width: 43vw;
-  height: 20vh;
   background: #f8f9fa;
   padding: 10px;
   border-radius: 8px;
   overflow-y: auto; /* 启用垂直滚动 */
 }
+
 .synopsis h3 {
   font-size: 1.5rem; /* 调整字体大小 */
   margin-bottom: 10px; /* 添加底部间距 */
 }
+
 /* 评论区域 */
 .comment-area {
-  height: 45vh;
   width: 80vw;
   background: #fff;
   border-radius: 12px;
-  padding: 2VW;
+  padding: 2vw;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 2vh;
 }
 
 .comment-header {
@@ -368,33 +371,17 @@ const submitComment = () => {
 }
 
 .comment-column {
-  width:25vw;
+  width: 25vw;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
 }
 
-.good {
-  background: rgba(76, 175, 80, 0.05);
-  border: 2px solid #4CAF50;
-}
-
-.medium {
-  background: rgba(255, 193, 7, 0.05);
-  border: 2px solid #FFC107;
-}
-
-.bad {
-
-  background: rgba(244, 67, 54, 0.05);
-  border: 2px solid #F44336;
-}
-
-
 
 .el-pager li {
   font-size: 12px !important;
 }
+
 .comment-title {
   margin-bottom: 15px;
   padding-bottom: 10px;
@@ -444,6 +431,7 @@ const submitComment = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000; /* 确保模态框在最上层 */
 }
 
 .modal-content {
@@ -451,6 +439,8 @@ const submitComment = () => {
   padding: 30px;
   border-radius: 12px;
   width: 500px;
+  position: relative; /* 确保内容相对定位 */
+  z-index: 1001; /* 确保内容在模态框背景之上 */
 }
 
 .comment-input {
@@ -501,4 +491,57 @@ button:hover {
   opacity: 0.9;
 }
 
+/* el-card 样式 */
+.box-card {
+  width: 100%;
+  margin-bottom: 2vh;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.card-header .comment-btn {
+  font-size: 1rem;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+.comment-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.comment-header .comment-btn {
+  font-size: 1rem;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+/* el-tabs 样式 */
+.el-tabs__item.is-active {
+  color: #4CAF50;
+}
+
+.el-tabs__nav-wrap::after {
+  background: #4CAF50;
+}
+
+.el-tabs__content {
+  padding: 10px 0;
+}
+
+.el-pagination {
+  margin-top: 10px;
+  justify-content: flex-end;
+}
 </style>
