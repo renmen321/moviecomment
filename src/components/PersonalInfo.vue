@@ -36,19 +36,19 @@
     <!-- 用户名 -->
     <div class="info-item">
       <div class="label">用户名：</div>
-      <div class="value">{{ formData.username || '未设置' }}</div>
+      <div v-if="!isEditing" class="value">{{ formData.username || '未设置' }}</div>
+      <el-input
+          v-else
+          v-model="localData.username"
+          placeholder="请输入用户名"
+          class="edit-field"
+      />
     </div>
 
     <!-- 姓名 -->
     <div class="info-item">
       <div class="label">姓名：</div>
-      <div v-if="!isEditing" class="value">{{ formData.name || '未设置' }}</div>
-      <el-input
-          v-else
-          v-model="localData.name"
-          placeholder="请输入姓名"
-          class="edit-field"
-      />
+      <div class="value">{{ formData.name || '未设置' }}</div>
     </div>
 
     <!-- 电影类型 -->
@@ -122,7 +122,7 @@ import { ElMessage, UploadRequestOptions } from 'element-plus'
 const props = defineProps<{
   formData: {
     profilePicture: string
-   username: string
+    username: string
     name: string
     movieTypes: string[]
     favoriteMovie: string[]
@@ -133,6 +133,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update'])
 
+
 // 编辑状态
 const isEditing = ref(false)
 
@@ -142,9 +143,8 @@ const localData = reactive({
   username: '',
   name: '',
   movieTypes: [] as string[],
-  favoriteMovie:[] as string[],
-  slogan: '',
-  avatar: ''
+  favoriteMovie: [] as string[],
+  slogan: ''
 })
 
 // 初始化数据
@@ -155,8 +155,7 @@ const initData = () => {
     name: props.formData.name,
     movieTypes: [...props.formData.movieTypes],
     favoriteMovie: [...props.formData.favoriteMovie],
-    slogan: props.formData.slogan,
-    avatar: props.formData.avatar
+    slogan: props.formData.slogan
   })
 }
 
@@ -177,12 +176,14 @@ const saveChanges = () => {
   const submitData = {
     ...localData,
     avatar: localData.profilePicture, // 同步头像URL
-    name: localData.name.trim(),
-    slogan: localData.slogan.trim()
+    username: localData.username.trim(), // 同步用户名
+    slogan: localData.slogan.trim(), // 同步个人标语
+    movieTypes: [...localData.movieTypes], // 同步电影类型
+    favoriteMovie: [...localData.favoriteMovie] // 同步喜欢的电影
   }
 
-  if (!submitData.name) {
-    ElMessage.error('姓名不能为空')
+  if (!submitData.username) {
+    ElMessage.error('用户名不能为空')
     return
   }
 
@@ -218,7 +219,6 @@ const handleAvatarUpload = async (options: UploadRequestOptions) => {
     ElMessage.error('上传失败')
   }
 }
-
 // 监听数据变化
 watch(
     () => props.formData,
@@ -234,8 +234,7 @@ watch(
   background: #FFFFFF;
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  padding: 3vh ;
-
+  padding: 3vh;
 }
 
 .header-wrapper {
@@ -245,7 +244,6 @@ watch(
   margin-bottom: 5vh;
   padding-bottom: 5vh;
   border-bottom: 1px solid #EBEEF5;
-
 }
 
 .info-item {

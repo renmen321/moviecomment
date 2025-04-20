@@ -100,98 +100,15 @@ const activeNav = ref('personalInfo')
 const comments = ref([
   {
     id: 1,
-    movieTitle: '电影A',
-    date: '2023-10-01 12:34:56',
-    content: '这是一部非常棒的电影！这是一部非常棒的电影！这是一部非常棒的电影！'
+    movieChineseName: '电影A',
+    time: '2023-10-01 12:34:56',
+    comment: '这是一部非常棒的电影！这是一部非常棒的电影！这是一部非常棒的电影！'
   },
   {
     id: 2,
-    movieTitle: '电影B',
-    date: '2023-09-25 09:12:34',
-    content: '剧情很吸引人，值得一看。'
-  },
-  {
-    id: 3,
-    movieTitle: '电影A',
-    date: '2023-10-01 12:34:56',
-    content: '这是一部非常棒的电影！'
-  },
-  {
-    id: 4,
-    movieTitle: '电影B',
-    date: '2023-09-25 09:12:34',
-    content: '剧情很吸引人，值得一看。'
-  },
-  {
-    id: 5,
-    movieTitle: '电影A',
-    date: '2023-10-01 12:34:56',
-    content: '这是一部非常棒的电影！'
-  },
-  {
-    id: 6,
-    movieTitle: '电影B',
-    date: '2023-09-25 09:12:34',
-    content: '剧情很吸引人，值得一看。'
-  },
-  {
-    id: 7,
-    movieTitle: '电影A',
-    date: '2023-10-01 12:34:56',
-    content: '这是一部非常棒的电影！'
-  },
-  {
-    id: 8,
-    movieTitle: '电影B',
-    date: '2023-09-25 09:12:34',
-    content: '剧情很吸引人，值得一看。'
-  },{
-    id: 9,
-    movieTitle: '电影A',
-    date: '2023-10-01 12:34:56',
-    content: '这是一部非常棒的电影！'
-  },
-  {
-    id: 10,
-    movieTitle: '电影B',
-    date: '2023-09-25 09:12:34',
-    content: '剧情很吸引人，值得一看。'
-  },
-  {
-    id: 11,
-    movieTitle: '电影A',
-    date: '2023-10-01 12:34:56',
-    content: '这是一部非常棒的电影！'
-  },
-  {
-    id: 12,
-    movieTitle: '电影B',
-    date: '2023-09-25 09:12:34',
-    content: '剧情很吸引人，值得一看。'
-  },
-  {
-    id: 13,
-    movieTitle: '电影A',
-    date: '2023-10-01 12:34:56',
-    content: '这是一部非常棒的电影！'
-  },
-  {
-    id: 14,
-    movieTitle: '电影B',
-    date: '2023-09-25 09:12:34',
-    content: '剧情很吸引人，值得一看。'
-  },
-  {
-    id: 15,
-    movieTitle: '电影A',
-    date: '2023-10-01 12:34:56',
-    content: '这是一部非常棒的电影！'
-  },
-  {
-    id: 16,
-    movieTitle: '电影B',
-    date: '2023-09-25 09:12:34',
-    content: '剧情很吸引人，值得一看。'
+    movieChineseName: '电影B',
+    time: '2023-09-25 09:12:34',
+    comment: '剧情很吸引人，值得一看。'
   }
 ])
 
