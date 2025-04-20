@@ -9,7 +9,8 @@ html
       <h2 class="slogan2">Welcome To</h2>
       <h1 class="slogan1">评心而论</h1>
       <h2 class="slogan2">Speak Honestly</h2>
-      <h1 class="slogan5">电影评论分析专家</h1>
+      <h1 class="slogan5">电影评论分析平台</h1>
+      <h2 class="slogan5">Movie Comment Analysis Platform</h2>
     </div>
 
     <!-- 第二屏内容 -->
@@ -19,17 +20,19 @@ html
         <p class="sub-slogan">探索光影世界的无限可能</p>
       </div>
       <div class="media-visual" ref="mediaVisual">
-        <img src="@/assets/images/2.jpg" alt="电影场景" class="movie-image">
+        <img src="@/assets/images/2.jpg"  class="movie-image">
       </div>
     </section>
 
-    <!-- 第三屏内容 -->
     <section class="movie-section comment-section">
+      <!-- 左侧图片容器 -->
       <div class="media-visual skew-container">
         <div class="skew-mask">
-          <img src="@/assets/images/3.png" alt="用户评论" class="movie-image">
+          <img src="@/assets/images/3.png"  class="movie-image">
         </div>
       </div>
+
+      <!-- 右侧文字内容 -->
       <div class="text-panel comment-content">
         <h1 class="movie-title"><span class="neon-text">这里有海量评论</span></h1>
         <p class="sub-slogan">在光影交织中寻找思想的共鸣</p>
@@ -299,62 +302,39 @@ function goToPage() {
   transform: translateY(0);
 }
 /* 第三屏 */
-.skew-container {
-  order: -1;
-  clip-path: polygon(0 0, 85% 0, 65% 100%, 0 100%);
-  transform: perspective(1200px) rotateY(12deg) translateX(-15%);
-  overflow: hidden;
-  position: relative;
+.comment-section {
+  flex-direction: row; /* 保持横向排列 */
 }
 
-.skew-mask {
-  transform: skewX(-10deg);
-  margin-left: -8%;
-  width: 118%;
-  position: relative;
-}
-
-.skew-mask::before {
-  content: '';
-  position: absolute;
-  left: 100px;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(90deg,
-  rgba(0,0,0,0) 30%,
-  rgba(0,0,0,0.6) 60%,
-  rgba(0,0,0,0.9) 80%);
-  mix-blend-mode: multiply;
-  z-index: 2;
-}
 
 .comment-content {
-  padding-left: 12%;
-  transform: translateX(20%);
-  position: relative;
+  padding-left: 0;
+  padding-right: 15%;
+  transform: translateX(-10%);
 }
 
-/* 动态效果优化 */
-.comment-section.active .skew-container {
-  clip-path: polygon(0 0, 90% 0, 70% 100%, 0% 100%);
-  transform: perspective(1200px) rotateY(8deg) translateX(-5%);
-  transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
 
-.comment-section.active .comment-content {
-  transform: translateX(0);
-  transition: transform 1s 0.3s;
-}
 
-/* 光标追踪增强 */
+/* 光标悬停效果修正 */
 .skew-container:hover {
-  transform: perspective(1200px) rotateY(5deg) translateX(-8%);
+  transform: perspective(1200px) rotateY(-5deg) translateX(8%) !important;
 }
 
 .skew-container:hover .movie-image {
-  transform: scale(1.08) translateX(8%);
+  transform: scale(1.08) translateX(-8%);
 }
+
+/* 文字面板对齐调整 */
+.text-panel.comment-content {
+  align-self: center;
+  text-align: right;
+}
+
+.neon-text {
+  animation: neonGlow 1.5s ease-in-out infinite alternate;
+}
+
+
 .fourth-section {
   background: #000000; /* 改为纯黑背景 */
   display: flex;

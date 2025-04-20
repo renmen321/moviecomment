@@ -23,7 +23,7 @@
           class="nav-item"
       >
         <span class="icon">🚪</span>
-        <span class="text">切换到客户端</span>
+        <span class="text">客户端</span>
         <div class="hover-indicator"></div>
       </a>
     </div>
@@ -51,7 +51,7 @@ const activeMenu = computed(() => route.path)
 
 // 退出功能
 const logout = () => {
-  router.push('/Comment')
+  router.push('/Main')
 }
 </script>
 

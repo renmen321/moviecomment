@@ -34,7 +34,6 @@
                  style="width:100%;height:20vh;object-fit:cover">
             <h3>{{ movie.movieChineseName }}</h3>
             <p>{{ movie.type }}</p>
-            <p>{{ movie.ratings }}</p>
           </div>
         </div>
       </div>
