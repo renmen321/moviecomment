@@ -11,7 +11,7 @@
       <template v-if="isLoggedIn">
         <button @click="toAdmin()" v-if="isAdmin" class="nav-item">管理端</button>
         <el-image
-            :src="profilePicture"
+            :src="ProfilePicture"
             class="user-avatar"
             fit="cover"
             @click="toUser()"
@@ -54,7 +54,7 @@ import SelectMovieTypeDialog from '@/components/SelectMovieTypeDialog.vue';
 const isLoggedIn = ref(false);
 const isAdmin = ref(false);
 const userName = ref('');
-const userProfilePicture = ref('');
+const ProfilePicture = ref('');
 const loginDialogVisible = ref(false);
 const registerDialogVisible = ref(false);
 const resetDialogVisible = ref(false);
@@ -67,12 +67,12 @@ function updateUserData() {
     isLoggedIn.value = true;
     userName.value = parsedData.username; // 确保使用正确的字段
     isAdmin.value = parsedData.admin;
-    profilePicture.value = parsedData.profilePicture; // 确保使用正确的字段
+    ProfilePicture.value = parsedData.profilePicture; // 确保使用正确的字段
   } else {
     isLoggedIn.value = false;
     isAdmin.value = false;
     userName.value = '';
-    userProfilePicture.value = '';
+    ProfilePicture.value = '';
   }
 }
 
