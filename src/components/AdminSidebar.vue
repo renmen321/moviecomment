@@ -51,7 +51,7 @@ const activeMenu = computed(() => route.path)
 
 // 退出功能
 const logout = () => {
-  router.push('/Comment')
+  router.push('/Main')
 }
 </script>
 

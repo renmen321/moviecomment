@@ -306,23 +306,6 @@ function goToPage() {
   flex-direction: row; /* 保持横向排列 */
 }
 
-/* 移除原有order设置 */
-.skew-container {
-  order: 0 !important; /* 保持自然顺序 */
-  clip-path: polygon(0 0, 85% 0, 65% 100%, 0 100%);
-  margin-right: 5%;
-}
-
-
-
-.skew-mask::before {
-  background: linear-gradient(90deg,
-  rgba(0,0,0,0.9) 20%,
-  rgba(0,0,0,0.6) 40%,
-  rgba(0,0,0,0) 70%);
-  left: 0;
-  right: 100px;
-}
 
 .comment-content {
   padding-left: 0;
@@ -330,11 +313,7 @@ function goToPage() {
   transform: translateX(-10%);
 }
 
-/* 动态效果调整 */
-.comment-section.active .skew-container {
-  clip-path: polygon(0 0, 90% 0, 70% 100%, 0% 100%);
-  transform: perspective(1200px) rotateY(-8deg) translateX(5%);
-}
+
 
 /* 光标悬停效果修正 */
 .skew-container:hover {
