@@ -41,9 +41,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="movieChineseName" label="片名" sortable />
+        <el-table-column prop="movieChineseName" label="片名" width="200"sortable />
 
-        <el-table-column prop="yearOfRelease" label="年份" width="100" align="center" />
+        <el-table-column prop="yearOfRelease" label="年份" width="200" align="center" />
 
         <el-table-column label="导演" width="180" align="center">
           <template #default="{ row }">
@@ -62,6 +62,11 @@
             >
               {{ type }}
             </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="简介" width="300">
+          <template #default="{ row }">
+            <div class="introduction">{{ row.introduction }}</div>
           </template>
         </el-table-column>
 
