@@ -69,7 +69,7 @@ const formData = ref({
   profilePicture: '',
   username: '',
   name: '',
-  movieTypes: [] as string[],//定义为数组
+  movieTypes: '',
   favoriteMovie: [] as string[],//定义为数组
   tags: '',
   password: '',
@@ -84,7 +84,7 @@ onMounted(() => {
     formData.value.name = parsedData.name;
     formData.value.email = parsedData.email;
     formData.value.password = parsedData.password;
-    formData.value.movieTypes = ["科幻", "动作"]; // 根据需要初始化
+    formData.value.movieTypes = "科幻 动作" // 根据需要初始化
     formData.value.favoriteMovie = ["1","2"]; // 根据需要初始化
     formData.value.tags = ''; // 根据需要初始化
 

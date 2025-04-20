@@ -275,11 +275,10 @@ const submitComment = () => {
   height: auto;
   justify-content: center;
   align-items: center;
-  background-color: rgb(16, 21, 25);
-  background-image: url('@/assets/images/background5.jpg'); /* 添加背景图片 */
-  background-size: cover; /* 使背景图片覆盖整个容器 */
-  background-position: center; /* 将背景图片居中 */
-  background-repeat: no-repeat; /* 防止背景图片重复 */
+  background-image: url('@/assets/images/background.5.jpg'); /* 添加背景图片 */
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* 电影信息区域 */
@@ -445,12 +444,12 @@ const submitComment = () => {
 
 .comment-input {
   width: 100%;
-  height: 150px;
+  height: 100%;
   margin: 15px 0;
   padding: 10px;
   border: 2px solid #ddd;
   border-radius: 8px;
-  resize: vertical;
+  resize: none;
 }
 
 .rating-select {

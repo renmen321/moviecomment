@@ -4,14 +4,14 @@
     <img :src="logo" class="logo" alt="Logo">
     <div class="nav-links">
       <button @click="toMain()" class="nav-item">主页</button>
-      <button @click="toComment()" class="nav-item">评价</button>
+      <button @click="toComment()" class="nav-item">功能展示</button>
       <button @click="toFeedBack()" class="nav-item">反馈</button>
     </div>
     <div class="nav-links-right">
       <template v-if="isLoggedIn">
         <button @click="toAdmin()" v-if="isAdmin" class="nav-item">管理端</button>
         <el-image
-            :src="userProfilePicture"
+            :src="profilePicture"
             class="user-avatar"
             fit="cover"
             @click="toUser()"
@@ -67,7 +67,7 @@ function updateUserData() {
     isLoggedIn.value = true;
     userName.value = parsedData.username; // 确保使用正确的字段
     isAdmin.value = parsedData.admin;
-    userProfilePicture.value = parsedData.profilePicture; // 确保使用正确的字段
+    profilePicture.value = parsedData.profilePicture; // 确保使用正确的字段
   } else {
     isLoggedIn.value = false;
     isAdmin.value = false;
