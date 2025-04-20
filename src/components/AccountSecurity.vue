@@ -120,7 +120,7 @@ import { ElMessage } from 'element-plus'
 const props = defineProps<{
   formData: {
     email: string
-    password: string // 假设 formData 中包含 password 字段
+    password: string
   }
 }>()
 
@@ -143,7 +143,7 @@ const pwdForm = reactive({
   confirmPassword: ''
 })
 
-// 数据初始化
+// 邮箱默认为原邮箱
 watch(showEmailEdit, val => val && (emailForm.newEmail = props.formData.email))
 
 // 获取邮箱验证码

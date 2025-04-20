@@ -56,7 +56,7 @@
       <el-pagination
           background
           layout="prev, pager, next"
-          :total="totalItems"
+          :total="total"
           :page-size="pageSize"
           :current-page="currentPage"
           @current-change="handlePageChange"
@@ -71,9 +71,9 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 interface Comment {
   id: number
-  movieTitle: string
-  date: string
-  content: string
+  movieChineseName: string
+  time: string
+  comment: string
 }
 
 const props = defineProps<{
@@ -85,7 +85,7 @@ const emit = defineEmits(['delete'])
 // 分页配置
 const currentPage = ref(1)
 const pageSize = 8
-const totalItems = computed(() => props.comments.length)
+const total = computed(() => props.comments.length)
 
 // 分页计算
 const paginatedComments = computed(() => {
