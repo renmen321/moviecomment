@@ -20,7 +20,7 @@
         </div>
 
         <el-table
-            :data="filteredUsers"
+            :data="users"
             style="width: 100%"
             :header-cell-style="{ background: '#f8f8f8', color: '#333' }"
         >
@@ -44,12 +44,12 @@
             <template #default="scope">
               <div class="movie-tags">
                 <el-tag
-                    v-for="genre in scope.row.favoriteTypes"
-                    :key="genre"
+                    v-for="type in getFavoriteTypesArray(scope.row.favoriteType)"
+                    :key="type"
                     type="info"
                     class="movie-tag"
                 >
-                  {{ genre }}
+                  {{ type }}
                 </el-tag>
               </div>
             </template>
@@ -85,9 +85,10 @@
         <el-pagination
             background
             layout="prev, pager, next"
-            :total="users.length"
+            :total="total"
             :page-size="pageSize"
-            v-model:current-page="currentPage"
+            v-model:current-page="pageNum"
+            @current-change="handlePageChange"
             class="pagination"
         />
       </div>
@@ -96,58 +97,62 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import {ref, reactive, computed, onMounted} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminSidebar from "@/components/AdminSidebar.vue";
+import {getUserPage} from "@/api/User.ts";
+import {getAllMovieName, getCommentTypeCountByName, getMovieCommentByName} from "@/api/Movies.ts";
+import {ElMessage} from "element-plus";
 
 const router = useRouter()
-const route = useRoute()
 
-// 响应式状态管理
-const users = ref([
-  {
-    id: 1,
-    username: 'user1',
-    name: '张三',
-    profilePicture: 'https://via.placeholder.com/40',
-    admin: false,
-    email: 'zhangsan@example.com',
-    personalLabel: '生活即战斗',
-    likedMovies: ['无间道', '唐人街探案'],
-    favoriteTypes: ['动作', '喜剧']
-  },
-  {
-    id: 2,
-    username: 'user2',
-    name: '李四',
-    profilePicture: 'https://via.placeholder.com/40',
-    admin: true,
-    email: 'lisi@example.com',
-    personalLabel: '探索未知',
-    likedMovies: ['星际穿越', '泰坦尼克号'],
-    favoriteTypes: ['科幻', '爱情']
-  },
-  // 添加更多用户数据
-])
 
-// 删除用户函数
-const deleteUser = (id: number) => {
-  users.value = users.value.filter(user => user.id !== id)
+interface User {
+  id : number,
+  username: string,
+  name: string,
+  profilePicture: string,
+  admin: boolean,
+  email: string,
+  personalLabel : string,
+  likedMovies: string[],
+  favoriteType : string
 }
-
+// 响应式状态管理
+let users = reactive<User[]>([])
+let total = ref(0)
 // 搜索功能
 const searchQuery = ref('')
-const filteredUsers = computed(() => {
-  return users.value.filter(user =>
-      user.username.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      user.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
+// 方法：将 favoriteType 字符串转换为数组
+const getFavoriteTypesArray = (favoriteType: string): string[] => {
+  return favoriteType.trim().split(/\s+/).filter(type => type.length > 0);
+}
+onMounted(async () => {
+  const response = await getUserPage(pageNum.value,pageSize.value);
+  if(response.ok){
+    total.value=response.data.total;
+    users.length=0;
+    users.push(...response.data.list);
+  }else {
+    ElMessage.error('获取用户数据失败');
+  }
 })
 
 // 分页功能
-const currentPage = ref(1)
-const pageSize = 10
+const pageNum = ref(1)
+const pageSize = ref(10)
 
+const handlePageChange= async (newPageNum: number) => {
+  pageNum.value = newPageNum;
+  const response = await getUserPage(pageNum.value,pageSize.value);
+  if(response.ok){
+    total.value=response.data.total;
+    users.length=0;
+    users.push(...response.data.list);
+  }else {
+    ElMessage.error('获取用户数据失败');
+  }
+}
 // 退出功能
 
 </script>

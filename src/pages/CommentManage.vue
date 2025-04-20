@@ -74,7 +74,12 @@ import {reactive, ref, computed, watch, onMounted} from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import AdminSidebar from '@/components/AdminSidebar.vue';
 import {getTypePercentageByDate, reqGetAdminCommentByDate} from "@/api/test.ts";
-import {getAllMovieName, getCommentTypeCountByName, getMovieCommentByName} from "@/api/Movies.ts";
+import {
+  deleteMovieCommentById,
+  getAllMovieName,
+  getCommentTypeCountByName,
+  getMovieCommentByName
+} from "@/api/Movies.ts";
 
 interface Comment {
   comment: string
@@ -137,9 +142,27 @@ let currentMovie = ref<string>();
 
 
 // 方法
-const searchMovies = () => {
-  pageNum.value = 1
+const searchMovies = async () => {
+  pageNum.value = 1;
+  if (searchQuery.value) {
+    currentMovie.value = searchQuery.value;
+    const response = await getCommentTypeCountByName(currentMovie.value);
+    if (response.ok) {
+      currentCommentCounts.length = 0;
+      currentCommentCounts.push(...response.data.list);
+    }else {
+      ElMessage.error('获取电影评论数量失败');
+    }
+    const response1 = await getMovieCommentByName(currentMovie.value, pageNum.value, pageSize.value, 0);
+    if (response1.ok) {
+      comments.length = 0;
+      comments.push(...response1.data.list);
+    } else {
+      ElMessage.error('获取电影评论失败');
+    }
+  }
 }
+
 const getCommentCount = (label: number): number => {
   const countObj = currentCommentCounts.find(item => item.type === label);
   return countObj ? countObj.count : 0;
@@ -165,26 +188,42 @@ const handlePageChange = async (val: number) => {
   }
 }
 
-// const deleteComment = (comment: Comment) => {
-//   ElMessageBox.confirm('确定删除该评论？', '警告', {
-//     confirmButtonText: '确定',
-//     cancelButtonText: '取消'
-//   }).then(() => {
-//     const commentIndex = comments.findIndex(c =>
-//         c.type === comment.type &&
-//         c.content === comment.content &&
-//         c.user === comment.user &&
-//         c.time === comment.time &&
-//         c.movieId === comment.movieId
-//     );
-//     if (commentIndex > -1) {
-//       comments.splice(commentIndex, 1); // 删除评论
-//       ElMessage.success('删除成功');
-//     }
-//   });
-// }
+const deleteComment = (comment: Comment) => {
+  ElMessageBox.confirm('确定删除该评论？', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消'
+  }).then(async () => {
+    const commentIndex = comments.findIndex(c =>
+        c.id === comment.id
+    );
+    if (commentIndex > -1) {
+      const response = await deleteMovieCommentById(comment.id);
+      if (response.ok) {
+        comments.splice(commentIndex, 1); // 删除评论
+        let type;
+        if(activeCommentType.value==='好评'){
+          type=0;
+        }else if(activeCommentType.value==='中评'){
+          type=1;
+        }else {
+          type=2;
+        }
+        updateCommentCount(type);
+        ElMessage.success('删除成功');
+      }else {
+        ElMessage.error('删除失败');
+      }
+    }
+  });
+}
 
-
+// 找到对应 type 的对象并修改其 count 值
+const updateCommentCount = (type: number) => {
+  const target = currentCommentCounts.find(item => item.type === type);
+  if (target) {
+    target.count = target.count - 1; // 直接修改对象的 count 属性
+  }
+};
 watch(selectedMovieName, async (newVal) => {
   if (newVal !== null) {
     pageNum.value = 1;
