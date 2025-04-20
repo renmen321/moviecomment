@@ -20,14 +20,14 @@
         </div>
 
         <el-table
-            :data="filteredUsers"
+            :data="users"
             style="width: 100%"
             :header-cell-style="{ background: '#f8f8f8', color: '#333' }"
         >
           <el-table-column label="头像" width="100%">
             <template #default="scope">
               <el-image
-                  :src="scope.row.avatarUrl"
+                  :src="scope.row.profilePicture"
                   class="avatar"
                   fit="cover"
               />
@@ -39,12 +39,12 @@
             <template #default="scope">
               <div class="movie-tags">
                 <el-tag
-                    v-for="genre in scope.row.movieTypes"
-                    :key="genre"
+                    v-for="type in getFavoriteTypesArray(scope.row.favoriteType)"
+                    :key="type"
                     type="info"
                     class="movie-tag"
                 >
-                  {{ genre }}
+                  {{ type }}
                 </el-tag>
               </div>
             </template>
@@ -63,15 +63,16 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="slogan" label="个人标签" width="250%" />
+          <el-table-column prop="personalLabel" label="个人标签" width="250%" />
         </el-table>
 
         <el-pagination
             background
             layout="prev, pager, next"
-            :total="users.length"
+            :total="total"
             :page-size="pageSize"
-            v-model:current-page="currentPage"
+            v-model:current-page="pageNum"
+            @current-change="handlePageChange"
             class="pagination"
         />
       </div>
@@ -80,56 +81,62 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import {ref, reactive, computed, onMounted} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminSidebar from "@/components/AdminSidebar.vue";
+import {getUserPage} from "@/api/User.ts";
+import {getAllMovieName, getCommentTypeCountByName, getMovieCommentByName} from "@/api/Movies.ts";
+import {ElMessage} from "element-plus";
 
 const router = useRouter()
-const route = useRoute()
 
+
+interface User {
+  id : number,
+  username: string,
+  name: string,
+  profilePicture: string,
+  admin: boolean,
+  email: string,
+  personalLabel : string,
+  likedMovies: string[],
+  favoriteType : string
+}
 // 响应式状态管理
-const users = ref([
-  {
-    avatarUrl: 'https://via.placeholder.com/40',
-    username: 'user1',
-    name: '张三',
-    movieTypes: ['动作', '喜剧'],
-    favoriteMovies: ['无间道', '唐人街探案'],
-    slogan: '生活即战斗'
-  },
-  {
-    avatarUrl: 'https://via.placeholder.com/40',
-    username: 'user2',
-    name: '李四',
-    movieTypes: ['科幻', '爱情'],
-    favoriteMovies: ['星际穿越', '泰坦尼克号'],
-    slogan: '探索未知'
-  },
-  // 添加更多用户数据
-])
-
-// 导航菜单配置
-const menus = [
-  { path: '/TodayComment', icon: '📊', text: '今日评论' },
-  { path: '/FeedBackAdmin', icon: '📩', text: '反馈管理' },
-  { path: '/MovieManage', icon: '🎬', text: '电影管理' },
-  { path: '/CommentManage', icon: '💬', text: '评论管理' },
-  { path: '/UserManage', icon: '👤', text: '用户管理' },
-]
-
+let users = reactive<User[]>([])
+let total = ref(0)
 // 搜索功能
 const searchQuery = ref('')
-const filteredUsers = computed(() => {
-  return users.value.filter(user =>
-      user.username.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      user.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
+// 方法：将 favoriteType 字符串转换为数组
+const getFavoriteTypesArray = (favoriteType: string): string[] => {
+  return favoriteType.trim().split(/\s+/).filter(type => type.length > 0);
+}
+onMounted(async () => {
+  const response = await getUserPage(pageNum.value,pageSize.value);
+  if(response.ok){
+    total.value=response.data.total;
+    users.length=0;
+    users.push(...response.data.list);
+  }else {
+    ElMessage.error('获取用户数据失败');
+  }
 })
 
 // 分页功能
-const currentPage = ref(1)
-const pageSize = 10
+const pageNum = ref(1)
+const pageSize = ref(10)
 
+const handlePageChange= async (newPageNum: number) => {
+  pageNum.value = newPageNum;
+  const response = await getUserPage(pageNum.value,pageSize.value);
+  if(response.ok){
+    total.value=response.data.total;
+    users.length=0;
+    users.push(...response.data.list);
+  }else {
+    ElMessage.error('获取用户数据失败');
+  }
+}
 // 退出功能
 
 </script>

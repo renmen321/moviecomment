@@ -159,3 +159,10 @@ export const getCommentTypeCountByName= (movieName: string): Promise<{
         }[];
     };
 }> => request.get(`/admin/movies/getCommentTypeCountByName?movieName=${movieName}`);
+
+export const deleteMovieCommentById= (id: number): Promise<{
+    code: number;
+    message: string;
+    ok: boolean;
+}> => request.delete(`/admin/movies/deleteMovieCommentById?id=${id}`);
+

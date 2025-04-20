@@ -112,7 +112,7 @@ const handleClose = () => {
 };
 const fetchMovies = async (pages) => {
   try {
-    const response = await reqGetMovies(pages,4);
+    const response = await reqGetMovies(pages,5);
     if (response.ok) {
       // 假设返回的数据结构中有一个 movies 数组
       movies.value = response.data.list
