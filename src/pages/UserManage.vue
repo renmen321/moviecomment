@@ -69,24 +69,26 @@
             </template>
           </el-table-column>
           <el-table-column prop="personalLabel" label="个人标签" width="250%" />
-          <template #default="scope">
-            <el-popconfirm
-                confirm-button-text="确定"
-                cancel-button-text="取消"
-                icon-color="#6200ea"
-                title="确定要删除该用户吗？"
-                @confirm="deleteUser(scope.row.id)"
-            >
-              <template #reference>
-                <el-button
-                    type="danger"
-                    size="small"
-                >
-                  删除
-                </el-button>
-              </template>
-            </el-popconfirm>
-          </template>
+          <el-table-column label="操作" width="100%">
+            <template #default="scope">
+              <el-popconfirm
+                  confirm-button-text="确定"
+                  cancel-button-text="取消"
+                  icon-color="#6200ea"
+                  title="确定要删除该用户吗？"
+                  @confirm="deleteUser(scope.row.id)"
+              >
+                <template #reference>
+                  <el-button
+                      type="danger"
+                      size="small"
+                  >
+                    删除
+                  </el-button>
+                </template>
+              </el-popconfirm>
+            </template>
+          </el-table-column>
         </el-table>
 
         <el-pagination
