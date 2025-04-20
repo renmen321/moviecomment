@@ -275,7 +275,7 @@ const submitComment = () => {
   height: auto;
   justify-content: center;
   align-items: center;
-  background-image: url('@/assets/images/background.5.jpg'); /* 添加背景图片 */
+  background-image: url('@/assets/images/background4.jpg'); /* 添加背景图片 */
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
@@ -303,7 +303,7 @@ const submitComment = () => {
 
 .title {
   font-size: 2.5rem;
-  color: wheat;
+  color: #3c91c4;
   margin-bottom: 15px;
 }
 
