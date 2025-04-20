@@ -36,20 +36,21 @@
     <!-- 用户名 -->
     <div class="info-item">
       <div class="label">用户名：</div>
-      <div v-if="!isEditing" class="value">{{ formData.username || '未设置' }}</div>
+      <div class="value">{{ formData.username || '未设置' }}</div>
+    </div>
+    <!-- 姓名 -->
+    <div class="info-item">
+      <div class="label">姓名：</div>
+      <div v-if="!isEditing" class="value">{{ formData.name || '未设置' }}</div>
       <el-input
           v-else
-          v-model="localData.username"
+          v-model="localData.name"
           placeholder="请输入用户名"
           class="edit-field"
       />
     </div>
 
-    <!-- 姓名 -->
-    <div class="info-item">
-      <div class="label">姓名：</div>
-      <div class="value">{{ formData.name || '未设置' }}</div>
-    </div>
+
 
     <!-- 电影类型 -->
     <div class="info-item">
