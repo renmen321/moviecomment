@@ -94,7 +94,7 @@ async function startAnalysis() {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('@/assets/images/background.jpg'); /* 添加背景图片 */
+  background-image: url('@/assets/images/backgroud6.jpg'); /* 添加背景图片 */
   background-size: cover; /* 使背景图片覆盖整个容器 */
   background-position: center; /* 将背景图片居中 */
   background-repeat: no-repeat; /* 防止背景图片重复 */

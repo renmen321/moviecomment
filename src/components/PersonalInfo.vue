@@ -2,11 +2,7 @@
   <div class="personal-settings">
     <div class="header-wrapper">
       <h2>个人信息</h2>
-      <el-button
-          type="primary"
-          size="small"
-          @click="toggleEditMode"
-      >
+      <el-button type="primary" size="small" @click="toggleEditMode">
         {{ isEditing ? '取消编辑' : '编辑信息' }}
       </el-button>
     </div>
@@ -16,25 +12,11 @@
       <div class="label">头像：</div>
       <div class="avatar-container">
         <!-- 头像上传组件 -->
-        <el-upload
-            class="avatar-uploader"
-            action="#"
-            :show-file-list="false"
-            :before-upload="beforeAvatarUpload"
-            :http-request="handleAvatarUpload"
-        >
-          <el-image
-              v-if="imageUrl===undefined"
-              :src="`http://127.0.0.1:8080/api/profilePicture/${formData.profilePicture}`"
-              class="avatar"
-              fit="cover"
-
-          />
-          <el-image v-else
-                    :src="imageUrl"
-                    class="avatar"
-                    fit="cover"
-                    />
+        <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeAvatarUpload"
+          :http-request="handleAvatarUpload">
+          <el-image v-if="imageUrl === undefined"
+            :src="`http://127.0.0.1:8080/api/profilePicture/${formData.profilePicture}`" class="avatar" fit="cover" />
+          <el-image v-else :src="imageUrl" class="avatar" fit="cover" />
 
         </el-upload>
       </div>
@@ -43,40 +25,25 @@
     <!-- 用户名 -->
     <div class="info-item">
       <div class="label">用户名：</div>
-      <div v-if="!isEditing" class="value">{{ formData.username || '未设置' }}</div>
-      <el-input
-          v-else
-          v-model="formData.username"
-          placeholder="请输入用户名"
-          class="edit-field"
-      />
+      <div class="value">{{ formData.username || '未设置' }}</div>
     </div>
-
     <!-- 姓名 -->
     <div class="info-item">
       <div class="label">姓名：</div>
-      <div class="value">{{ formData.name || '未设置' }}</div>
+      <div v-if="!isEditing" class="value">{{ formData.name || '未设置' }}</div>
+      <el-input v-else v-model="localData.name" placeholder="请输入用户名" class="edit-field" />
     </div>
+
+
 
     <!-- 电影类型 -->
     <div class="info-item">
       <div class="label">电影类型：</div>
       <div v-if="!isEditing" class="value">
-        {{ formData.favoriteType|| '未选择' }}
+        {{ formData.favoriteType || '未选择' }}
       </div>
-      <el-select
-          v-else
-          :v-model="formData.favoriteType"
-          multiple
-          placeholder="选择喜欢的类型"
-          class="edit-field"
-      >
-        <el-option
-            v-for="genre in movieGenres"
-            :key="genre"
-            :label="genre"
-            :value="genre"
-        />
+      <el-select v-else :v-model="formData.favoriteType" multiple placeholder="选择喜欢的类型" class="edit-field">
+        <el-option v-for="genre in movieGenres" :key="genre" :label="genre" :value="genre" />
       </el-select>
     </div>
 
@@ -86,12 +53,7 @@
       <div v-if="!isEditing" class="value">
         {{ formData.likeMovies.join("、") || '未设置' }}
       </div>
-      <el-input
-          v-else
-          v-model="formData.likeMovies"
-          placeholder="请输入电影名称"
-          class="edit-field"
-      />
+      <el-input v-else v-model="formData.likeMovies" placeholder="请输入电影名称" class="edit-field" />
     </div>
 
     <!-- 个人标语 -->
@@ -100,16 +62,8 @@
       <div v-if="!isEditing" class="value">
         {{ formData.personalLabel || '未设置个人标语' }}
       </div>
-      <el-input
-          v-else
-          v-model="formData.personalLabel"
-          type="textarea"
-          :rows="2"
-          placeholder="请输入个人标语（最多30字）"
-          maxlength="30"
-          show-word-limit
-          class="edit-field"
-      />
+      <el-input v-else v-model="formData.personalLabel" type="textarea" :rows="2" placeholder="请输入个人标语（最多30字）"
+        maxlength="30" show-word-limit class="edit-field" />
     </div>
 
     <!-- 操作按钮 -->
@@ -123,9 +77,9 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch, reactive, onMounted} from 'vue'
+import { ref, watch, reactive, onMounted } from 'vue'
 import { ElMessage, UploadRequestOptions } from 'element-plus'
-import {updateUserVO} from "@/api/User.ts";
+import { updateUserVO } from "@/api/User.ts";
 
 const formData = ref({
   id: 0,
@@ -139,7 +93,7 @@ const formData = ref({
   email: '',
   picture: undefined,
 })
-let imageUrl =ref();
+let imageUrl = ref();
 const initData = () => {
   const userData = sessionStorage.getItem('userData'); // 使用 sessionStorage 而不是 localStorage
   if (userData) {
@@ -219,15 +173,15 @@ const beforeAvatarUpload = (file: File) => {
 
 const handleAvatarUpload = async (options: UploadRequestOptions) => {
   try {
-    formData.value.picture= options.file;
+    formData.value.picture = options.file;
     // 调用上传接口
-     imageUrl = URL.createObjectURL(options.file)
+    imageUrl = URL.createObjectURL(options.file)
     ElMessage.success('头像上传成功')
   } catch (error) {
     ElMessage.error('上传失败')
   }
 }
-onMounted(() => {initData()})
+onMounted(() => { initData() })
 </script>
 
 <style scoped>
@@ -334,13 +288,15 @@ onMounted(() => {initData()})
   padding-top: 24px;
   border-top: 1px solid #EBEEF5;
   display: flex;
-  justify-content: center; /* 居中对齐 */
+  justify-content: center;
+  /* 居中对齐 */
   gap: 16px;
 }
 
 .button-container {
   display: flex;
-  justify-content: center; /* 居中对齐 */
+  justify-content: center;
+  /* 居中对齐 */
   gap: 16px;
 }
 </style>

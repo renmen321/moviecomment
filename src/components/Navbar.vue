@@ -4,13 +4,18 @@
     <img :src="logo" class="logo" alt="Logo">
     <div class="nav-links">
       <button @click="toMain()" class="nav-item">主页</button>
-      <button @click="toComment()" class="nav-item">评价</button>
+      <button @click="toComment()" class="nav-item">功能展示</button>
       <button @click="toFeedBack()" class="nav-item">反馈</button>
     </div>
     <div class="nav-links-right">
       <template v-if="isLoggedIn">
         <button @click="toAdmin()" v-if="isAdmin" class="nav-item">管理端</button>
-        <button @click="toUser()" class="nav-item">{{ userName }}</button>
+        <el-image
+            :src="ProfilePicture"
+            class="user-avatar"
+            fit="cover"
+            @click="toUser()"
+        />
         <button @click="logout()" class="nav-item">退出</button>
       </template>
       <template v-else>
@@ -22,7 +27,6 @@
   <!-- 登录弹出框 -->
   <el-dialog v-model="loginDialogVisible" width="30%" style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
     <LoginForm @close="closeLoginDialog" @reset="showResetDialog" @register="showRegisterDialog" />
-
   </el-dialog>
   <!-- 注册弹出框 -->
   <el-dialog v-model="registerDialogVisible" width="30%"  style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
@@ -50,6 +54,7 @@ import SelectMovieTypeDialog from '@/components/SelectMovieTypeDialog.vue';
 const isLoggedIn = ref(false);
 const isAdmin = ref(false);
 const userName = ref('');
+const ProfilePicture = ref('');
 const loginDialogVisible = ref(false);
 const registerDialogVisible = ref(false);
 const resetDialogVisible = ref(false);
@@ -60,24 +65,29 @@ function updateUserData() {
   if (userData) {
     const parsedData = JSON.parse(userData);
     isLoggedIn.value = true;
-    userName.value = parsedData.id;//username不显示
+    userName.value = parsedData.username; // 确保使用正确的字段
     isAdmin.value = parsedData.admin;
+    ProfilePicture.value = parsedData.profilePicture; // 确保使用正确的字段
   } else {
     isLoggedIn.value = false;
     isAdmin.value = false;
     userName.value = '';
+    ProfilePicture.value = '';
   }
 }
-//处理注册成功
+
+// 处理注册成功
 function handleRegisterSuccess() {
   registerDialogVisible.value = false;
   selectMovieTypeDialogVisible.value = true;
 }
-//选择的类型为数组
+
+// 选择的类型为数组
 function handleMovieTypeSelection(selectedTypes: string[]) {
   console.log('Selected movie types:', selectedTypes);
   // 处理选中的电影类型
 }
+
 onMounted(() => {
   updateUserData();
   window.addEventListener('storage', updateUserData);
@@ -86,7 +96,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('storage', updateUserData);
 });
-
 
 function toComment() {
   router.push('/Comment');
@@ -103,9 +112,11 @@ function toUser() {
 function toAdmin() {
   router.push('/TodayComment');
 }
+
 function toMain() {
   router.push('/Main');
 }
+
 function logout() {
   sessionStorage.removeItem('userData');
   window.dispatchEvent(new Event('storage')); // 手动触发storage事件
@@ -115,7 +126,7 @@ function logout() {
 function showLoginDialog() {
   loginDialogVisible.value = true;
   registerDialogVisible.value = false;
- resetDialogVisible.value = false;
+  resetDialogVisible.value = false;
 }
 
 function closeLoginDialog() {
@@ -184,15 +195,25 @@ nav {
   transition: all 0.3s;
   user-select: none; /* 禁止选中 */
 }
+
 .nav-links-right {
   margin-left: 50vw; /* 将按钮推到最右侧 */
 }
+
 .nav-item:hover {
   color: #3498db;
   background: rgba(255, 255, 255, 0.1);
 }
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
 .fixed-height-dialog {
   height: 2px; /* 固定高度 */
 }
-
 </style>

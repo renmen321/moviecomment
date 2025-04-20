@@ -4,56 +4,54 @@
   <!-- 主体内容容器 -->
   <div class="account-container">
     <div class="c-box">
-    <!-- 侧边栏卡片 -->
-    <el-card class="sidebar-card">
-      <div class="sidebar-content">
-        <!-- 头像显示 -->
-        <div class="avatar-container">
-          <el-image
-              v-if="formData.profilePicture"
-              :src="`http://127.0.0.1:8080/api/profilePicture/${formData.profilePicture}`"
-              class="avatar"
-              fit="cover"
-          />
-          <div v-else class="avatar-placeholder">
-            <el-icon><User /></el-icon>
+      <!-- 侧边栏卡片 -->
+      <el-card class="sidebar-card">
+        <div class="sidebar-content">
+          <!-- 头像显示 -->
+          <div class="avatar-container">
+            <el-image v-if="formData.profilePicture"
+              :src="`http://127.0.0.1:8080/api/profilePicture/${formData.profilePicture}`" class="avatar" fit="cover" />
+            <div v-else class="avatar-placeholder">
+              <el-icon>
+                <User />
+              </el-icon>
+            </div>
           </div>
+
+          <!-- 导航菜单 -->
+          <el-menu :default-active="activeNav" class="side-menu" @select="switchNav">
+            <el-menu-item index="personalInfo">
+              <el-icon>
+                <User />
+              </el-icon>
+              <span>个人信息</span>
+            </el-menu-item>
+            <el-menu-item index="accountSecurity">
+              <el-icon>
+                <Lock />
+              </el-icon>
+              <span>安全设置</span>
+            </el-menu-item>
+            <el-menu-item index="userComments">
+              <el-icon>
+                <Edit />
+              </el-icon>
+              <span>历史评论</span>
+            </el-menu-item>
+          </el-menu>
         </div>
+      </el-card>
 
-        <!-- 导航菜单 -->
-        <el-menu
-            :default-active="activeNav"
-            class="side-menu"
-            @select="switchNav"
-        >
-          <el-menu-item index="personalInfo">
-            <el-icon><User /></el-icon>
-            <span>个人信息</span>
-          </el-menu-item>
-          <el-menu-item index="accountSecurity">
-            <el-icon><Lock /></el-icon>
-            <span>安全设置</span>
-          </el-menu-item>
-          <el-menu-item index="userComments">
-            <el-icon><Edit /></el-icon>
-            <span>历史评论</span>
-          </el-menu-item>
-        </el-menu>
-      </div>
-    </el-card>
-
-    <!-- 内容区卡片 -->
-    <el-card class="content-card">
-      <component
-          :is="activeComponent"
-      />
-    </el-card>
-  </div>
+      <!-- 内容区卡片 -->
+      <el-card class="content-card">
+        <component :is="activeComponent" />
+      </el-card>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref, computed, onMounted, reactive} from 'vue'
+import { ref, computed, onMounted, reactive } from 'vue'
 import { User, Lock, Edit } from '@element-plus/icons-vue'
 import PersonalInfo from '@/components/PersonalInfo.vue';
 import AccountSecurity from '@/components/AccountSecurity.vue'
@@ -115,8 +113,6 @@ const switchNav = (key: string) => {
 </script>
 
 <style scoped>
-
-
 /* 主体布局 */
 .account-container {
   border-radius: 1.5vw;
@@ -127,12 +123,17 @@ const switchNav = (key: string) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('@/assets/images/background.jpg'); /* 添加背景图片 */
-  background-size: cover; /* 使背景图片覆盖整个容器 */
-  background-position: center; /* 将背景图片居中 */
-  background-repeat: no-repeat; /* 防止背景图片重复 */
+  background-image: url('@/assets/images/background.jpg');
+  /* 添加背景图片 */
+  background-size: cover;
+  /* 使背景图片覆盖整个容器 */
+  background-position: center;
+  /* 将背景图片居中 */
+  background-repeat: no-repeat;
+  /* 防止背景图片重复 */
 }
-.c-box{
+
+.c-box {
   width: 80%;
   padding: 0 20px;
   display: grid;
@@ -140,12 +141,15 @@ const switchNav = (key: string) => {
   gap: 5vw;
 
 }
+
 /* 侧边栏卡片 */
 .sidebar-card {
   height: fit-content;
+
   :deep(.el-card__body) {
-    padding:3vh 2vw;
+    padding: 3vh 2vw;
   }
+
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
   border-radius: 12px;
@@ -203,6 +207,7 @@ const switchNav = (key: string) => {
   :deep(.el-card__body) {
     padding: 30px 40px;
   }
+
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
   border-radius: 12px;

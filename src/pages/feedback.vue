@@ -10,7 +10,10 @@
       <!-- 反馈表单开始 -->
       <el-form :model="form" :rules="rules" ref="formRef" label-width="40vw" label-position="top">
         <!-- 反馈类型选择 -->
-        <el-form-item label="反馈类型" prop="type">
+        <el-form-item prop="type">
+          <template #label>
+            <span style="color: black">反馈类型</span>
+          </template>
           <el-select v-model="form.type" placeholder="请选择类型" class="select2" style="width: 15vw">
             <el-option label="页面建议" value="页面建议" />
             <el-option label="问题反馈" value="问题反馈" />
@@ -19,7 +22,10 @@
         </el-form-item>
 
         <!-- 详细描述输入区 -->
-        <el-form-item label="详细描述" prop="description" label-position="top">
+        <el-form-item  prop="description" label-position="top">
+          <template #label>
+            <span style="color: black">详细描述</span>
+          </template>
           <el-input v-model="form.description" type="textarea" :rows="5" resize="none"
             placeholder="请具体描述您的建议或遇到的问题..." />
         </el-form-item>
@@ -127,7 +133,7 @@ const submitForm = async () => {
 /* 基础页面样式 */
 /* 确保 body 居中 */
 .body {
-  background: url("@/assets/images/background.jpg") no-repeat center center fixed;
+  background: url("@/assets/images/background8.jpg") no-repeat center center fixed;
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -159,6 +165,7 @@ h1 {
   /* 底部装饰线 */
   padding-bottom: 2vh;
 }
+
 
 /* 表单元素组样式 */
 .el-form-item {
