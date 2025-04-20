@@ -276,6 +276,10 @@ const submitComment = () => {
   justify-content: center;
   align-items: center;
   background-color: rgb(16, 21, 25);
+  background-image: url('@/assets/images/background5.jpg'); /* 添加背景图片 */
+  background-size: cover; /* 使背景图片覆盖整个容器 */
+  background-position: center; /* 将背景图片居中 */
+  background-repeat: no-repeat; /* 防止背景图片重复 */
 }
 
 /* 电影信息区域 */
