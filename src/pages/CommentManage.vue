@@ -14,35 +14,35 @@
             @keyup.enter="searchMovies"
         />
         <el-button type="primary" @click="searchMovies">搜索</el-button>
-        <el-select v-model="selectedMovieId" placeholder="选择电影" style="width: 20vw; margin-left: 40vw;">
+        <el-select v-model="selectedMovieName" placeholder="选择电影" style="width: 20vw; margin-left: 40vw;">
           <el-option
               v-for="movie in movies"
-              :key="movie.id"
-              :label="movie.movieChineseName"
-              :value="movie.id"
+              :key="movie"
+              :label="movie"
+              :value="movie"
           />
         </el-select>
       </div>
 
       <!-- 当前电影评论展示 -->
       <div v-if="currentMovie" class="movie-comments">
-        <h3 class="movie-title">{{ currentMovie.movieChineseName }} 评论管理</h3>
+        <h3 class="movie-title">{{ currentMovie}} 评论管理</h3>
 
         <el-tabs v-model="activeCommentType">
           <el-tab-pane
               v-for="t in commentTypes"
               :key="t.type"
-              :label="`${t.label} (${currentCommentCounts[t.type]})`"
+              :label="`${t.type} (${getCommentCount(t.label)})`"
               :name="t.type"
           >
             <el-table
-                :data="paginatedComments"
+                :data="comments"
                 border
                 v-loading="loading"
             >
-              <el-table-column prop="user" label="用户" width="120" />
-              <el-table-column prop="content" label="评论内容" min-width="300" />
-              <el-table-column prop="time" label="时间" width="150" />
+              <el-table-column prop="username" label="用户" width="120" />
+              <el-table-column prop="comment" label="评论内容" min-width="300" />
+              <el-table-column prop="date" label="时间" width="150" />
               <el-table-column label="操作" width="100">
                 <template #default="{ row }">
                   <el-button
@@ -55,11 +55,10 @@
             </el-table>
             <!-- 评论分页 -->
             <el-pagination
-                background
+                v-model:current-page="pageNum"
                 layout="prev, pager, next, jumper"
-                :total="currentCommentCounts[t.type]"
+                :total="getCommentCount(t.label)"
                 :page-size="pageSize"
-                :current-page="currentPage"
                 @current-change="handlePageChange"
                 style="margin-left: 30vw;"
             />
@@ -71,124 +70,160 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed, watch } from 'vue'
+import {reactive, ref, computed, watch, onMounted} from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import AdminSidebar from '@/components/AdminSidebar.vue';
+import {getTypePercentageByDate, reqGetAdminCommentByDate} from "@/api/test.ts";
+import {getAllMovieName, getCommentTypeCountByName, getMovieCommentByName} from "@/api/Movies.ts";
 
 interface Comment {
-  type: 'good' | 'general' | 'bad'
-  content: string
-  user: string
-  time: string
-  movieId: number
+  comment: string
+  username: string
+  date: string
+  id: number
 }
 
-interface Movie {
-  id: number
-  movieChineseName: string
-}
 
 // 模拟数据
-const movies = reactive<Movie[]>([
-  {
-    id: 1,
-    movieChineseName: "肖申克的救赎"
-  },
-  {
-    id: 2,
-    movieChineseName: "阿甘正传"
+let movies = ref<string[]>([]);
+
+onMounted(async () => {
+  const response = await getAllMovieName();
+  if(response.ok){
+    movies.value=response.data.list;
+    currentMovie.value=response.data.list[0];
+      const response0=await getCommentTypeCountByName(currentMovie.value);
+      if(response0.ok){
+        currentCommentCounts.length=0;
+        currentCommentCounts.push(...response0.data.list);
+      }else {
+        ElMessage.error('获取电影评论数量失败');
+      }
+      const response1= await getMovieCommentByName(currentMovie.value,pageNum.value,pageSize.value,0);
+      if(response1.ok){
+        comments.length=0;
+        comments.push(...response1.data.list);
+      }else {
+        ElMessage.error('获取电影评论失败');
+      }
+
+  }else {
+    ElMessage.error('获取电影数据失败');
   }
-])
+})
 
-const comments = reactive<Comment[]>([
-  { type: 'good', content: '经典之作，百看不厌', user: '影迷A', time: '2025-03-30', movieId: 1 },
-  { type: 'bad', content: '节奏太慢看不下去', user: '用户B', time: '2025-03-29', movieId: 1 },
-  { type: 'general', content: '剧情不错但拍摄手法老旧', user: '观众C', time: '2025-03-28', movieId: 1 }
-])
-
+const comments = reactive<Comment[]>([])
+interface count {
+  type: number
+  count: number
+}
 // 响应式状态
+let currentCommentCounts = reactive<count[]>([]);
 const activeMenu = ref('comment')
 const searchQuery = ref('')
-const selectedMovieId = ref<number | null>(null)
-const currentPage = ref(1)
+const selectedMovieName = ref<string | null>(null)
+const pageNum = ref(1)
 const pageSize = ref(10)
 const loading = ref(false)
-const activeCommentType = ref('good')
+const activeCommentType = ref('好评')
 const commentTypes = reactive([
-  { type: 'good', label: '好评' },
-  { type: 'general', label: '中评' },
-  { type: 'bad', label: '差评' }
+  { type: '好评', label: 0 },
+  { type: '中评', label: 1 },
+  { type: '差评', label: 2 }
 ])
 
-// 计算属性
-const filteredMovies = computed(() => {
-  return movies.filter(movie =>
-      movie.movieChineseName.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
 
-const currentMovie = computed(() => {
-  if (selectedMovieId.value !== null) {
-    return movies.find(movie => movie.id === selectedMovieId.value);
-  }
-  return filteredMovies.value[currentPage.value - 1];
-})
+let currentMovie = ref<string>();
 
-const currentComments = computed(() => {
-  return comments.filter(comment => comment.movieId === currentMovie.value?.id);
-})
-
-const currentCommentCounts = computed(() => {
-  const counts = { good: 0, general: 0, bad: 0 }
-  currentComments.value.forEach(c => counts[c.type]++)
-  return counts
-})
-
-const paginatedComments = computed(() => {
-  const comments = currentComments.value.filter(c => c.type === activeCommentType.value);
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return comments.slice(start, end);
-})
 
 // 方法
 const searchMovies = () => {
-  currentPage.value = 1
+  pageNum.value = 1
 }
-
-const handlePageChange = (val: number) => {
-  currentPage.value = val
+const getCommentCount = (label: number): number => {
+  const countObj = currentCommentCounts.find(item => item.type === label);
+  return countObj ? countObj.count : 0;
 }
-
-const deleteComment = (comment: Comment) => {
-  ElMessageBox.confirm('确定删除该评论？', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
-  }).then(() => {
-    const commentIndex = comments.findIndex(c =>
-        c.type === comment.type &&
-        c.content === comment.content &&
-        c.user === comment.user &&
-        c.time === comment.time &&
-        c.movieId === comment.movieId
-    );
-    if (commentIndex > -1) {
-      comments.splice(commentIndex, 1); // 删除评论
-      ElMessage.success('删除成功');
+const handlePageChange = async (val: number) => {
+  pageNum.value = val;
+  if (currentMovie.value) {
+    let type;
+    if (activeCommentType.value === '好评') {
+      type = 0;
+    } else if (activeCommentType.value === '中评') {
+      type = 1;
+    } else {
+      type = 2;
     }
-  });
+    const response = await getMovieCommentByName(currentMovie.value, val, pageSize.value, type);
+    if (response.ok) {
+      comments.length = 0;
+      comments.push(...response.data.list);
+    } else {
+      ElMessage.error('获取电影评论失败');
+    }
+  }
 }
 
-// 监听 selectedMovieId 的变化
-watch(selectedMovieId, (newVal) => {
+// const deleteComment = (comment: Comment) => {
+//   ElMessageBox.confirm('确定删除该评论？', '警告', {
+//     confirmButtonText: '确定',
+//     cancelButtonText: '取消'
+//   }).then(() => {
+//     const commentIndex = comments.findIndex(c =>
+//         c.type === comment.type &&
+//         c.content === comment.content &&
+//         c.user === comment.user &&
+//         c.time === comment.time &&
+//         c.movieId === comment.movieId
+//     );
+//     if (commentIndex > -1) {
+//       comments.splice(commentIndex, 1); // 删除评论
+//       ElMessage.success('删除成功');
+//     }
+//   });
+// }
+
+
+watch(selectedMovieName, async (newVal) => {
   if (newVal !== null) {
-    currentPage.value = 1;
+    pageNum.value = 1;
+    currentMovie.value = newVal;
+    const response0=await getCommentTypeCountByName(newVal);
+    if(response0.ok){
+      currentCommentCounts.length=0;
+      currentCommentCounts.push(...response0.data.list);
+    }else {
+      ElMessage.error('获取电影评论数量失败');
+    }
+    const response = await getMovieCommentByName(newVal, pageNum.value, pageSize.value, 0);
+    if(response.ok){
+      comments.length=0;
+      currentCommentCounts.value=response.data.total;
+      comments.push(...response.data.list);
+    }else {
+      ElMessage.error('获取电影评论失败');
+    }
   }
 })
 
 // 监听 activeCommentType 的变化
-watch(activeCommentType, () => {
-  currentPage.value = 1;
+watch(activeCommentType, async () => {
+  let response;
+  pageNum.value = 1;
+  if (activeCommentType.value === '好评') {
+     response = await getMovieCommentByName(currentMovie.value, pageNum.value, pageSize.value, 0);
+  }else if (activeCommentType.value === '中评') {
+     response = await getMovieCommentByName(currentMovie.value, pageNum.value, pageSize.value, 1);
+  } else {
+     response = await getMovieCommentByName(currentMovie.value, pageNum.value, pageSize.value, 2);
+  }
+  if (response.ok) {
+    comments.length = 0;
+    comments.push(...response.data.list);
+  } else {
+    ElMessage.error('获取电影评论失败');
+  }
 })
 </script>
 
