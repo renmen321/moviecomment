@@ -10,8 +10,8 @@
         <!-- 头像显示 -->
         <div class="avatar-container">
           <el-image
-              v-if="formData.avatarUrl"
-              :src="formData.avatarUrl"
+              v-if="formData.profilePicture"
+              :src="formData.profilePicture"
               class="avatar"
               fit="cover"
           />
@@ -65,32 +65,36 @@ import UserComments from '@/components/UserComments.vue'
 import NavBar from "@/components/Navbar.vue";
 
 
-const name = ref('');
-const email = ref('');
-const profilePicture = ref('');
-
+const formData = ref({
+  profilePicture: '',
+  username: '',
+  name: '',
+  movieTypes: [] as string[],//定义为数组
+  favoriteMovie: [] as string[],//定义为数组
+  tags: '',
+  password: '',
+  email: ''
+})
 onMounted(() => {
-  const userData = localStorage.getItem('userData');
+  const userData = sessionStorage.getItem('userData'); // 使用 sessionStorage 而不是 localStorage
   if (userData) {
     const parsedData = JSON.parse(userData);
-    name.value = parsedData.name;
-    email.value = parsedData.email;
-    profilePicture.value = parsedData.profilePicture;
+    formData.value.profilePicture = parsedData.profilePicture;
+    formData.value.username = parsedData.username;//parsedData.username不显示
+    formData.value.name = parsedData.name;
+    formData.value.email = parsedData.email;
+    formData.value.password = parsedData.password;
+    formData.value.movieTypes = ["科幻", "动作"]; // 根据需要初始化
+    formData.value.favoriteMovie = ["1","2"]; // 根据需要初始化
+    formData.value.tags = ''; // 根据需要初始化
+
   }
 });
 
+
 const activeNav = ref('personalInfo')
 
-const formData = ref({
-  avatarUrl: '',
-  id: '',
-  name: '',
-  movieTypes: [],
-  favoriteMovie: '',
-  tags: '',
-  newPassword: '',
-  newEmail: ''
-})
+
 
 // 假设评论数据从某个 API 获取
 const comments = ref([
@@ -202,19 +206,24 @@ const componentMap = {
 const activeComponent = computed(() => componentMap[activeNav.value])
 
 const switchNav = (key: string) => {
-  activeNav.value = key
+  // 设置当前激活的导航项
+  activeNav.value = key;
 }
 
 const handleDeleteComment = (id: number) => {
-  const index = comments.value.findIndex(comment => comment.id === id)
+  // 查找要删除的评论的索引
+  const index = comments.value.findIndex(comment => comment.id === id);
   if (index !== -1) {
-    comments.value.splice(index, 1)
+    // 如果找到评论，则从 comments 数组中删除该评论
+    comments.value.splice(index, 1);
   }
 }
-const handleUpdate = (updatedData: any) => {
-  formData.value = { ...formData.value, ...updatedData }
 
+const handleUpdate = (updatedData: any) => {
+  // 更新 formData 对象，合并新的数据
+  formData.value = { ...formData.value, ...updatedData };
 }
+
 </script>
 
 <style scoped>
@@ -236,10 +245,7 @@ nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('@/assets/images/background6.jpg'); /* 添加背景图片 */
-  background-size: cover; /* 使背景图片覆盖整个容器 */
-  background-position: center; /* 将背景图片居中 */
-  background-repeat: no-repeat; /* 防止背景图片重复 */
+
 }
 .c-box{
   width: 80%;

@@ -9,6 +9,7 @@ html
       <h2 class="slogan2">Welcome To</h2>
       <h1 class="slogan1">评心而论</h1>
       <h2 class="slogan2">Speak Honestly</h2>
+      <h1 class="slogan5">电影评论分析专家</h1>
     </div>
 
     <!-- 第二屏内容 -->
@@ -127,7 +128,7 @@ function goToPage() {
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   opacity: 0;
   animation: sloganAppear 2s ease-out 0.5s forwards;
-  margin: 0.5em 0; /* 根据图片实际文字间距调整 */
+  margin: 0.1em ; /* 根据图片实际文字间距调整 */
 }
 
 .slogan2 {
@@ -135,6 +136,16 @@ function goToPage() {
   font-size: 2rem;
   font-family: 'Microsoft YaHei', sans-serif;
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  opacity: 0;
+  animation: sloganAppear 2s ease-out 0.5s forwards;
+  margin-top: 0.05em ; /* 调整间距 */
+  margin-bottom: 1em;
+}
+.slogan5{
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.5rem;
+  font-family: 'Microsoft YaHei', sans-serif;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   opacity: 0;
   animation: sloganAppear 2s ease-out 0.5s forwards;
 }
@@ -148,7 +159,7 @@ function goToPage() {
   animation: sloganAppear 2s ease-out 0.5s forwards;
   letter-spacing: 0.8em;  /* 字间距 */
   text-indent: 0.8em;     /* 补偿首字符偏移 */
-  margin: 0.4em 0;
+  margin: 0 0;
   white-space: nowrap;
 }
 

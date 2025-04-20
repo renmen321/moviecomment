@@ -5,7 +5,7 @@
       <h2>登录</h2>
       <form @submit.prevent="validateLogin">
         <div class="form-group">
-          <input type="text" id="id" v-model="id" placeholder="用户名">
+          <input type="text" id="username" v-model="username" placeholder="用户名">
         </div>
         <div class="form-group">
           <input type="password" id="loginPassword" v-model="password" placeholder="密码">
@@ -31,12 +31,12 @@ import { ElMessage } from 'element-plus';
 import { login } from '@/api/test';
 
 const router = useRouter();
-const id = ref('');
+const username = ref('');
 const password = ref('');
 
 async function validateLogin() {
   const response = await login({
-    username: id.value,
+    username: username.value,
     password: password.value,
   });
   if (response.ok) {

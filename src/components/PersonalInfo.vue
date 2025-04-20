@@ -24,8 +24,8 @@
             :http-request="handleAvatarUpload"
         >
           <el-image
-              v-if="localData.avatarUrl"
-              :src="localData.avatarUrl"
+              v-if="localData.profilePicture"
+              :src="localData.profilePicture"
               class="avatar"
               fit="cover"
           />
@@ -36,7 +36,7 @@
     <!-- 用户名 -->
     <div class="info-item">
       <div class="label">用户名：</div>
-      <div class="value">{{ formData.id || '未设置' }}</div>
+      <div class="value">{{ formData.username || '未设置' }}</div>
     </div>
 
     <!-- 姓名 -->
@@ -77,7 +77,7 @@
     <div class="info-item">
       <div class="label">喜欢的电影：</div>
       <div v-if="!isEditing" class="value">
-        {{ formData.favoriteMovie || '未设置' }}
+        {{ formData.favoriteMovie.join('、') || '未设置' }}
       </div>
       <el-input
           v-else
@@ -121,11 +121,11 @@ import { ElMessage, UploadRequestOptions } from 'element-plus'
 
 const props = defineProps<{
   formData: {
-    avatarUrl: string
-    id: string
+    profilePicture: string
+   username: string
     name: string
     movieTypes: string[]
-    favoriteMovie: string
+    favoriteMovie: string[]
     slogan: string
     avatar: string
   }
@@ -138,11 +138,11 @@ const isEditing = ref(false)
 
 // 本地数据
 const localData = reactive({
-  avatarUrl: '',
-  id: '',
+  profilePicture: '',
+  username: '',
   name: '',
   movieTypes: [] as string[],
-  favoriteMovie: '',
+  favoriteMovie:[] as string[],
   slogan: '',
   avatar: ''
 })
@@ -150,11 +150,11 @@ const localData = reactive({
 // 初始化数据
 const initData = () => {
   Object.assign(localData, {
-    avatarUrl: props.formData.avatarUrl,
-    id: props.formData.id,
+    profilePicture: props.formData.profilePicture,
+    username: props.formData.username,
     name: props.formData.name,
     movieTypes: [...props.formData.movieTypes],
-    favoriteMovie: props.formData.favoriteMovie,
+    favoriteMovie: [...props.formData.favoriteMovie],
     slogan: props.formData.slogan,
     avatar: props.formData.avatar
   })
@@ -176,7 +176,7 @@ const toggleEditMode = () => {
 const saveChanges = () => {
   const submitData = {
     ...localData,
-    avatar: localData.avatarUrl, // 同步头像URL
+    avatar: localData.profilePicture, // 同步头像URL
     name: localData.name.trim(),
     slogan: localData.slogan.trim()
   }
@@ -212,7 +212,7 @@ const handleAvatarUpload = async (options: UploadRequestOptions) => {
   formData.append('file', options.file)
   try {
     // 调用上传接口
-    localData.avatarUrl = URL.createObjectURL(options.file)
+    localData.profilePicture = URL.createObjectURL(options.file)
     ElMessage.success('头像上传成功')
   } catch (error) {
     ElMessage.error('上传失败')

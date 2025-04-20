@@ -1,31 +1,31 @@
 <template>
   <div class="body">
-  <NavBar />
-  <div class="poster-container">
-    <!-- 主视觉区 -->
-    <div class="main-visual" :style="{ backgroundImage: `url(${Movies[currentIndex].image})` }">
-    </div>
-    <!-- 固定电影列表 -->
-    <div class="film-list">
-      <div
-          v-for="(Movie, index) in Movies"
-          :key="Movie.movieName"
-          class="film-item"
-          :class="{ active: currentIndex === index }"
-          @click="handleClick(index)"
-      >
-        <div class="film-title">{{ Movie.movieName }}</div>
+    <NavBar />
+    <div class="poster-container">
+      <!-- 主视觉区 -->
+      <div class="main-visual" :style="{ backgroundImage: `url(${Movies[currentIndex].image})` }">
+      </div>
+      <!-- 固定电影列表 -->
+      <div class="film-list">
+        <div
+            v-for="(Movie, index) in Movies"
+            :key="Movie.movieName"
+            class="film-item"
+            :class="{ active: currentIndex === index }"
+            @click="handleClick(index)"
+        >
+          <div class="film-title">{{ Movie.movieName }}</div>
+        </div>
       </div>
     </div>
-  </div>
     <div class="container">
       <div class="media-section">
-        <h1>热门影视</h1>
+        <h1 class="title">热门电影</h1>
         <div style="display: flex ;margin-bottom:1vh ">
           <el-input v-model="movie_name" placeholder="电影名称" style="width: 10vw;"
                     @change="fetchMovie(movie_name)"></el-input>
           <el-input-number v-model="page" :min="1" :max="63" @change="fetchMovies(page)"
-                           style="width: 10vw;margin-left: 80vw"></el-input-number>
+                           style="width: 10vw;margin-left: 65vw"></el-input-number>
         </div>
         <div class="media-grid">
           <!-- 电影卡片 -->
@@ -63,10 +63,10 @@ interface Movie {
 }
 
 const Movies = ref<Movie[]>([
-  { movieName: '肖申克的救赎', image: 'src/assets/images/main.1.jpg' },
-  { movieName: '哈利·波特与魔法石', image: 'src/assets/images/main.2.jpg' },
-  { movieName: '泰坦尼克号', image: 'src/assets/images/main.3.jpg' },
-  { movieName: '哪吒之魔童闹海', image: 'src/assets/images/main.4.jpg' }
+  { movieName: '破·地狱', image: 'src/assets/images/main.1.jpg' },
+  { movieName: '指环王·洛汗之战', image: 'src/assets/images/main.2.jpg' },
+  { movieName: '射雕英雄传', image: 'src/assets/images/main.3.jpg' },
+  { movieName: '平原上的火焰', image: 'src/assets/images/main.4.jpg' }
 ]);
 
 const currentIndex = ref(0)
@@ -140,18 +140,18 @@ const fetchMovie = async (movie_name) => {
 };
 
 
- async function tomoviedata(index) {
-   await movieStore.setMovie({
-     id: movies.value[index].id,
-     movieChineseName: movies.value[index].movieChineseName,
-     type: movies.value[index].type,
-     ratings: movies.value[index].ratings,
-     introduction :movies.value[index].introduction,
-     year : movies.value[index].yearOfRelease,
-     image : movies.value[index].image
-   });
-   router.push("MovieData");
- }
+async function tomoviedata(index) {
+  await movieStore.setMovie({
+    id: movies.value[index].id,
+    movieChineseName: movies.value[index].movieChineseName,
+    type: movies.value[index].type,
+    ratings: movies.value[index].ratings,
+    introduction :movies.value[index].introduction,
+    year : movies.value[index].yearOfRelease,
+    image : movies.value[index].image
+  });
+  router.push("MovieData");
+}
 const initBar = () => {
   const option = {
     title: { // 标题组件
@@ -305,7 +305,7 @@ onMounted(() => {
 
 <style scoped>
 .body{
- background: black;
+  background: #0c0c10;
 
 }
 nav {
@@ -315,7 +315,6 @@ nav {
   right: 0;
   height: 11vh; /* 固定高度 */
   z-index: 1000; /* 提高层级 */
-  background: #2d2d2d !important;
 }
 .poster-container {
   position: relative;
@@ -327,15 +326,15 @@ nav {
 .main-visual {
   position: absolute;
   right: 0;
-  top: 10vh;
+  top: 0;
   width: 100%;
-  height: 36vh;
-  background-size: 70% 100%; /* 使用 cover 以确保图片覆盖整个元素 */
-  background-position: 32% ; /* 调整图片位置 */
+  height: 50vh;
+  background-size: 100% 100%;
+  background-position: center;
   background-repeat: no-repeat;
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-  mask-image: linear-gradient(to right, transparent 0%, transparent 10%, rgba(255,255,255,0.9) 90%, black 100%
-  );
+  background-color: rgb(16,21,25);
+
 }
 
 
@@ -345,21 +344,21 @@ nav {
   right: 5vw;
   top: 10vh;
   width: 15vw;
-  background: rgba(0,0,0,0.8);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  background: #212020;
+  box-shadow: 0 0 20px rgba(178, 116, 116, 0.3);
 }
 
 .film-item {
   display: flex;
   align-items: center;
-  height: 9vh;
+  height: 10vh;
   background: rgba(255,255,255,0.1);
   border-left: 3px solid transparent;
   transition: all 0.6s ease;
 }
 
 .film-item.active {
-  border-color: #a9a898;
+  border-color: #131a23;
   background: rgba(26, 12, 12, 0.1);
   transform:  translateZ(20px) scale(1.1); /* 添加 3D 浮动效果 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 增加阴影效果 */
@@ -373,14 +372,17 @@ nav {
   letter-spacing: 1px;
 }
 .echart {
-  width: 50vw;
+  width: auto;
+  background: white;
+
 }
 
 .container {
   padding-top: 10vh;
   display: grid;
   grid-template-columns: 100vw;
-  margin-top:36vh;
+  margin-top:30vh;
+  margin-left:5vw;
   height: 60vh;
   overflow: hidden;
 }
@@ -392,7 +394,10 @@ nav {
   height: 90vh;
   /* 留出padding空间 */
 }
-
+.title{
+  color: #fff;
+  font-size: 3em;
+}
 .media-grid {
   display: grid;
   justify-content: center;
@@ -414,6 +419,7 @@ nav {
 .media-card img {
   width: 100%;
   height: 60%;
+
   top: 0;
   left: 0;
   right: 0;
@@ -426,8 +432,8 @@ nav {
 .chart-container {
   height: 71.5vh;
   width: 45vw;
-  background: white;
-  padding: 20px 20px 0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px 20px ;
   margin-bottom: 2.5vh;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

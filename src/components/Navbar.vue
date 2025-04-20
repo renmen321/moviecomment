@@ -60,7 +60,7 @@ function updateUserData() {
   if (userData) {
     const parsedData = JSON.parse(userData);
     isLoggedIn.value = true;
-    userName.value = parsedData.name;
+    userName.value = parsedData.id;//username不显示
     isAdmin.value = parsedData.admin;
   } else {
     isLoggedIn.value = false;
@@ -97,7 +97,7 @@ function toFeedBack() {
 }
 
 function toUser() {
-  router.push('/User');
+  router.push('/user');
 }
 
 function toAdmin() {
@@ -155,9 +155,8 @@ nav {
   position: fixed;
   width: 100vw;
   z-index: 10;
-/*background: rgba(255, 255, 255, 0.2)*/
   background: black;
-  backdrop-filter: blur(5px);
+
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 

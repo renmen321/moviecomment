@@ -10,6 +10,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     name: "Comment",
     component: () => import("@/pages/Comment.vue")
   },
+
   {
     path: "/moviedata",
     name: "MovieData",
@@ -46,9 +47,9 @@ export const constantRoutes: RouteRecordRaw[] = [
     name:'FeedBackAdmin',
     component: () => import("@/pages/FeedBackAdmin.vue"),
   }, {
-    path: '/User',
-    name: 'User',
-    component: () => import("@/pages/User.vue"),
+    path: '/user',
+    name: 'user',
+    component: () => import("@/pages/user.vue"),
   },{
   path:'/Model',
   name:'Model',
