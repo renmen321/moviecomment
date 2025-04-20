@@ -48,6 +48,9 @@ async function validateLogin() {
       profilePicture: response.data.profilePicture,
       token: response.data.token,
       admin: response.data.admin,
+      personalLabel: response.data.personalLabel,
+      favoriteType: response.data.favoriteType,
+      likeMovies: response.data.likeMovies,
     };
     // 将用户数据存储在 sessionStorage 中
     sessionStorage.setItem('userData', JSON.stringify(userData));

@@ -7,21 +7,21 @@
 
     <!-- 评论列表 -->
     <el-table
-        :data="paginatedComments"
+        :data="comments"
         style="width: 100%"
         :header-cell-style="headerStyle"
         :cell-style="cellStyle"
         empty-text="暂无评论"
     >
       <el-table-column
-          prop="movieChineseName"
+          prop="movieName"
           label="影视作品"
           width="100%"
           align="center"
           show-overflow-tooltip
       />
       <el-table-column
-          prop="time"
+          prop="date"
           label="评论时间"
           width="100%"
           align="center"
@@ -30,25 +30,15 @@
       <el-table-column
           prop="comment"
           label="评论内容"
-          min-width="100%"
+          min-width="120%"
           show-overflow-tooltip
       />
       <el-table-column
-          label="操作"
-          width="100%"
-          align="center"
-      >
-        <template #default="{ row }">
-          <el-button
-              type="danger"
-              size="small"
-              plain
-              @click="handleDelete(row.id)"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
+          prop="type"
+          label="类型"
+          min-width="30%"
+          show-overflow-tooltip
+      />
     </el-table>
 
     <!-- 分页控件 -->
@@ -58,7 +48,7 @@
           layout="prev, pager, next"
           :total="total"
           :page-size="pageSize"
-          :current-page="currentPage"
+          :current-page="pageNum"
           @current-change="handlePageChange"
       />
     </div>
@@ -66,33 +56,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import {ref, computed, onMounted, reactive} from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import {getCommentByUid} from "@/api/User.ts";
 
 interface Comment {
-  id: number
-  movieChineseName: string
-  time: string
-  comment: string
+  username: string;
+  date: string;
+  comment: string;
+  type: string;
+  movieName: string;
 }
 
-const props = defineProps<{
-  comments: Comment[]
-}>()
+
+ let comments =reactive<Comment[]>([]);
+
+onMounted(async () => {
+  const userData = sessionStorage.getItem('userData'); // 使用 sessionStorage 而不是 localStorage
+  if (userData) {
+    const parsedData = JSON.parse(userData);
+    const response = await getCommentByUid(parsedData.id, pageNum.value, pageSize.value);
+    if (response.ok) {
+      total.value = response.data.total;
+      comments.length=0;
+      comments.push(...response.data.list);
+    } else {
+      ElMessage.info("评论加载失败")
+    }
+  }
+
+});
+
 
 const emit = defineEmits(['delete'])
 
 // 分页配置
-const currentPage = ref(1)
-const pageSize = 8
-const total = computed(() => props.comments.length)
+let pageNum = ref(1)
+let pageSize = ref(10)
+let total = ref(0);
 
-// 分页计算
-const paginatedComments = computed(() => {
-  const from = (currentPage.value - 1) * pageSize
-  const to = from + pageSize
-  return props.comments.slice(from, to)
-})
 
 // 表格样式配置
 const headerStyle = {
@@ -107,21 +109,23 @@ const cellStyle = {
 }
 
 // 分页处理
-const handlePageChange = (newPage: number) => {
-  currentPage.value = newPage
+const handlePageChange = async (newPage: number) => {
+  pageNum.value = newPage;
+  const userData = sessionStorage.getItem('userData'); // 使用 sessionStorage 而不是 localStorage
+  if (userData) {
+    const parsedData = JSON.parse(userData);
+    const response = await getCommentByUid(parsedData.id, pageNum.value, pageSize.value);
+    if (response.ok) {
+      total.value = response.data.total;
+      comments.length = 0;
+      comments.push(...response.data.list);
+    } else {
+      ElMessage.info("评论加载失败")
+    }
+  }
+
 }
 
-// 删除操作
-const handleDelete = (id: number) => {
-  ElMessageBox.confirm('确定删除这条评论吗？', '删除确认', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    emit('delete', id)
-    ElMessage.success('删除成功')
-  })
-}
 </script>
 
 <style scoped>
@@ -153,6 +157,7 @@ const handleDelete = (id: number) => {
 :deep(.el-table) {
   --el-table-border-color: #ebeef5;
   margin-top: 16px;
+  transform: scale(1); /* 新增：解决定位偏移 */
 }
 
 :deep(.el-table__empty-block) {

@@ -11,7 +11,7 @@
         <div class="avatar-container">
           <el-image
               v-if="formData.profilePicture"
-              :src="formData.profilePicture"
+              :src="`http://127.0.0.1:8080/api/profilePicture/${formData.profilePicture}`"
               class="avatar"
               fit="cover"
           />
@@ -46,10 +46,6 @@
     <el-card class="content-card">
       <component
           :is="activeComponent"
-          :form-data="formData"
-          :comments="comments"
-          @delete="handleDeleteComment"
-          @update="handleUpdate"
       />
     </el-card>
   </div>
@@ -57,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed , onMounted } from 'vue'
+import {ref, computed, onMounted, reactive} from 'vue'
 import { User, Lock, Edit } from '@element-plus/icons-vue'
 import PersonalInfo from '@/components/PersonalInfo.vue';
 import AccountSecurity from '@/components/AccountSecurity.vue'
@@ -69,13 +65,13 @@ const formData = ref({
   profilePicture: '',
   username: '',
   name: '',
-  movieTypes: [] as string[],//定义为数组
-  favoriteMovie: [] as string[],//定义为数组
-  tags: '',
+  favoriteType: '',
+  likeMovies: [] as string[],//定义为数组
+  personalLabel: '',
   password: '',
   email: ''
 })
-onMounted(() => {
+onMounted(async () => {
   const userData = sessionStorage.getItem('userData'); // 使用 sessionStorage 而不是 localStorage
   if (userData) {
     const parsedData = JSON.parse(userData);
@@ -84,33 +80,19 @@ onMounted(() => {
     formData.value.name = parsedData.name;
     formData.value.email = parsedData.email;
     formData.value.password = parsedData.password;
-    formData.value.movieTypes = ["科幻", "动作"]; // 根据需要初始化
-    formData.value.favoriteMovie = ["1","2"]; // 根据需要初始化
-    formData.value.tags = ''; // 根据需要初始化
+    formData.value.favoriteType = parsedData.favoriteType;
+    formData.value.likeMovies = parsedData.likeMovies;
+    formData.value.personalLabel = parsedData.personalLabel;
 
   }
+
 });
+
 
 
 const activeNav = ref('personalInfo')
 
 
-
-// 假设评论数据从某个 API 获取
-const comments = ref([
-  {
-    id: 1,
-    movieChineseName: '电影A',
-    time: '2023-10-01 12:34:56',
-    comment: '这是一部非常棒的电影！这是一部非常棒的电影！这是一部非常棒的电影！'
-  },
-  {
-    id: 2,
-    movieChineseName: '电影B',
-    time: '2023-09-25 09:12:34',
-    comment: '剧情很吸引人，值得一看。'
-  }
-])
 
 
 // 组件映射
@@ -127,19 +109,8 @@ const switchNav = (key: string) => {
   activeNav.value = key;
 }
 
-const handleDeleteComment = (id: number) => {
-  // 查找要删除的评论的索引
-  const index = comments.value.findIndex(comment => comment.id === id);
-  if (index !== -1) {
-    // 如果找到评论，则从 comments 数组中删除该评论
-    comments.value.splice(index, 1);
-  }
-}
 
-const handleUpdate = (updatedData: any) => {
-  // 更新 formData 对象，合并新的数据
-  formData.value = { ...formData.value, ...updatedData };
-}
+
 
 </script>
 

@@ -24,11 +24,18 @@
             :http-request="handleAvatarUpload"
         >
           <el-image
-              v-if="localData.profilePicture"
-              :src="localData.profilePicture"
+              v-if="imageUrl===undefined"
+              :src="`http://127.0.0.1:8080/api/profilePicture/${formData.profilePicture}`"
               class="avatar"
               fit="cover"
+
           />
+          <el-image v-else
+                    :src="imageUrl"
+                    class="avatar"
+                    fit="cover"
+                    />
+
         </el-upload>
       </div>
     </div>
@@ -39,7 +46,7 @@
       <div v-if="!isEditing" class="value">{{ formData.username || '未设置' }}</div>
       <el-input
           v-else
-          v-model="localData.username"
+          v-model="formData.username"
           placeholder="请输入用户名"
           class="edit-field"
       />
@@ -55,11 +62,11 @@
     <div class="info-item">
       <div class="label">电影类型：</div>
       <div v-if="!isEditing" class="value">
-        {{ formData.movieTypes.join('、') || '未选择' }}
+        {{ formData.favoriteType|| '未选择' }}
       </div>
       <el-select
           v-else
-          v-model="localData.movieTypes"
+          :v-model="formData.favoriteType"
           multiple
           placeholder="选择喜欢的类型"
           class="edit-field"
@@ -77,11 +84,11 @@
     <div class="info-item">
       <div class="label">喜欢的电影：</div>
       <div v-if="!isEditing" class="value">
-        {{ formData.favoriteMovie.join('、') || '未设置' }}
+        {{ formData.likeMovies.join("、") || '未设置' }}
       </div>
       <el-input
           v-else
-          v-model="localData.favoriteMovie"
+          v-model="formData.likeMovies"
           placeholder="请输入电影名称"
           class="edit-field"
       />
@@ -91,11 +98,11 @@
     <div class="info-item">
       <div class="label">个人标语：</div>
       <div v-if="!isEditing" class="value">
-        {{ formData.slogan || '未设置个人标语' }}
+        {{ formData.personalLabel || '未设置个人标语' }}
       </div>
       <el-input
           v-else
-          v-model="localData.slogan"
+          v-model="formData.personalLabel"
           type="textarea"
           :rows="2"
           placeholder="请输入个人标语（最多30字）"
@@ -116,20 +123,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive } from 'vue'
+import {ref, watch, reactive, onMounted} from 'vue'
 import { ElMessage, UploadRequestOptions } from 'element-plus'
+import {updateUserVO} from "@/api/User.ts";
 
-const props = defineProps<{
-  formData: {
-    profilePicture: string
-    username: string
-    name: string
-    movieTypes: string[]
-    favoriteMovie: string[]
-    slogan: string
-    avatar: string
+const formData = ref({
+  id: 0,
+  profilePicture: '',
+  username: '',
+  name: '',
+  favoriteType: '',
+  likeMovies: [] as string[],//定义为数组
+  personalLabel: '',
+  password: '',
+  email: '',
+  picture: undefined,
+})
+let imageUrl =ref();
+const initData = () => {
+  const userData = sessionStorage.getItem('userData'); // 使用 sessionStorage 而不是 localStorage
+  if (userData) {
+    const parsedData = JSON.parse(userData);
+    formData.value.id = parsedData.id;
+    formData.value.profilePicture = parsedData.profilePicture;
+    formData.value.username = parsedData.username;//parsedData.username不显示
+    formData.value.name = parsedData.name;
+    formData.value.email = parsedData.email;
+    formData.value.password = parsedData.password;
+    formData.value.favoriteType = parsedData.favoriteType;
+    formData.value.likeMovies = parsedData.likeMovies;
+    formData.value.personalLabel = parsedData.personalLabel;
   }
-}>()
+  imageUrl.value = undefined;
+}
 
 const emit = defineEmits(['update'])
 
@@ -137,27 +163,6 @@ const emit = defineEmits(['update'])
 // 编辑状态
 const isEditing = ref(false)
 
-// 本地数据
-const localData = reactive({
-  profilePicture: '',
-  username: '',
-  name: '',
-  movieTypes: [] as string[],
-  favoriteMovie: [] as string[],
-  slogan: ''
-})
-
-// 初始化数据
-const initData = () => {
-  Object.assign(localData, {
-    profilePicture: props.formData.profilePicture,
-    username: props.formData.username,
-    name: props.formData.name,
-    movieTypes: [...props.formData.movieTypes],
-    favoriteMovie: [...props.formData.favoriteMovie],
-    slogan: props.formData.slogan
-  })
-}
 
 // 电影类型选项
 const movieGenres = [
@@ -172,29 +177,33 @@ const toggleEditMode = () => {
 }
 
 // 保存修改
-const saveChanges = () => {
-  const submitData = {
-    ...localData,
-    avatar: localData.profilePicture, // 同步头像URL
-    username: localData.username.trim(), // 同步用户名
-    slogan: localData.slogan.trim(), // 同步个人标语
-    movieTypes: [...localData.movieTypes], // 同步电影类型
-    favoriteMovie: [...localData.favoriteMovie] // 同步喜欢的电影
+const saveChanges = async () => {
+  const response = await updateUserVO(formData.value);
+  if (response.ok) {
+    ElMessage.success('修改成功')
+    const userData = {
+      id: response.data.id,
+      username: response.data.username,
+      name: response.data.name,
+      email: response.data.email,
+      profilePicture: response.data.profilePicture,
+      token: JSON.parse(sessionStorage.getItem('userData')).token,
+      admin: response.data.admin,
+      personalLabel: response.data.personalLabel,
+      favoriteType: response.data.favoriteType,
+      likeMovies: response.data.likeMovies,
+    };
+    // 将用户数据存储在 sessionStorage 中
+    sessionStorage.setItem('userData', JSON.stringify(userData));
+    window.dispatchEvent(new Event('storage')); // 手动触发storage事件
+    emit('update')
+  } else {
+    ElMessage.error(response.message)
   }
-
-  if (!submitData.username) {
-    ElMessage.error('用户名不能为空')
-    return
-  }
-
-  emit('update', submitData)
-  ElMessage.success('保存成功')
-  isEditing.value = false
 }
 
 // 取消编辑
 const cancelEdit = () => {
-  initData()
   isEditing.value = false
 }
 
@@ -209,22 +218,16 @@ const beforeAvatarUpload = (file: File) => {
 }
 
 const handleAvatarUpload = async (options: UploadRequestOptions) => {
-  const formData = new FormData()
-  formData.append('file', options.file)
   try {
+    formData.value.picture= options.file;
     // 调用上传接口
-    localData.profilePicture = URL.createObjectURL(options.file)
+     imageUrl = URL.createObjectURL(options.file)
     ElMessage.success('头像上传成功')
   } catch (error) {
     ElMessage.error('上传失败')
   }
 }
-// 监听数据变化
-watch(
-    () => props.formData,
-    () => initData(),
-    { deep: true, immediate: true }
-)
+onMounted(() => {initData()})
 </script>
 
 <style scoped>

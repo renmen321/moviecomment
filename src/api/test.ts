@@ -84,6 +84,9 @@ export  const login = (data: {
     token: string;
     admin: boolean;
     username: string;
+    personalLabel: string;
+    favoriteType: string;
+    likeMovies: string[];
   };
 }> => request.post(`/user/login`,data);
 

@@ -113,16 +113,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
+import {ref, reactive, watch, onMounted} from 'vue'
 import { ElMessage } from 'element-plus'
-
-// 定义 props 接收初始数据
-const props = defineProps<{
-  formData: {
-    email: string
-    password: string
+const formData = ref({
+  email: ''
+})
+onMounted(async () => {
+  const userData = sessionStorage.getItem('userData'); // 使用 sessionStorage 而不是 localStorage
+  if (userData) {
+    const parsedData = JSON.parse(userData);
+    formData.value.email = parsedData.email;
   }
-}>()
+
+});
+
+
+
 
 // 定义 emit 事件
 const emit = defineEmits(['update'])
