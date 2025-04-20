@@ -27,7 +27,7 @@
           <el-table-column label="头像" width="100%">
             <template #default="scope">
               <el-image
-                  :src="scope.row.avatarUrl"
+                  :src="scope.row.profilePicture"
                   class="avatar"
                   fit="cover"
               />
@@ -35,11 +35,16 @@
           </el-table-column>
           <el-table-column prop="username" label="用户名" width="100%" />
           <el-table-column prop="name" label="姓名" width="100%" />
+          <el-table-column label="是否为管理员" width="150%">
+            <template #default="scope">
+              <span>{{ scope.row.admin ? '是' : '否' }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="喜欢的电影类型" width="240%">
             <template #default="scope">
               <div class="movie-tags">
                 <el-tag
-                    v-for="genre in scope.row.movieTypes"
+                    v-for="genre in scope.row.favoriteTypes"
                     :key="genre"
                     type="info"
                     class="movie-tag"
@@ -53,7 +58,7 @@
             <template #default="scope">
               <div class="movies">
                 <el-tag
-                    v-for="movie in scope.row.favoriteMovies"
+                    v-for="movie in scope.row.likedMovies"
                     :key="movie"
                     type="info"
                     class="movie"
@@ -63,7 +68,18 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="slogan" label="个人标签" width="250%" />
+          <el-table-column prop="personalLabel" label="个人标签" width="250%" />
+          <el-table-column label="操作" width="100%">
+            <template #default="scope">
+              <el-button
+                  type="danger"
+                  size="small"
+                  @click="deleteUser(scope.row.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
         </el-table>
 
         <el-pagination
@@ -90,32 +106,34 @@ const route = useRoute()
 // 响应式状态管理
 const users = ref([
   {
-    avatarUrl: 'https://via.placeholder.com/40',
+    id: 1,
     username: 'user1',
     name: '张三',
-    movieTypes: ['动作', '喜剧'],
-    favoriteMovies: ['无间道', '唐人街探案'],
-    slogan: '生活即战斗'
+    profilePicture: 'https://via.placeholder.com/40',
+    admin: false,
+    email: 'zhangsan@example.com',
+    personalLabel: '生活即战斗',
+    likedMovies: ['无间道', '唐人街探案'],
+    favoriteTypes: ['动作', '喜剧']
   },
   {
-    avatarUrl: 'https://via.placeholder.com/40',
+    id: 2,
     username: 'user2',
     name: '李四',
-    movieTypes: ['科幻', '爱情'],
-    favoriteMovies: ['星际穿越', '泰坦尼克号'],
-    slogan: '探索未知'
+    profilePicture: 'https://via.placeholder.com/40',
+    admin: true,
+    email: 'lisi@example.com',
+    personalLabel: '探索未知',
+    likedMovies: ['星际穿越', '泰坦尼克号'],
+    favoriteTypes: ['科幻', '爱情']
   },
   // 添加更多用户数据
 ])
 
-// 导航菜单配置
-const menus = [
-  { path: '/TodayComment', icon: '📊', text: '今日评论' },
-  { path: '/FeedBackAdmin', icon: '📩', text: '反馈管理' },
-  { path: '/MovieManage', icon: '🎬', text: '电影管理' },
-  { path: '/CommentManage', icon: '💬', text: '评论管理' },
-  { path: '/UserManage', icon: '👤', text: '用户管理' },
-]
+// 删除用户函数
+const deleteUser = (id: number) => {
+  users.value = users.value.filter(user => user.id !== id)
+}
 
 // 搜索功能
 const searchQuery = ref('')

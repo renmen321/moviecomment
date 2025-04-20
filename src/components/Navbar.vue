@@ -155,8 +155,7 @@ nav {
   position: fixed;
   width: 100vw;
   z-index: 10;
-  background: black;
-
+  background: rgba(255,255,255,0);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
@@ -178,7 +177,6 @@ nav {
   background: none;
   color: white;
   border: none;
-  border-bottom: 1px solid skyblue;
   text-decoration: none;
   padding: 4px 4px;
   font-size: 1.2rem;

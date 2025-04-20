@@ -25,7 +25,7 @@
           <el-input v-model="movie_name" placeholder="电影名称" style="width: 10vw;"
                     @change="fetchMovie(movie_name)"></el-input>
           <el-input-number v-model="page" :min="1" :max="63" @change="fetchMovies(page)"
-                           style="width: 10vw;margin-left: 65vw"></el-input-number>
+                           style="width: 10vw;margin-left:61vw"></el-input-number>
         </div>
         <div class="media-grid">
           <!-- 电影卡片 -->
@@ -112,7 +112,7 @@ const handleClose = () => {
 };
 const fetchMovies = async (pages) => {
   try {
-    const response = await reqGetMovies(pages,4);
+    const response = await reqGetMovies(pages,6);
     if (response.ok) {
       // 假设返回的数据结构中有一个 movies 数组
       movies.value = response.data.list
@@ -382,7 +382,8 @@ nav {
   display: grid;
   grid-template-columns: 100vw;
   margin-top:30vh;
-  margin-left:5vw;
+  margin-left:6vw;
+  margin-right:5vw;
   height: 60vh;
   overflow: hidden;
 }
@@ -402,28 +403,38 @@ nav {
   display: grid;
   justify-content: center;
   align-items: start;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 自动调整列数 */
-  gap: 5vw;
+  grid-template-columns: repeat(auto-fill, minmax(13vw, 1fr)); /* 自动调整列数 */
   flex: 1;
+
 }
 
 .media-card {
-  background: white;
-  padding: 2vh;
+  background: rgba(255, 255, 255, 0);
   transition: transform 0.3s;
-  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  width: 13vw;
 }
 .media-card img {
   width: 100%;
-  height: 60%;
-
+  height: 80%;
+  border-radius: 12px;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+}
+.media-card h3 {
+  margin: 0 0 5px 0; /* 调整标题的底部间距 */
+  font-size: 1.2em; /* 设置标题的字体大小 */
+  color: white; /* 设置标题的颜色 */
+}
+
+.media-card p {
+  margin: 0; /* 移除段落的默认外边距 */
+  font-size: 1em; /* 设置段落的字体大小 */
+  color: #9d9a9a; /* 设置段落的颜色 */
 }
 .media-card:hover {
   transform: translateY(-5px);

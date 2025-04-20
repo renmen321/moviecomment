@@ -1,6 +1,6 @@
 <template>
   <!-- 全局导航栏 -->
-    <NavBar />
+  <NavBar class="user-nav" />
   <!-- 主体内容容器 -->
   <div class="account-container">
     <div class="c-box">
@@ -144,14 +144,8 @@ const handleUpdate = (updatedData: any) => {
 </script>
 
 <style scoped>
-nav {
-  position: fixed;
-  top: 0; /* 明确坐标 */
-  left: 0;
-  right: 0;
-  height: 60px; /* 固定高度 */
-  z-index: 1000; /* 提高层级 */
-}
+
+
 /* 主体布局 */
 .account-container {
   border-radius: 1.5vw;
@@ -162,7 +156,10 @@ nav {
   display: flex;
   justify-content: center;
   align-items: center;
-
+  background-image: url('@/assets/images/background.jpg'); /* 添加背景图片 */
+  background-size: cover; /* 使背景图片覆盖整个容器 */
+  background-position: center; /* 将背景图片居中 */
+  background-repeat: no-repeat; /* 防止背景图片重复 */
 }
 .c-box{
   width: 80%;
