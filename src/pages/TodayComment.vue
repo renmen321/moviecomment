@@ -16,12 +16,6 @@
               </div>
             </template>
             <div class="stat-value">{{ statsData.todayComments }}</div>
-            <el-progress
-                :percentage="statsData.commentProgress"
-                :stroke-width="8"
-                :color="customColors"
-                status="success"
-            />
           </el-card>
 
           <!-- 情感分析统计 -->

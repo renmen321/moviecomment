@@ -9,7 +9,7 @@
     </div>
     <div class="nav-links-right">
       <template v-if="isLoggedIn">
-        <button @click="toAdmin()" v-if="isAdmin" class="nav-item">切换管理端</button>
+        <button @click="toAdmin()" v-if="isAdmin" class="nav-item">管理端</button>
         <button @click="toUser()" class="nav-item">{{ userName }}</button>
         <button @click="logout()" class="nav-item">退出</button>
       </template>

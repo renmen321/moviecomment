@@ -23,7 +23,7 @@
           class="nav-item"
       >
         <span class="icon">🚪</span>
-        <span class="text">切换到客户端</span>
+        <span class="text">客户端</span>
         <div class="hover-indicator"></div>
       </a>
     </div>
