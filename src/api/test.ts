@@ -40,13 +40,8 @@ export const reqGetMovie = (name :string): Promise<{
 export const reqGetAiResult =(data: {
   sentence: string;
 }): Promise<{
-  code: number;
-  message: string;
-  ok: boolean;
-  data: {
-    result: string;
-    // reliability: number;
-  };
+    prediction_result: string;
+    probabilities: number;
 }> => request.post(`http://127.0.0.1:5000/predict`,data);
 
 export const reqGetMovieCommentById = (id: number, pageNum: number, pageSize: number,type: number): Promise<{
@@ -60,7 +55,7 @@ export const reqGetMovieCommentById = (id: number, pageNum: number, pageSize: nu
 }> => request.get(`/movies/page/getMovieCommentById?id=${id}&pageNum=${pageNum}&pageSize=${pageSize}&type=${type}`);
 
 export const reqPostComment = (data: {
-  id: number;
+   movieId: number;
   comment: string;
   type: number;
 }): Promise<{

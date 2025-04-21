@@ -115,14 +115,15 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useMovieStore } from "@/store/movieStore.ts";
-import { reqGetMovieCommentById, reqPostComment } from "@/api/test.ts";
+import {reqGetAiResult, reqGetMovieCommentById, reqPostComment} from "@/api/test.ts";
 import NavBar from "@/components/Navbar.vue";
+import {ElMessage} from "element-plus";
 
 const movieStore = useMovieStore();
 
-const postComment = async (id, comment, type) => {
+const postComment = async (movieId :number, comment :string, type :number) => {
   try {
-    const response = await reqPostComment({ id, comment, type });
+    const response = await reqPostComment({ movieId, comment, type });
     if (response.ok) {
       // 刷新评论列表
       fetchComments();
@@ -239,14 +240,24 @@ const cancelComment = () => {
 };
 
 // 提交评论
-const submitComment = () => {
+const submitComment = async () => {
   if (!newComment.value.trim()) {
     alert('评论内容不能为空！');
     return;
   }
 
-  const rating = parseInt(selectedRating.value);
-  const type = rating >= 4 ? 0 : rating === 3 ? 1 : 2;
+  const response = await reqGetAiResult({
+    sentence: newComment.value
+  })
+  let type;
+  if (response.prediction_result === "好评") {
+    type = 0
+  } else if (response.prediction_result === "差评") {
+    type = 2
+  } else {
+    type = 1
+  }
+
   postComment(movie.value.id, newComment.value, type);
   // 根据评分类型将新评论添加到对应数组的开头
   if (type === 0) {
@@ -261,6 +272,8 @@ const submitComment = () => {
   }
   showModal.value = false;
   newComment.value = '';
+  ElMessage.success("评论已提交,是" + response.prediction_result);
+
 };
 </script>
 

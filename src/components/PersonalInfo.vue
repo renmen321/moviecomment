@@ -31,7 +31,7 @@
     <div class="info-item">
       <div class="label">姓名：</div>
       <div v-if="!isEditing" class="value">{{ formData.name || '未设置' }}</div>
-      <el-input v-else v-model="localData.name" placeholder="请输入用户名" class="edit-field" />
+      <el-input v-else v-model="formData.name" placeholder="请输入姓名" class="edit-field" />
     </div>
 
 
@@ -42,7 +42,7 @@
       <div v-if="!isEditing" class="value">
         {{ formData.favoriteType || '未选择' }}
       </div>
-      <el-select v-else :v-model="formData.favoriteType" multiple placeholder="选择喜欢的类型" class="edit-field">
+      <el-select v-else v-model="favoriteTypeInput" multiple placeholder="选择喜欢的类型" class="edit-field">
         <el-option v-for="genre in movieGenres" :key="genre" :label="genre" :value="genre" />
       </el-select>
     </div>
@@ -51,9 +51,10 @@
     <div class="info-item">
       <div class="label">喜欢的电影：</div>
       <div v-if="!isEditing" class="value">
-        {{ formData.likeMovies.join("、") || '未设置' }}
+        {{ formData.likeMovies.join(",") || '未设置' }}
       </div>
-      <el-input v-else v-model="formData.likeMovies" placeholder="请输入电影名称" class="edit-field" />
+      <el-input v-else v-model="likeMoviesInput" placeholder="请输入电影名称，多个电影用逗号分隔" class="edit-field" />
+
     </div>
 
     <!-- 个人标语 -->
@@ -112,7 +113,12 @@ const initData = () => {
 }
 
 const emit = defineEmits(['update'])
-
+const likeMoviesInput = ref('');
+const favoriteTypeInput = ref([] as string[]);
+watch(likeMoviesInput, (newValue) => {
+  // 将输入的字符串按逗号分隔成数组，并去除前后空格
+  formData.value.likeMovies = newValue.split(',').map(movie => movie.trim()).filter(movie => movie);
+});
 
 // 编辑状态
 const isEditing = ref(false)
@@ -128,16 +134,19 @@ const movieGenres = [
 const toggleEditMode = () => {
   isEditing.value = !isEditing.value
   isEditing.value ? initData() : cancelEdit()
+  likeMoviesInput.value = formData.value.likeMovies.join(',');
+  favoriteTypeInput.value = Array.isArray(formData.value.favoriteType) ? formData.value.favoriteType : formData.value.favoriteType.split(' ');
 }
 
 // 保存修改
 const saveChanges = async () => {
+  formData.value.favoriteType = favoriteTypeInput.value.join(' ');
   const response = await updateUserVO(formData.value);
   if (response.ok) {
     ElMessage.success('修改成功')
     const userData = {
       id: response.data.id,
-      username: response.data.username,
+      username: JSON.parse(sessionStorage.getItem('userData')).username,
       name: response.data.name,
       email: response.data.email,
       profilePicture: response.data.profilePicture,
@@ -149,8 +158,10 @@ const saveChanges = async () => {
     };
     // 将用户数据存储在 sessionStorage 中
     sessionStorage.setItem('userData', JSON.stringify(userData));
-    window.dispatchEvent(new Event('storage')); // 手动触发storage事件
+    window.dispatchEvent(new CustomEvent('storage', { detail: { key: 'userData', newValue: JSON.stringify(userData) } })); // 手动触发storage事件
     emit('update')
+    isEditing.value = false
+    imageUrl.value=undefined;
   } else {
     ElMessage.error(response.message)
   }
@@ -175,7 +186,7 @@ const handleAvatarUpload = async (options: UploadRequestOptions) => {
   try {
     formData.value.picture = options.file;
     // 调用上传接口
-    imageUrl = URL.createObjectURL(options.file)
+    imageUrl.value = URL.createObjectURL(options.file)
     ElMessage.success('头像上传成功')
   } catch (error) {
     ElMessage.error('上传失败')

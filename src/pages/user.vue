@@ -86,6 +86,20 @@ onMounted(async () => {
 
 });
 
+// 监听 storage 事件
+window.addEventListener('storage', (event) => {
+  if (event instanceof CustomEvent && event.detail.key === 'userData') {
+    const parsedData = JSON.parse(event.detail.newValue);
+    formData.value.profilePicture = parsedData.profilePicture;
+    formData.value.username = parsedData.username;
+    formData.value.name = parsedData.name;
+    formData.value.email = parsedData.email;
+    formData.value.password = parsedData.password;
+    formData.value.favoriteType = parsedData.favoriteType;
+    formData.value.likeMovies = parsedData.likeMovies;
+    formData.value.personalLabel = parsedData.personalLabel;
+  }
+});
 
 
 const activeNav = ref('personalInfo')

@@ -76,9 +76,10 @@ const handleClick = (index: number) => {
 }
 
 const switchMovie = () => {
-  currentIndex.value = (currentIndex.value + 1) % movies.value.length
-}
-
+  if (Movies.value.length > 0) {
+    currentIndex.value = (currentIndex.value + 1) % Movies.value.length;
+  }
+};
 onMounted(() => {
   timer = setInterval(switchMovie, 3000) // 3秒切换
 })
@@ -369,6 +370,7 @@ nav {
   color: #fff;
   font-size: 1.1em;
   letter-spacing: 1px;
+  margin-left: 3vw;
 }
 .echart {
   width: auto;
@@ -417,7 +419,7 @@ nav {
 }
 .media-card img {
   width: 100%;
-  height: 80%;
+  height: 100%;
   border-radius: 12px;
   top: 0;
   left: 0;

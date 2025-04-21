@@ -75,7 +75,10 @@ export const updateUserVO = (data: {
   formData.append('username', data.username);
   formData.append('personalLabel', data.personalLabel);
   formData.append('favoriteType', data.favoriteType);
-  formData.append('likeMovies', JSON.stringify(data.likeMovies));
+
+  data.likeMovies.forEach((data)=>{
+    formData.append('likeMovies', data);
+  })
 
   if (data.picture instanceof File) {
     formData.append('picture', data.picture);

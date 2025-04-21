@@ -11,7 +11,7 @@
       <template v-if="isLoggedIn">
         <button @click="toAdmin()" v-if="isAdmin" class="nav-item">管理端</button>
         <el-image
-            :src="ProfilePicture"
+            :src="`http://127.0.0.1:8080/api/profilePicture/${ProfilePicture}`"
             class="user-avatar"
             fit="cover"
             @click="toUser()"
@@ -197,7 +197,7 @@ nav {
 }
 
 .nav-links-right {
-  margin-left: 50vw; /* 将按钮推到最右侧 */
+  margin-left: 60vw; /* 将按钮推到最右侧 */
 }
 
 .nav-item:hover {

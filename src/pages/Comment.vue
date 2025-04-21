@@ -22,7 +22,7 @@
           </svg>
           <div class="result-text">
             <h3>{{ resultText }}</h3>
-            <p>置信度：{{ confidence }}%</p>
+            <p>置信度：{{ confidence*100 }}%</p>
           </div>
         </div>
       </div>
