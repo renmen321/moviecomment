@@ -30,6 +30,8 @@ export const reqGetMovie = (name :string): Promise<{
     movieChineseName : string;
     type: string;
     ratings: number;
+    introduction : string;
+    yearOfRelease: number;
     good: number;
     bad: number;
     general : number;
