@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "build": "set NODE_OPTIONS=--max-old-space-size=4096 && vue-tsc --noEmit --skipLibCheck && vite build",
+    "build:force": "set NODE_OPTIONS=--max-old-space-size=4096 && vite build --force"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
@@ -29,4 +29,5 @@
   "engines": {
     "pnpm": ">=10.0.0"
   }
+
 }

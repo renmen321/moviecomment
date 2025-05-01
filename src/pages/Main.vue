@@ -117,7 +117,6 @@ const fetchMovies = async (pages) => {
       // 假设返回的数据结构中有一个 movies 数组
       movies.value = response.data.list
 
-
     } else {
       console.error('获取电影数据失败:', response.message);
     }
