@@ -2,7 +2,7 @@ import axios from "axios";
 
 // 创建 axios 实例
 const service = axios.create({
-  baseURL: 'http://127.0.0.1:8080/api', // 设置基础路径
+  baseURL: 'http://renmen321.cn:8080/api', // 设置基础路径
   timeout: 5000, // 请求超时时间
 });
 

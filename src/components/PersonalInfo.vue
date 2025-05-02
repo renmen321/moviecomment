@@ -15,7 +15,7 @@
         <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeAvatarUpload"
           :http-request="handleAvatarUpload">
           <el-image v-if="imageUrl === undefined"
-            :src="`http://127.0.0.1:8080/api/profilePicture/${formData.profilePicture}`" class="avatar" fit="cover" />
+            :src="`http://renmen321.cn:8080/api/profilePicture/${formData.profilePicture}`" class="avatar" fit="cover" />
           <el-image v-else :src="imageUrl" class="avatar" fit="cover" />
 
         </el-upload>

@@ -18,7 +18,7 @@
       <el-table :data="movies" style="width: 100%; margin-top: 16px;" v-loading="loading" border>
         <el-table-column label="海报" width="165" align="center">
           <template #default="{ row }">
-            <el-image v-if="row.movieImage === undefined" :src="`http://127.0.0.1:8080/api/images/${row.image}`"
+            <el-image v-if="row.movieImage === undefined" :src="`http://renmen321.cn:8080/api/images/${row.image}`"
               class="poster-image" fit="cover"
               style="width: 13vh; height: 16vh; border: 1px dashed #ccc; border-radius: 4px;" />
             <el-image v-else-if="true" :src="row.image" class="poster-image" fit="cover"
@@ -72,7 +72,7 @@
         <el-form-item label="电影海报" prop="poster">
           <el-upload action="#" :show-file-list="false" :on-change="handleUpload" :auto-upload="false">
             <el-image v-if="currentMovie.movieImage === undefined"
-              :src="`http://127.0.0.1:8080/api/images/${currentMovie.image}`" class="upload-poster" fit="cover"
+              :src="`http://renmen321.cn:8080/api/images/${currentMovie.image}`" class="upload-poster" fit="cover"
               style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;" />
             <el-image v-else-if="true" :src="currentMovie.image" class="upload-poster" fit="cover"
               style="width: 5vh; height: 10vh; border: 1px dashed #ccc; border-radius: 4px;" />

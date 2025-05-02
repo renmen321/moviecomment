@@ -44,7 +44,7 @@ export const reqGetAiResult =(data: {
 }): Promise<{
     prediction_result: string;
     probabilities: number;
-}> => request.post(`http://127.0.0.1:5000/predict`,data);
+}> => request.post(`http://renmen321.cn:5000/predict`,data);
 
 export const reqGetMovieCommentById = (id: number, pageNum: number, pageSize: number,type: number): Promise<{
   code: number;

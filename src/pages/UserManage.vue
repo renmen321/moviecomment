@@ -27,7 +27,7 @@
           <el-table-column label="头像" width="100%">
             <template #default="scope">
               <el-image
-                  :src="`http://127.0.0.1:8080/api/profilePicture/${scope.row.profilePicture}`"
+                  :src="`http://renmen321.cn:8080/api/profilePicture/${scope.row.profilePicture}`"
                   class="avatar"
                   fit="cover"
               />
