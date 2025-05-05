@@ -19,7 +19,7 @@
         <el-table :data="users" style="width: 100%" :header-cell-style="{ background: '#f8f8f8', color: '#333' }">
           <el-table-column label="头像" width="100%">
             <template #default="scope">
-              <el-image :src="scope.row.profilePicture" class="avatar" fit="cover" />
+              <el-image :src="`http://renmen321.cn:8080/api/profilePicture/${scope.row.profilePicture}`" class="avatar" fit="cover" />
             </template>
           </el-table-column>
           <el-table-column prop="username" label="用户名" width="100%" />
@@ -77,7 +77,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminSidebar from '@/components/AdminSidebar.vue'
-import { getUserPage } from '@/api/User.ts'
+import {deleteUserById, getUserPage} from '@/api/User.ts'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import RegisterUserForm from '@/components/RegisterUserForm.vue'
 
@@ -151,11 +151,16 @@ const fetchUsers = async () => {
   }
 }
 
-// 删除用户方法（需要实现具体逻辑）
-const deleteUser = (userId: number) => {
-  // 这里添加删除用户的逻辑
+
+const deleteUser = async (userId: number) => {
+  const response = await deleteUserById(userId)
+  if (!response.ok) {
+    ElMessage.error('用户删除失败')
+    return
+  }
   ElMessage.success('用户删除成功')
   // 刷新列表
+  fetchUsers()
 }
 </script>
 

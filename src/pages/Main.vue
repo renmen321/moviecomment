@@ -62,10 +62,10 @@ interface Movie {
 }
 
 const Movies = ref<Movie[]>([
-  { movieName: '破·地狱', image: 'src/assets/images/main.1.jpg' },
-  { movieName: '指环王·洛汗之战', image: 'src/assets/images/main.2.jpg' },
-  { movieName: '射雕英雄传', image: 'src/assets/images/main.3.jpg' },
-  { movieName: '平原上的火焰', image: 'src/assets/images/main.4.jpg' }
+  { movieName: '破·地狱', image: '/images/main1.jpg' },
+  { movieName: '指环王·洛汗之战', image: '/images/main2.jpg' },
+  { movieName: '射雕英雄传', image: '/images/main3.jpg' },
+  { movieName: '平原上的火焰', image: '/images/main4.jpg' }
 ]);
 
 const currentIndex = ref(0)
