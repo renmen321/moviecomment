@@ -104,6 +104,7 @@ export const register = (data: {
   formData.append('password', data.password);
   formData.append('email', data.email);
   formData.append('code', data.code);
+  formData.append('admin', data.admin.toString());
 
   // 如果有 profilePicture 文件，则添加到 formData
   if (data.profilePicture) {

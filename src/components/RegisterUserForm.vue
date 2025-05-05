@@ -175,7 +175,7 @@ async function validateRegister() {
     email: email.value,
     code: check.value,
     profilePicture: imageUrl.value,
-    admin: admin.value // 新增字段传入后端
+    admin: admin.value
   })
 
   if (response.ok) {
