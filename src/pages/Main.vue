@@ -7,13 +7,8 @@
       </div>
       <!-- 固定电影列表 -->
       <div class="film-list">
-        <div
-            v-for="(Movie, index) in Movies"
-            :key="Movie.movieName"
-            class="film-item"
-            :class="{ active: currentIndex === index }"
-            @click="handleClick(index)"
-        >
+        <div v-for="(Movie, index) in Movies" :key="Movie.movieName" class="film-item"
+          :class="{ active: currentIndex === index }" @click="handleClick(index)">
           <div class="film-title">{{ Movie.movieName }}</div>
         </div>
       </div>
@@ -23,15 +18,15 @@
         <h1 class="title">热门电影</h1>
         <div style="display: flex ;margin-bottom:1vh ">
           <el-input v-model="movie_name" placeholder="电影名称" style="width: 10vw;"
-                    @change="fetchMovie(movie_name)"></el-input>
+            @change="fetchMovie(movie_name)"></el-input>
           <el-input-number v-model="page" :min="1" :max="63" @change="fetchMovies(page)"
-                           style="width: 10vw;margin-left:61vw"></el-input-number>
+            style="width: 10vw;margin-left:61vw"></el-input-number>
         </div>
         <div class="media-grid">
           <!-- 电影卡片 -->
           <div class="media-card" v-for="(movie, index) in movies" :key="index" @click="showDialog(index)">
             <img :src="`http://renmen321.cn:8080/api/images/${movie.image}`" @click="tomoviedata(index)"
-                 style="width:100%;height:20vh;object-fit:cover">
+              style="width:100%;height:20vh;object-fit:cover">
             <h3>{{ movie.movieChineseName }}</h3>
             <p>{{ movie.type }}</p>
           </div>
@@ -48,18 +43,19 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, onUnmounted, nextTick} from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import NavBar from "@/components/Navbar.vue";
 import * as echarts from "echarts";
 
-import {onBeforeRouteLeave, useRouter} from "vue-router";
-import {reqGetMovie, reqGetMovies} from "@/api/test";
-import {useMovieStore} from "@/store/movieStore.js";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
+import { reqGetMovie, reqGetMovies } from "@/api/test";
+import { useMovieStore } from "@/store/movieStore.js";
 
 interface Movie {
   movieName: string;
   image: string;
 }
+
 
 const Movies = ref<Movie[]>([
   { movieName: '破·地狱', image: '/images/main1.jpg' },
@@ -112,7 +108,7 @@ const handleClose = () => {
 };
 const fetchMovies = async (pages) => {
   try {
-    const response = await reqGetMovies(pages,6);
+    const response = await reqGetMovies(pages, 6);
     if (response.ok) {
       // 假设返回的数据结构中有一个 movies 数组
       movies.value = response.data.list
@@ -145,9 +141,9 @@ async function tomoviedata(index) {
     movieChineseName: movies.value[index].movieChineseName,
     type: movies.value[index].type,
     ratings: movies.value[index].ratings,
-    introduction :movies.value[index].introduction,
-    year : movies.value[index].yearOfRelease,
-    image : movies.value[index].image
+    introduction: movies.value[index].introduction,
+    year: movies.value[index].yearOfRelease,
+    image: movies.value[index].image
   });
   router.push("MovieData");
 }
@@ -245,8 +241,8 @@ const initBar = () => {
             y2: 1,
             global: false,
             colorStops: [
-              {offset: 0, color: '#057DFE'},// 0% 处的颜色
-              {offset: 1, color: '#02D7EA'}// 100% 处的颜色
+              { offset: 0, color: '#057DFE' },// 0% 处的颜色
+              { offset: 1, color: '#02D7EA' }// 100% 处的颜色
             ]
           }
         },
@@ -269,7 +265,7 @@ const initBar = () => {
       },
       formatter: (params) => {
         return (
-            `${params[0].name}<br />
+          `${params[0].name}<br />
           ${params[0].seriesName}：${params[0].value}`
         )
       }
@@ -303,18 +299,23 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.body{
+.body {
   background: #0c0c10;
 
 }
+
 nav {
   position: fixed;
-  top: 0; /* 明确坐标 */
+  top: 0;
+  /* 明确坐标 */
   left: 0;
   right: 0;
-  height: 11vh; /* 固定高度 */
-  z-index: 1000; /* 提高层级 */
+  height: 11vh;
+  /* 固定高度 */
+  z-index: 1000;
+  /* 提高层级 */
 }
+
 .poster-container {
   position: relative;
   padding: 10vh 0 0 0;
@@ -332,7 +333,7 @@ nav {
   background-position: center;
   background-repeat: no-repeat;
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: rgb(16,21,25);
+  background-color: rgb(16, 21, 25);
 
 }
 
@@ -351,7 +352,7 @@ nav {
   display: flex;
   align-items: center;
   height: 10vh;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   border-left: 3px solid transparent;
   transition: all 0.6s ease;
 }
@@ -359,9 +360,12 @@ nav {
 .film-item.active {
   border-color: #131a23;
   background: rgba(26, 12, 12, 0.1);
-  transform:  translateZ(20px) scale(1.1); /* 添加 3D 浮动效果 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 增加阴影效果 */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
+  transform: translateZ(20px) scale(1.1);
+  /* 添加 3D 浮动效果 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  /* 增加阴影效果 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* 添加过渡效果 */
 }
 
 
@@ -371,6 +375,7 @@ nav {
   letter-spacing: 1px;
   margin-left: 3vw;
 }
+
 .echart {
   width: auto;
   background: white;
@@ -381,9 +386,9 @@ nav {
   padding-top: 10vh;
   display: grid;
   grid-template-columns: 100vw;
-  margin-top:30vh;
-  margin-left:6vw;
-  margin-right:5vw;
+  margin-top: 30vh;
+  margin-left: 6vw;
+  margin-right: 5vw;
   height: 60vh;
   overflow: hidden;
 }
@@ -395,15 +400,18 @@ nav {
   height: 90vh;
   /* 留出padding空间 */
 }
-.title{
+
+.title {
   color: #fff;
   font-size: 3em;
 }
+
 .media-grid {
   display: grid;
   justify-content: center;
   align-items: start;
-  grid-template-columns: repeat(auto-fill, minmax(13vw, 1fr)); /* 自动调整列数 */
+  grid-template-columns: repeat(auto-fill, minmax(13vw, 1fr));
+  /* 自动调整列数 */
   flex: 1;
 
 }
@@ -416,6 +424,7 @@ nav {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   width: 13vw;
 }
+
 .media-card img {
   width: 100%;
   height: 100%;
@@ -425,17 +434,25 @@ nav {
   right: 0;
   bottom: 0;
 }
+
 .media-card h3 {
-  margin: 0 0 5px 0; /* 调整标题的底部间距 */
-  font-size: 1.2em; /* 设置标题的字体大小 */
-  color: white; /* 设置标题的颜色 */
+  margin: 0 0 5px 0;
+  /* 调整标题的底部间距 */
+  font-size: 1.2em;
+  /* 设置标题的字体大小 */
+  color: white;
+  /* 设置标题的颜色 */
 }
 
 .media-card p {
-  margin: 0; /* 移除段落的默认外边距 */
-  font-size: 1em; /* 设置段落的字体大小 */
-  color: #9d9a9a; /* 设置段落的颜色 */
+  margin: 0;
+  /* 移除段落的默认外边距 */
+  font-size: 1em;
+  /* 设置段落的字体大小 */
+  color: #9d9a9a;
+  /* 设置段落的颜色 */
 }
+
 .media-card:hover {
   transform: translateY(-5px);
 }
@@ -444,7 +461,7 @@ nav {
   height: 71.5vh;
   width: 45vw;
   background: rgba(255, 255, 255, 0.1);
-  padding: 20px 20px ;
+  padding: 20px 20px;
   margin-bottom: 2.5vh;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
