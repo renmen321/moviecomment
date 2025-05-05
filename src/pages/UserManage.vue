@@ -19,15 +19,7 @@
         <el-table :data="users" style="width: 100%" :header-cell-style="{ background: '#f8f8f8', color: '#333' }">
           <el-table-column label="头像" width="100%">
             <template #default="scope">
-<<<<<<< Updated upstream
-              <el-image
-                  :src="`http://renmen321.cn:8080/api/profilePicture/${scope.row.profilePicture}`"
-                  class="avatar"
-                  fit="cover"
-              />
-=======
               <el-image :src="scope.row.profilePicture" class="avatar" fit="cover" />
->>>>>>> Stashed changes
             </template>
           </el-table-column>
           <el-table-column prop="username" label="用户名" width="100%" />
@@ -84,17 +76,10 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-<<<<<<< Updated upstream
-import AdminSidebar from "@/components/AdminSidebar.vue";
-import {deleteUserById, getUserPage} from "@/api/User.ts";
-import {getAllMovieName, getCommentTypeCountByName, getMovieCommentByName} from "@/api/Movies.ts";
-import {ElMessage} from "element-plus";
-=======
 import AdminSidebar from '@/components/AdminSidebar.vue'
 import { getUserPage } from '@/api/User.ts'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import RegisterUserForm from '@/components/RegisterUserForm.vue'
->>>>>>> Stashed changes
 
 const router = useRouter()
 
@@ -135,22 +120,6 @@ const handlePageChange = async (newPageNum: number) => {
     ElMessage.error('获取用户数据失败')
   }
 }
-<<<<<<< Updated upstream
-//删除用户
-  const deleteUser = async (id: number) => {
-    const response = await deleteUserById(id);
-    if(response.ok){
-      ElMessage.success('删除成功');
-      const index = users.findIndex(user => user.id === id);
-      if (index !== -1) {
-        users.splice(index, 1);
-      }
-    }else {
-      ElMessage.error('删除失败');
-    }
-  }
-=======
->>>>>>> Stashed changes
 
 onMounted(async () => {
   const response = await getUserPage(pageNum.value, pageSize.value)
