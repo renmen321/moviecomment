@@ -191,12 +191,12 @@ async function validateRegister() {
     emit('close')
     emit('Success')
   }
-  // else if (response.message === '验证码错误或已过期') {
-  //   ElMessage.error('验证码错误或已过期')
-  // }
-  // else {
-  //   ElMessage.error(response.message)
-  // }
+  else if (response.message === '验证码错误或已过期') {
+    ElMessage.error('验证码错误或已过期')
+  }
+  else {
+    ElMessage.error(response.message)
+  }
 }
 
 const emit = defineEmits(['close', 'Success'])

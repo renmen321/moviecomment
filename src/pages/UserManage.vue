@@ -68,7 +68,7 @@
 
     <!-- 注册弹窗 -->
     <el-dialog v-model="dialogVisible" title="新增用户" width="40%" style="--el-dialog-bg-color:rgba(255, 255, 255, 0.5)">
-      <RegisterUserForm ref="registerFormRef" @Success="fetchUsers" />
+      <RegisterUserForm ref="registerFormRef" @Success="fetchUsers" @close="dialogVisible = false"/>
     </el-dialog>
   </div>
 </template>
