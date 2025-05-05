@@ -187,7 +187,6 @@ async function validateRegister() {
 
     // 存储用户信息到 sessionStorage
     sessionStorage.setItem('userData', JSON.stringify(userData))
-    window.dispatchEvent(new Event('storage')) // 手动触发 storage 事件
     emit('close')
     emit('Success')
   }
