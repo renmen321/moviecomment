@@ -3,7 +3,7 @@
   <nav class="sidebar">
     <div class="nav-title">
       <span class="logo">📈</span>
-      Admin Analytics
+      Admin
     </div>
     <div class="nav-items">
       <a

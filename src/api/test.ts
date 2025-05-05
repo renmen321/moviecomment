@@ -93,6 +93,7 @@ export const register = (data: {
   email: string;
   code: string;
   profilePicture?: File; // 添加文件类型
+  admin: boolean;
 }): Promise<{
   code: number;
   message: string;
