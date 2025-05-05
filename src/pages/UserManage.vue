@@ -7,13 +7,18 @@
     <!-- 内容区域 -->
     <main class="content-area">
       <div class="user-management">
-        <div class="search-bar">
-          <el-input v-model="searchQuery" placeholder="搜索用户" class="search-input">
-            <template #prefix>
-              <el-icon><Search /></el-icon>
-            </template>
-          </el-input>
-          <el-button type="primary" @click="showRegisterDialog">新增用户</el-button>
+        <div class="search-and-action">
+          <div class="search-bar">
+            <el-input v-model="searchQuery" placeholder="搜索用户" class="search-input">
+              <template #prefix>
+                <el-icon><Search /></el-icon>
+              </template>
+            </el-input>
+          </div>
+
+          <div class="action-bar">
+            <el-button type="primary" @click="showRegisterDialog">新增用户</el-button>
+          </div>
         </div>
 
         <el-table :data="users" style="width: 100%" :header-cell-style="{ background: '#f8f8f8', color: '#333' }">
@@ -183,14 +188,25 @@ const deleteUser = (userId: number) => {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
-.search-bar {
+.search-and-action {
+  display: flex;
+  justify-content: space-between; /* 左右分布 */
+  align-items: center;             /* 垂直居中 */
   margin-bottom: 3vh;
+}
+
+.search-bar {
+  flex-grow: 1;                    /* 搜索框占更多空间 */
+  margin-right: 20px;              /* 和按钮之间留点空隙 */
+}
+
+.action-bar {
+  flex-shrink: 0;                 /* 按钮不被压缩 */
 }
 
 .search-input {
   width: 15vw;
 }
-
 .avatar {
   width: 4.5vw;
   height: 7vh;
