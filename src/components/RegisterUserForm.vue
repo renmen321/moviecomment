@@ -179,14 +179,6 @@ async function validateRegister() {
   })
 
   if (response.ok) {
-    const userData = {
-      name: id.value,
-      email: email.value,
-      profilePicture: imageUrl.value
-    }
-
-    // 存储用户信息到 sessionStorage
-    sessionStorage.setItem('userData', JSON.stringify(userData))
     emit('close')
     emit('Success')
   }
