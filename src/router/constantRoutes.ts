@@ -27,9 +27,9 @@ export const constantRoutes: RouteRecordRaw[] = [
   name: 'FeedBack',
   component: () => import("@/pages/FeedBack.vue"),
   },{
-    path: '/TodayComment',//今日评论
-    name: 'TodayComment',
-    component: () => import("@/pages/TodayComment.vue"),
+    path: '/CommentCalendar',//评论日历
+    name: 'CommentCalendar',
+    component: () => import("@/pages/CommentCalendar.vue"),
   },{
     path: '/UserManage',//用户管理
     name: 'UserManage',

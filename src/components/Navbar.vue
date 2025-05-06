@@ -10,12 +10,8 @@
     <div class="nav-links-right">
       <template v-if="isLoggedIn">
         <button @click="toAdmin()" v-if="isAdmin" class="nav-item">管理端</button>
-        <el-image
-            :src="`https://renmen321.cn:8080/api/profilePicture/${ProfilePicture}`"
-            class="user-avatar"
-            fit="cover"
-            @click="toUser()"
-        />
+        <el-image :src="`https://renmen321.cn:8080/api/profilePicture/${ProfilePicture}`" class="user-avatar"
+          fit="cover" @click="toUser()" />
         <button @click="logout()" class="nav-item">退出</button>
       </template>
       <template v-else>
@@ -29,12 +25,12 @@
     <LoginForm @close="closeLoginDialog" @reset="showResetDialog" @register="showRegisterDialog" />
   </el-dialog>
   <!-- 注册弹出框 -->
-  <el-dialog v-model="registerDialogVisible" width="30%"  style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
-    <RegisterForm @close="closeRegisterDialog" @login="showLoginDialog" @Success="handleRegisterSuccess"/>
+  <el-dialog v-model="registerDialogVisible" width="30%" style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
+    <RegisterForm @close="closeRegisterDialog" @login="showLoginDialog" @Success="handleRegisterSuccess" />
   </el-dialog>
   <!-- 重置密码弹出框 -->
-  <el-dialog v-model="resetDialogVisible" width="30%"   style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
-    <ResetForm @close="closeResetDialog" @login="showLoginDialog"/>
+  <el-dialog v-model="resetDialogVisible" width="30%" style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
+    <ResetForm @close="closeResetDialog" @login="showLoginDialog" />
   </el-dialog>
   <!-- 选择电影类型弹出框 -->
   <el-dialog v-model="selectMovieTypeDialogVisible" width="30%" style="--el-dialog-bg-color:rgba(255, 255, 255, 0.1)">
@@ -110,7 +106,7 @@ function toUser() {
 }
 
 function toAdmin() {
-  router.push('/TodayComment');
+  router.push('/CommentCalendar');
 }
 
 function toMain() {
@@ -157,6 +153,7 @@ function closeResetDialog() {
   padding: 0;
   margin: 0;
 }
+
 /* 公共样式 */
 nav {
   display: flex;
@@ -166,7 +163,7 @@ nav {
   position: fixed;
   width: 100vw;
   z-index: 10;
-  background: rgba(255,255,255,0);
+  background: rgba(255, 255, 255, 0);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
@@ -176,7 +173,8 @@ nav {
   height: auto;
   /* 保持图片比例 */
   margin-right: 50px;
-  user-select: none; /* 禁止选中 */
+  user-select: none;
+  /* 禁止选中 */
 }
 
 .nav-links {
@@ -193,11 +191,13 @@ nav {
   font-size: 1.2rem;
   margin: 0 10px;
   transition: all 0.3s;
-  user-select: none; /* 禁止选中 */
+  user-select: none;
+  /* 禁止选中 */
 }
 
 .nav-links-right {
-  margin-left: 60vw; /* 将按钮推到最右侧 */
+  margin-left: 60vw;
+  /* 将按钮推到最右侧 */
 }
 
 .nav-item:hover {
@@ -214,6 +214,7 @@ nav {
 }
 
 .fixed-height-dialog {
-  height: 2px; /* 固定高度 */
+  height: 2px;
+  /* 固定高度 */
 }
 </style>
