@@ -24,7 +24,7 @@
         <el-table :data="users" style="width: 100%" :header-cell-style="{ background: '#f8f8f8', color: '#333' }">
           <el-table-column label="头像" width="100%">
             <template #default="scope">
-              <el-image :src="`http://renmen321.cn:8080/api/profilePicture/${scope.row.profilePicture}`" class="avatar" fit="cover" />
+              <el-image :src="`https://renmen321.cn:8080/api/profilePicture/${scope.row.profilePicture}`" class="avatar" fit="cover" />
             </template>
           </el-table-column>
           <el-table-column prop="username" label="用户名" width="100%" />

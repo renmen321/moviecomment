@@ -6,7 +6,7 @@
     <!-- 电影信息区域 -->
     <div class="movie-info">
       <div class="poster-section">
-        <img :src="`http://renmen321.cn:8080/api/images/${movie.image}`" class="poster" alt="电影海报">
+        <img :src="`https://renmen321.cn:8080/api/images/${movie.image}`" class="poster" alt="电影海报">
       </div>
       <div class="detail-section">
         <div>

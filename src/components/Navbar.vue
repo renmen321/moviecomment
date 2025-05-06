@@ -11,7 +11,7 @@
       <template v-if="isLoggedIn">
         <button @click="toAdmin()" v-if="isAdmin" class="nav-item">管理端</button>
         <el-image
-            :src="`http://renmen321.cn:8080/api/profilePicture/${ProfilePicture}`"
+            :src="`https://renmen321.cn:8080/api/profilePicture/${ProfilePicture}`"
             class="user-avatar"
             fit="cover"
             @click="toUser()"

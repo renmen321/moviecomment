@@ -25,7 +25,7 @@
         <div class="media-grid">
           <!-- 电影卡片 -->
           <div class="media-card" v-for="(movie, index) in movies" :key="index" @click="showDialog(index)">
-            <img :src="`http://renmen321.cn:8080/api/images/${movie.image}`" @click="tomoviedata(index)"
+            <img :src="`https://renmen321.cn:8080/api/images/${movie.image}`" @click="tomoviedata(index)"
               style="width:100%;height:20vh;object-fit:cover">
             <h3>{{ movie.movieChineseName }}</h3>
             <p>{{ movie.type }}</p>

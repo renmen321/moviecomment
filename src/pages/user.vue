@@ -10,7 +10,7 @@
           <!-- 头像显示 -->
           <div class="avatar-container">
             <el-image v-if="formData.profilePicture"
-              :src="`http://renmen321.cn:8080/api/profilePicture/${formData.profilePicture}`" class="avatar" fit="cover" />
+              :src="`https://renmen321.cn:8080/api/profilePicture/${formData.profilePicture}`" class="avatar" fit="cover" />
             <div v-else class="avatar-placeholder">
               <el-icon>
                 <User />

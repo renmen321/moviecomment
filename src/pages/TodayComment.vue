@@ -148,7 +148,7 @@
 <script setup lang="ts">
 import {reactive, computed, ref, onMounted} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ElCard, ElProgress, ElTable, ElTableColumn, ElButton, ElTag } from 'element-plus'
+import {ElCard, ElProgress, ElTable, ElTableColumn, ElButton, ElTag, ElMessage} from 'element-plus'
 import {getTypePercentageByDate, reqGetAdminCommentByDate} from "@/api/test.ts";
 import AdminSidebar from "@/components/AdminSidebar.vue";
 import { watch } from 'vue'
@@ -178,6 +178,9 @@ const statsData = reactive<StatsData>({
 });
 // 响应式状态
 const selectedDate = ref('2025-04-15');
+onMounted(async () => {
+ await loadCommentsByDate();
+})
 watch(selectedDate, () => {
   loadCommentsByDate()
 })
@@ -189,13 +192,13 @@ const loadCommentsByDate =async () => {
   }else {
     console.error('Error fetching comments:', response.message);
   }
-  if(response.ok) {
-    const response1 = await getTypePercentageByDate('2025-04-15');
-    statsData.sentiment.good = response1.data.goodPercentage.toFixed(2);
-    statsData.sentiment.medium = response1.data.generalPercentage.toFixed(2);
-    statsData.sentiment.bad = response1.data.badPercentage.toFixed(2);
+  const response1 = await getTypePercentageByDate(selectedDate.value);
+  if(response1.ok) {
+    statsData.sentiment.good = parseFloat(response1.data.goodPercentage.toFixed(2));
+    statsData.sentiment.medium = parseFloat(response1.data.generalPercentage.toFixed(2));
+    statsData.sentiment.bad = parseFloat(response1.data.badPercentage.toFixed(2));
   }else {
-    console.error('Error fetching comments:', response.message);
+    console.error('Error fetching PercentageByDate', response.message);
   }
 }
 const customColors = [
@@ -218,7 +221,7 @@ const totalComments = computed(() => statsData.comments.length)
 // 分页事件处理
  const handlePageChange = async (val: number) => {
   currentPage.value = val;
-  const response = await reqGetAdminCommentByDate('2025-04-15',currentPage.value,pageSize.value);
+  const response = await reqGetAdminCommentByDate(selectedDate.value,currentPage.value,pageSize.value);
   statsData.comments=response.data.list;
   statsData.todayComments=response.data.total;
 

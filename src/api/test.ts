@@ -44,7 +44,7 @@ export const reqGetAiResult =(data: {
 }): Promise<{
     prediction_result: string;
     probabilities: number;
-}> => request.post(`http://renmen321.cn:5000/predict`,data);
+}> => request.post(`https://renmen321.cn/ai/predict`,data);
 
 export const reqGetMovieCommentById = (id: number, pageNum: number, pageSize: number,type: number): Promise<{
   code: number;
@@ -104,7 +104,7 @@ export const register = (data: {
   formData.append('password', data.password);
   formData.append('email', data.email);
   formData.append('code', data.code);
-  formData.append('admin', data.admin.toString());
+  formData.append('admin', String(data.admin));
 
   // 如果有 profilePicture 文件，则添加到 formData
   if (data.profilePicture) {

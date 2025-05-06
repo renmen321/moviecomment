@@ -107,7 +107,8 @@ async function validateRegister() {
         password: password.value,
         email: email.value,
         code: check.value,
-        profilePicture: imageUrl.value
+        profilePicture: imageUrl.value,
+        admin: false
       }
   );
   if (response.ok) {
