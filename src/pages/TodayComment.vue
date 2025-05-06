@@ -59,7 +59,7 @@
           <el-card class="stat-card comment-list">
             <template #header>
               <div class="card-header">
-                <span>最新评论</span>
+                <span>评论列表</span>
               </div>
             </template>
             <el-table :data="initialComments" style="width: 100%">
