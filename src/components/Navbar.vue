@@ -11,7 +11,7 @@
       <template v-if="isLoggedIn">
         <button @click="toAdmin()" v-if="isAdmin" class="nav-item">管理端</button>
         <el-image
-            :src="`http://renmen321.cn:8080/api/profilePicture/${ProfilePicture}`"
+            :src="`http://127.0.0.1:8080/api/profilePicture/${ProfilePicture}`"
             class="user-avatar"
             fit="cover"
             @click="toUser()"
@@ -110,7 +110,7 @@ function toUser() {
 }
 
 function toAdmin() {
-  router.push('/TodayComment');
+  router.push('/CommentCalendar');
 }
 
 function toMain() {

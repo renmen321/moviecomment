@@ -59,7 +59,7 @@
           <el-card class="stat-card comment-list">
             <template #header>
               <div class="card-header">
-                <span>评论列表</span>
+                <span>最新评论</span>
               </div>
             </template>
             <el-table :data="initialComments" style="width: 100%">
@@ -181,7 +181,7 @@ const selectedDate = ref('2025-04-15');
 watch(selectedDate, () => {
   loadCommentsByDate()
 })
-const loadCommentsByDate =async () => {
+onMounted(async () => {
   const response = await reqGetAdminCommentByDate(selectedDate.value,1,12);
   if(response.ok) {
     statsData.comments = response.data.list;
@@ -190,14 +190,14 @@ const loadCommentsByDate =async () => {
     console.error('Error fetching comments:', response.message);
   }
   if(response.ok) {
-    const response1 = await getTypePercentageByDate('2025-04-15');
+    const response1 = await getTypePercentageByDate(selectedDate.value);
     statsData.sentiment.good = response1.data.goodPercentage.toFixed(2);
     statsData.sentiment.medium = response1.data.generalPercentage.toFixed(2);
     statsData.sentiment.bad = response1.data.badPercentage.toFixed(2);
   }else {
     console.error('Error fetching comments:', response.message);
   }
-}
+})
 const customColors = [
   { color: '#67C23A', percentage: 20 },
   { color: '#E6A23C', percentage: 40 },

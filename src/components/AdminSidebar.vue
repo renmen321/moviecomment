@@ -39,7 +39,7 @@ const route = useRoute()
 
 // 导航菜单配置
 const menus = [
-  { path: '/TodayComment', icon: '📊', text: '今日评论' },
+  { path: '/CommentCalendar', icon: '📅', text: '评论日历' },
   { path: '/FeedBackAdmin', icon: '📩', text: '反馈管理' },
   { path: '/MovieManage', icon: '🎬', text: '电影管理' },
   { path: '/CommentManage', icon: '💬', text: '评论管理' },
