@@ -8,13 +8,15 @@
     <main class="content-area">
       <section class="stats-section">
         <div class="stats-grid">
-          <!-- 今日评论统计 -->
           <el-card class="stat-card">
-            <template #header>
-              <div class="card-header">
-                <span>今日评论</span>
-              </div>
-            </template>
+            <el-date-picker
+                v-model="selectedDate"
+                type="date"
+                placeholder="选择日期"
+                value-format="YYYY-MM-DD"
+                style="width: 150px; margin-bottom: 20px;"
+            />
+
             <div class="stat-value">{{ statsData.todayComments }}</div>
           </el-card>
 
@@ -173,8 +175,10 @@ const statsData = reactive<StatsData>({
   },
   comments: []
 });
+// 响应式状态
+const selectedDate = ref('2025-04-15');
 onMounted(async () => {
-  const response = await reqGetAdminCommentByDate('2025-04-15',1,12);
+  const response = await reqGetAdminCommentByDate(selectedDate.value,1,12);
   if(response.ok) {
     statsData.comments = response.data.list;
     statsData.todayComments = response.data.total;
