@@ -151,6 +151,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { ElCard, ElProgress, ElTable, ElTableColumn, ElButton, ElTag } from 'element-plus'
 import {getTypePercentageByDate, reqGetAdminCommentByDate} from "@/api/test.ts";
 import AdminSidebar from "@/components/AdminSidebar.vue";
+import { watch } from 'vue'
 
 const router = useRouter() // 获取 Vue Router 实例
 const route = useRoute() // 获取当前路由信息
@@ -177,7 +178,10 @@ const statsData = reactive<StatsData>({
 });
 // 响应式状态
 const selectedDate = ref('2025-04-15');
-onMounted(async () => {
+watch(selectedDate, () => {
+  loadCommentsByDate()
+})
+const loadCommentsByDate =async () => {
   const response = await reqGetAdminCommentByDate(selectedDate.value,1,12);
   if(response.ok) {
     statsData.comments = response.data.list;
@@ -193,7 +197,7 @@ onMounted(async () => {
   }else {
     console.error('Error fetching comments:', response.message);
   }
-})
+}
 const customColors = [
   { color: '#67C23A', percentage: 20 },
   { color: '#E6A23C', percentage: 40 },
