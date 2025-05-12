@@ -90,3 +90,44 @@ export const updateUserVO = (data: {
     },
   });
 };
+
+export const sendCodeToChangePassword = (email: string): Promise<{
+  code: number;
+  message: string;
+  ok: boolean;
+}> => request.post(`/user/sendCodeToChangePassword?email=${email}`)
+
+export const changePassword = (
+    email: string,
+    code: string,
+    newPassword: string
+): Promise<{
+  code: number;
+  message: string;
+  ok: boolean;
+}> => {
+  return request.post(`/user/changePassword?email=${email}&code=${code}&newPassword=${newPassword}`);
+};
+
+export const changePasswordByUser = (
+    oldPassword: string,
+    newPassword: string
+): Promise<{
+  code: number;
+  message: string;
+  ok: boolean;
+}> => {
+  return request.post(`/user/changePasswordByUser?oldPassword=${oldPassword}&newPassword=${newPassword}`);
+};
+
+export const changeEmail = (
+    newEmail: string,
+    code: string,
+    oldEmail: string
+): Promise<{
+  code: number;
+  message: string;
+  ok: boolean;
+}> => {
+  return request.post(`/user/changeEmail?oldEmail=${oldEmail}&code=${code}&newEmail=${newEmail}`);
+};

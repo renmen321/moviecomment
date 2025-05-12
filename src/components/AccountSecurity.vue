@@ -115,6 +115,9 @@
 <script setup lang="ts">
 import {ref, reactive, watch, onMounted} from 'vue'
 import { ElMessage } from 'element-plus'
+import {changeEmail, changePasswordByUser} from "@/api/User.ts";
+import {router} from "@/router";
+import {sendCode} from "@/api/test.ts";
 const formData = ref({
   email: ''
 })
@@ -153,16 +156,18 @@ const pwdForm = reactive({
 watch(showEmailEdit, val => val && (emailForm.newEmail = props.formData.email))
 
 // 获取邮箱验证码
-const getEmailCode = () => {
+const getEmailCode = async () => {
   if (!/^\w+@[a-z0-9]+\.[a-z]{2,4}$/i.test(emailForm.newEmail)) {
     ElMessage.error('请输入有效的邮箱地址')
     return
   }
-  emailCodeCountdown.value = 60
-  const timer = setInterval(() => {
-    emailCodeCountdown.value--
-    if (emailCodeCountdown.value <= 0) clearInterval(timer)
-  }, 1000)
+ const response = await sendCode(emailForm.newEmail)
+    if (response.ok) {
+      ElMessage.success('验证码已发送，请查收邮箱！')
+    } else {
+      ElMessage.error('发送验证码失败，请稍后再试')
+    }
+
 }
 
 // 保存邮箱
@@ -171,17 +176,18 @@ const saveEmail = () => {
     ElMessage.error('请输入验证码')
     return
   }
+  const response = changeEmail(emailForm.newEmail, emailForm.code, formData.value.email);
+  if (!response.ok) {
+    ElMessage.error('邮箱修改失败')
+    return
+  }
   ElMessage.success('邮箱修改成功')
   showEmailEdit.value = false
   emitUpdate('email', emailForm.newEmail)
 }
 
 // 保存密码
-const savePassword = () => {
-  if (pwdForm.oldPassword !== props.formData.password) {
-    ElMessage.error('原密码输入错误')
-    return
-  }
+const savePassword = async () => {
   if (pwdForm.newPassword !== pwdForm.confirmPassword) {
     ElMessage.error('两次输入的密码不一致')
     return
@@ -190,9 +196,19 @@ const savePassword = () => {
     ElMessage.error('密码需包含字母和数字，长度8-20位')
     return
   }
-  ElMessage.success('密码修改成功')
-  showPwdEdit.value = false
-  emitUpdate('password', pwdForm.newPassword)
+
+  const resoprse = await changePasswordByUser(
+      pwdForm.oldPassword,
+      pwdForm.newPassword
+  )
+  if(resoprse.ok) {
+    ElMessage.success('密码修改成功')
+    showPwdEdit.value = false
+    ElMessage.success('请重新登录');
+    router.push('/login');
+  }else {
+    ElMessage.error(resoprse.message)
+  }
 }
 
 // 通用更新方法

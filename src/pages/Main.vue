@@ -16,11 +16,17 @@
     <div class="container">
       <div class="media-section">
         <h1 class="title">热门电影</h1>
-        <div style="display: flex ;margin-bottom:1vh ">
-          <el-input v-model="movie_name" placeholder="电影名称" style="width: 10vw;"
-            @change="fetchMovie(movie_name)"></el-input>
-          <el-input-number v-model="page" :min="1" :max="63" @change="fetchMovies(page)"
-            style="width: 10vw;margin-left:61vw"></el-input-number>
+        <div class="search-container">
+          <el-input v-model="movie_name" placeholder="搜索电影..." class="search-input" @change="fetchMovie(movie_name)">
+            <template #prefix>
+              <el-icon>
+                <Search />
+              </el-icon>
+            </template>
+          </el-input>
+          <el-input-number v-model="page" :min="1" :max="63" @change="fetchMovies(page)" class="page-input"
+            controls-position="right">
+          </el-input-number>
         </div>
         <div class="media-grid">
           <!-- 电影卡片 -->
@@ -300,26 +306,26 @@ onMounted(() => {
 
 <style scoped>
 .body {
-  background: #0c0c10;
-
+  background: linear-gradient(to bottom, #0c0c10, #1a1a24);
+  min-height: 100vh;
 }
 
 nav {
   position: fixed;
   top: 0;
-  /* 明确坐标 */
   left: 0;
   right: 0;
   height: 11vh;
-  /* 固定高度 */
   z-index: 1000;
-  /* 提高层级 */
+  backdrop-filter: blur(10px);
+  background: rgba(12, 12, 16, 0.8);
 }
 
 .poster-container {
   position: relative;
   padding: 10vh 0 0 0;
-  background: #332c2c;
+  background: linear-gradient(to bottom, #332c2c, #1a1a24);
+  height: 70vh;
 }
 
 /* 主视觉区 */
@@ -328,13 +334,21 @@ nav {
   right: 0;
   top: 0;
   width: 100%;
-  height: 50vh;
-  background-size: 100% 100%;
+  height: 70vh;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: rgb(16, 21, 25);
+  transition: all 0.8s ease;
 
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(12, 12, 16, 0.2) 0%, rgba(12, 12, 16, 0.8) 100%);
+  }
 }
 
 
@@ -342,128 +356,182 @@ nav {
 .film-list {
   position: absolute;
   right: 5vw;
-  top: 10vh;
-  width: 15vw;
-  background: #212020;
-  box-shadow: 0 0 20px rgba(178, 116, 116, 0.3);
+  top: 15vh;
+  width: 20vw;
+  background: rgba(33, 32, 32, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .film-item {
   display: flex;
   align-items: center;
-  height: 10vh;
-  background: rgba(255, 255, 255, 0.1);
-  border-left: 3px solid transparent;
-  transition: all 0.6s ease;
+  height: 12vh;
+  padding: 0 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
 }
 
 .film-item.active {
-  border-color: #131a23;
-  background: rgba(26, 12, 12, 0.1);
-  transform: translateZ(20px) scale(1.1);
-  /* 添加 3D 浮动效果 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  /* 增加阴影效果 */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  /* 添加过渡效果 */
+  border-color: #e50914;
+  background: rgba(229, 9, 20, 0.1);
+  transform: translateX(10px);
 }
 
 
 .film-title {
   color: #fff;
-  font-size: 1.1em;
-  letter-spacing: 1px;
-  margin-left: 3vw;
+  font-size: 1.2em;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .echart {
-  width: auto;
+  width: 100%;
+  height: 70vh;
   background: white;
-
+  border-radius: 12px;
 }
 
 .container {
-  padding-top: 10vh;
-  display: grid;
-  grid-template-columns: 100vw;
-  margin-top: 30vh;
-  margin-left: 6vw;
-  margin-right: 5vw;
-  height: 60vh;
-  overflow: hidden;
+  padding: 2rem;
+  margin-top: 0;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #1a1a24, #0c0c10);
 }
 
 .media-section {
-  padding: 0 2vw;
-  display: flex;
-  flex-direction: column;
-  height: 90vh;
-  /* 留出padding空间 */
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .title {
   color: #fff;
-  font-size: 3em;
+  font-size: 2.5em;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .media-grid {
   display: grid;
-  justify-content: center;
-  align-items: start;
-  grid-template-columns: repeat(auto-fill, minmax(13vw, 1fr));
-  /* 自动调整列数 */
-  flex: 1;
-
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+  padding: 1rem 0;
 }
 
 .media-card {
-  background: rgba(255, 255, 255, 0);
-  transition: transform 0.3s;
-  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  width: 13vw;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  }
 }
 
 .media-card img {
   width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  height: 280px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.media-card:hover img {
+  transform: scale(1.05);
 }
 
 .media-card h3 {
-  margin: 0 0 5px 0;
-  /* 调整标题的底部间距 */
-  font-size: 1.2em;
-  /* 设置标题的字体大小 */
-  color: white;
-  /* 设置标题的颜色 */
+  padding: 1rem;
+  margin: 0;
+  font-size: 1.1em;
+  color: #fff;
+  font-weight: 500;
 }
 
 .media-card p {
-  margin: 0;
-  /* 移除段落的默认外边距 */
-  font-size: 1em;
-  /* 设置段落的字体大小 */
+  padding: 0 1rem 1rem;
   color: #9d9a9a;
-  /* 设置段落的颜色 */
-}
-
-.media-card:hover {
-  transform: translateY(-5px);
+  font-size: 0.9em;
 }
 
 .chart-container {
-  height: 71.5vh;
-  width: 45vw;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 20px 20px;
-  margin-bottom: 2.5vh;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  margin: 0 auto;
+}
+
+.search-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  max-width: 100%;
+}
+
+.search-input {
+  flex: 1;
+  max-width: 300px;
+
+  :deep(.el-input__wrapper) {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  :deep(.el-input__inner) {
+    color: #fff;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  :deep(.el-input__prefix) {
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+.page-input {
+  width: 120px;
+
+  :deep(.el-input-number__decrease),
+  :deep(.el-input-number__increase) {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: #fff;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  :deep(.el-input__wrapper) {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    box-shadow: none !important;
+  }
+
+  :deep(.el-input__inner) {
+    color: #fff;
+  }
 }
 </style>
