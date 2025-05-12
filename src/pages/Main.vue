@@ -38,10 +38,10 @@
           </div>
         </div>
       </div>
-      <!-- 弹窗 -->
-      <el-dialog v-model="dialogVisible" title="电影评论" width="50%" :before-close="handleClose">
+      <!-- 弹窗 --> <el-dialog v-model="dialogVisible" title="电影评论" width="60%" :before-close="handleClose"
+        class="custom-dialog" :modal-class="'custom-modal'" align-center>
         <div class="chart-container" id="chart">
-          <div class="echart" ref="mychart1" style="height: 74.5vh;"></div>
+          <div class="echart" ref="mychart1"></div>
         </div>
       </el-dialog>
     </div>
@@ -114,7 +114,7 @@ const handleClose = () => {
 };
 const fetchMovies = async (pages) => {
   try {
-    const response = await reqGetMovies(pages, 6);
+    const response = await reqGetMovies(pages, 12);
     if (response.ok) {
       // 假设返回的数据结构中有一个 movies 数组
       movies.value = response.data.list
@@ -306,7 +306,7 @@ onMounted(() => {
 
 <style scoped>
 .body {
-  background: linear-gradient(to bottom, #0c0c10, #1a1a24);
+  background: linear-gradient(135deg, #0f1729, #1a1a24);
   min-height: 100vh;
 }
 
@@ -324,8 +324,9 @@ nav {
 .poster-container {
   position: relative;
   padding: 10vh 0 0 0;
-  background: linear-gradient(to bottom, #332c2c, #1a1a24);
-  height: 70vh;
+  background: linear-gradient(to bottom, #1f2937, #111827);
+  height: 50vh;
+  overflow: hidden;
 }
 
 /* 主视觉区 */
@@ -334,7 +335,7 @@ nav {
   right: 0;
   top: 0;
   width: 100%;
-  height: 70vh;
+  height: 60vh;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -351,55 +352,56 @@ nav {
   }
 }
 
-
 /* 电影列表 */
 .film-list {
   position: absolute;
   right: 5vw;
   top: 15vh;
-  width: 20vw;
-  background: rgba(33, 32, 32, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
+  width: 22vw;
+  background: rgba(31, 41, 55, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .film-item {
   display: flex;
   align-items: center;
   height: 12vh;
-  padding: 0 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 0 1.8rem;
+  background: rgba(255, 255, 255, 0.03);
   border-left: 4px solid transparent;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(5px);
   }
 }
 
 .film-item.active {
-  border-color: #e50914;
-  background: rgba(229, 9, 20, 0.1);
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.15);
   transform: translateX(10px);
 }
 
 
 .film-title {
   color: #fff;
-  font-size: 1.2em;
+  font-size: 1.25em;
   font-weight: 500;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .echart {
   width: 100%;
-  height: 70vh;
-  background: white;
-  border-radius: 12px;
+  height: 74vh;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .container {
@@ -410,70 +412,74 @@ nav {
 }
 
 .media-section {
-  padding: 2rem;
-  max-width: 1400px;
+  padding: 3rem;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
 .title {
   color: #fff;
-  font-size: 2.5em;
-  font-weight: 600;
-  margin-bottom: 2rem;
+  font-size: 2.75em;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(to right, #60a5fa, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .media-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2.5rem;
   padding: 1rem 0;
 }
 
 .media-card {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 
   &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   }
 }
 
 .media-card img {
   width: 100%;
-  height: 280px;
+  height: 320px;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .media-card:hover img {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .media-card h3 {
-  padding: 1rem;
+  padding: 1.2rem 1.2rem 0.8rem;
   margin: 0;
-  font-size: 1.1em;
+  font-size: 1.2em;
   color: #fff;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .media-card p {
-  padding: 0 1rem 1rem;
-  color: #9d9a9a;
-  font-size: 0.9em;
+  padding: 0 1.2rem 1.2rem;
+  color: #94a3b8;
+  font-size: 0.95em;
 }
 
 .chart-container {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  padding: 2rem;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  padding: 2.5rem;
   margin: 0 auto;
 }
 
@@ -481,24 +487,30 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  gap: 1rem;
-  max-width: 100%;
+  margin-bottom: 3rem;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .search-input {
   flex: 1;
-  max-width: 300px;
+  max-width: 400px;
 
   :deep(.el-input__wrapper) {
     background: rgba(255, 255, 255, 0.05);
-    border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 0.5rem;
   }
 
   :deep(.el-input__inner) {
     color: #fff;
+    font-size: 1.1em;
 
     &::placeholder {
       color: rgba(255, 255, 255, 0.5);
@@ -506,32 +518,73 @@ nav {
   }
 
   :deep(.el-input__prefix) {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.2em;
+    margin-right: 0.5rem;
   }
 }
 
 .page-input {
-  width: 120px;
+  width: 140px;
 
   :deep(.el-input-number__decrease),
   :deep(.el-input-number__increase) {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
     border: none;
     color: #fff;
+    transition: all 0.3s ease;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.15);
     }
   }
 
   :deep(.el-input__wrapper) {
     background: rgba(255, 255, 255, 0.05);
-    border: none;
-    box-shadow: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
   }
 
   :deep(.el-input__inner) {
     color: #fff;
+    font-size: 1.1em;
   }
+}
+
+.custom-dialog {
+  :deep(.el-dialog) {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+
+    .el-dialog__header {
+      background: linear-gradient(to right, #2563eb, #3b82f6);
+      padding: 20px;
+      margin: 0;
+
+      .el-dialog__title {
+        color: white;
+        font-size: 1.25em;
+        font-weight: 500;
+      }
+
+      .el-dialog__headerbtn {
+        .el-dialog__close {
+          color: white;
+        }
+      }
+    }
+
+    .el-dialog__body {
+      padding: 24px;
+    }
+  }
+}
+
+.custom-modal {
+  background-color: rgba(0, 0, 0, 0.65) !important;
+  backdrop-filter: blur(8px);
 }
 </style>
