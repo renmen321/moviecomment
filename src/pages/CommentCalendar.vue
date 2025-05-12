@@ -137,12 +137,6 @@ const statsData = reactive<StatsData>({
 // 响应式状态
 const selectedDate = ref('2025-04-15');
 onMounted(async () => {
-  await loadCommentsByDate();
-})
-watch(selectedDate, () => {
-  loadCommentsByDate()
-})
-onMounted(async () => {
   const response = await reqGetAdminCommentByDate(selectedDate.value, 1, 12);
   if (response.ok) {
     statsData.comments = response.data.list;
@@ -159,6 +153,24 @@ onMounted(async () => {
     console.error('Error fetching PercentageByDate', response.message);
   }
 })
+watch(selectedDate, async () => {
+  const response = await reqGetAdminCommentByDate(selectedDate.value, 1, 12);
+  if (response.ok) {
+    statsData.comments = response.data.list;
+    statsData.todayComments = response.data.total;
+  } else {
+    console.error('Error fetching comments:', response.message);
+  }
+  const response1 = await getTypePercentageByDate(selectedDate.value);
+  if (response1.ok) {
+    statsData.sentiment.good = parseFloat(response1.data.goodPercentage.toFixed(2));
+    statsData.sentiment.medium = parseFloat(response1.data.generalPercentage.toFixed(2));
+    statsData.sentiment.bad = parseFloat(response1.data.badPercentage.toFixed(2));
+  } else {
+    console.error('Error fetching PercentageByDate', response.message);
+  }
+})
+
 const customColors = [
   { color: '#67C23A', percentage: 20 },
   { color: '#E6A23C', percentage: 40 },

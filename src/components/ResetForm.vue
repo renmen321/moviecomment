@@ -63,7 +63,7 @@ async function validateRegister() {
     ElMessage.success('密码重置成功！');
     router.push('/login');
   } else {
-    ElMessage.error('密码重置失败，请稍后再试');
+    ElMessage.error(response.message);
   }
   emit('close');
 }

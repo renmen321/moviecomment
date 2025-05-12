@@ -30,11 +30,13 @@
         </div>
         <div class="media-grid">
           <!-- 电影卡片 -->
-          <div class="media-card" v-for="(movie, index) in movies" :key="index" @click="showDialog(index)">
-            <img :src="`https://renmen321.cn:8080/api/images/${movie.image}`" @click="tomoviedata(index)"
-              style="width:100%;height:20vh;object-fit:cover">
-            <h3>{{ movie.movieChineseName }}</h3>
-            <p>{{ movie.type }}</p>
+          <div class="media-card" v-for="(movie, index) in movies" :key="index">
+            <img :src="`https://renmen321.cn:8080/api/images/${movie.image}`" @click.stop="tomoviedata(index)"
+              style="width:100%;height:20vh;object-fit:cover;cursor:pointer">
+            <div class="card-info" @click="showDialog(index)">
+              <h3>{{ movie.movieChineseName }}</h3>
+              <p>{{ movie.type }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -114,7 +116,7 @@ const handleClose = () => {
 };
 const fetchMovies = async (pages) => {
   try {
-    const response = await reqGetMovies(pages, 12);
+    const response = await reqGetMovies(pages, 10);
     if (response.ok) {
       // 假设返回的数据结构中有一个 movies 数组
       movies.value = response.data.list
